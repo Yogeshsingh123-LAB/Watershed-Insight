@@ -1,0 +1,93 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CD-001",
+        "watershed_id": "watershed_001",
+        "name": "Masonry Check Dam #001",
+        "type": "check_dam",
+        "installation_date": "2024-11-15",
+        "status": "Completed",
+        "cost_inr": 450000,
+        "capacity_tcm": 12.5,
+        "latitude": 19.8425,
+        "longitude": 75.3412
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.3412,
+          19.8425
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-FP-002",
+        "watershed_id": "watershed_001",
+        "name": "Community Farm Pond #002",
+        "type": "farm_pond",
+        "installation_date": "2024-12-02",
+        "status": "Completed",
+        "cost_inr": 280000,
+        "capacity_tcm": 8.0,
+        "latitude": 19.8458,
+        "longitude": 75.3478
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.3478,
+          19.8458
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PL-003",
+        "watershed_id": "watershed_001",
+        "name": "Horticulture Afforestation #003",
+        "type": "plantation",
+        "installation_date": "2024-07-20",
+        "status": "Completed",
+        "cost_inr": 180000,
+        "capacity_tcm": 0.0,
+        "latitude": 19.839,
+        "longitude": 75.338
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.338,
+          19.839
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CB-004",
+        "watershed_id": "watershed_001",
+        "name": "Continuous Contour Bund #004",
+        "type": "contour_bund",
+        "installation_date": "2024-09-10",
+        "status": "Completed",
+        "cost_inr": 150000,
+        "capacity_tcm": 0.0,
+        "latitude": 19.848,
+        "longitude": 75.335
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.335,
+          19.848
+        ]
+      }
+    }
+  ]
+}
