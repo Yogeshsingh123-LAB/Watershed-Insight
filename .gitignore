@@ -44,3 +44,14 @@ reports/generated/
 .vscode/
 .idea/
 *.log
+
+# Caches & local env
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.env
+
+# Generated raster overlays (rebuild with: python scripts/generate_sample_data.py)
+data/sample/overlays/

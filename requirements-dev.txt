@@ -1,0 +1,6 @@
+-r requirements.txt
+
+# Testing & tooling
+pytest>=8.0
+httpx>=0.27                    # FastAPI TestClient
+pymupdf>=1.24                  # PDF assertions in tests

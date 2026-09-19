@@ -1,0 +1,25 @@
+# =============================================================================
+# Watershed Insight - Python dependencies  (SIH PS26015)
+# =============================================================================
+# Core API
+fastapi>=0.110,<1.0
+uvicorn[standard]>=0.27
+python-multipart>=0.0.9        # multipart photo uploads
+pydantic>=2.5
+
+# Geospatial / scientific stack (NumPy only - no GDAL required)
+numpy>=1.24
+scipy>=1.10                    # optional, used by advanced terrain filters
+Pillow>=10.0                   # image IO, EXIF aware thumbnails
+matplotlib>=3.7                # map overlays & report figures
+
+# Geo-coded image intelligence
+piexif>=1.1.3                  # read / write GPS EXIF on DRISHTI photographs
+
+# Evidence generation
+reportlab>=4.0                 # PDF evidence packs
+
+# --- optional: real GeoTIFF / vector ingestion adapters ----------------------
+# rasterio>=1.3
+# geopandas>=0.14
+# shapely>=2.0

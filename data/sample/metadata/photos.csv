@@ -1,5 +1,38 @@
-photo_id,intervention_id,latitude,longitude,timestamp,type,file_name
-IMG_20250710_001,INT-CD-001,19.8425,75.3412,2025-07-10T10:15:30,check_dam,IMG_20250710_001.jpg
-IMG_20250712_002,INT-FP-002,19.8458,75.3478,2025-07-12T11:40:12,farm_pond,IMG_20250712_002.jpg
-IMG_20250715_003,INT-PL-003,19.839,75.338,2025-07-15T14:05:00,plantation,IMG_20250715_003.jpg
-IMG_20250718_004,INT-CB-004,19.848,75.335,2025-07-18T09:25:45,contour_bund,IMG_20250718_004.jpg
+photo_id,watershed_id,intervention_id,file_name,phase,type,latitude,longitude,timestamp,expected_quality,notes
+IMG_20251008_001,watershed_001,INT-CD-001,IMG_20251008_001.jpg,after,check_dam,19.8389948,75.3486254,2025-10-08T08:26:00,ok,After implementation evidence.
+IMG_20240801_002,watershed_001,INT-CD-001,IMG_20240801_002.jpg,before,check_dam,19.8387576,75.3482561,2024-08-01T09:42:00,ok,Before implementation evidence.
+IMG_20260619_003,watershed_001,INT-PL-002,IMG_20260619_003.jpg,after,plantation,19.8428634,75.3514955,2026-06-19T14:15:00,ok,After implementation evidence.
+IMG_20240720_004,watershed_001,INT-PL-002,IMG_20240720_004.jpg,before,plantation,19.8425254,75.3516548,2024-07-20T12:04:00,ok,Before implementation evidence.
+IMG_20260330_005,watershed_001,INT-PT-003,IMG_20260330_005.jpg,after,percolation_tank,19.845955,75.3400503,2026-03-30T16:31:00,ok,After implementation evidence.
+IMG_20241230_006,watershed_001,INT-PT-003,IMG_20241230_006.jpg,before,percolation_tank,19.8464543,75.3402814,2024-12-30T10:23:00,ok,Before implementation evidence.
+IMG_20251003_007,watershed_001,INT-CB-004,IMG_20251003_007.jpg,after,contour_bund,19.8376806,75.3408871,2025-10-03T10:39:00,ok,After implementation evidence.
+IMG_20251208_008,watershed_001,INT-FP-005,IMG_20251208_008.jpg,after,farm_pond,19.8469093,75.3414376,2025-12-08T13:27:00,ok,After implementation evidence.
+IMG_20240426_009,watershed_001,INT-FP-005,IMG_20240426_009.jpg,before,farm_pond,19.8467034,75.341421,2024-04-26T09:30:00,ok,Before implementation evidence.
+IMG_20250830_010,watershed_001,INT-GP-006,IMG_20250830_010.jpg,after,gully_plug,19.8401303,75.3405511,2025-08-30T10:18:00,ok,After implementation evidence.
+IMG_20260625_011,watershed_001,INT-CD-007,IMG_20260625_011.jpg,after,check_dam,19.8470054,75.3469064,2026-06-25T09:00:00,ok,After implementation evidence.
+IMG_20241228_012,watershed_001,INT-CD-007,IMG_20241228_012.jpg,before,check_dam,19.8471353,75.3464973,2024-12-28T12:07:00,ok,Before implementation evidence.
+IMG_20251128_013,watershed_001,INT-PL-008,IMG_20251128_013.jpg,after,plantation,19.8483753,75.3356224,2025-11-28T16:34:00,ok,After implementation evidence.
+IMG_20240701_014,watershed_001,INT-PL-008,IMG_20240701_014.jpg,before,plantation,19.8480859,75.3356708,2024-07-01T14:35:00,ok,Before implementation evidence.
+IMG_20260505_015,watershed_001,INT-FP-009,IMG_20260505_015.jpg,after,farm_pond,19.8484481,75.3490529,2026-05-05T13:12:00,ok,After implementation evidence.
+IMG_20240423_016,watershed_001,INT-FP-009,IMG_20240423_016.jpg,before,farm_pond,19.8483863,75.3495789,2024-04-23T10:18:00,ok,Before implementation evidence.
+IMG_20260226_017,watershed_001,INT-CB-010,IMG_20260226_017.jpg,after,contour_bund,19.8398899,75.334703,2026-02-26T08:44:00,ok,After implementation evidence.
+IMG_20260203_018,watershed_001,INT-CD-001,IMG_20260203_018.jpg,after,check_dam,19.8392946,75.3485504,2026-02-03T08:08:00,BLURRED,Captured in low light - flagged automatically.
+IMG_20260307_019,watershed_001,INT-PL-002,IMG_20260307_019.jpg,after,plantation,19.8430599,75.3518598,2026-03-07T14:06:00,UNDEREXPOSED,Under-exposed evening capture.
+IMG_20250804_020,watershed_001,INT-PT-003,IMG_20250804_020.jpg,after,percolation_tank,,,2025-08-04T16:48:00,MISSING_GPS,Geo-tag missing - device GPS was disabled.
+IMG_20260710_021,watershed_001,INT-CB-004,IMG_20260710_021.jpg,after,contour_bund,19.8462921,75.335938,2026-07-10T12:24:00,OUTSIDE_BUFFER,Captured from the far bank - outside the 250 m buffer.
+IMG_20251214_022,watershed_001,INT-CD-001,IMG_20251214_022.jpg,after,check_dam,19.8388022,75.3483322,2025-12-14T09:50:00,ok,Second capture of the same structure on the same visit.
+IMG_20250719_001,watershed_002,INT-CD-001,IMG_20250719_001.jpg,after,check_dam,19.7938533,75.3736788,2025-07-19T14:52:00,ok,After implementation evidence.
+IMG_20240505_002,watershed_002,INT-CD-001,IMG_20240505_002.jpg,before,check_dam,19.793984,75.3741473,2024-05-05T08:15:00,ok,Before implementation evidence.
+IMG_20260202_003,watershed_002,INT-PL-002,IMG_20260202_003.jpg,after,plantation,19.7934047,75.3812038,2026-02-02T12:50:00,ok,After implementation evidence.
+IMG_20240713_004,watershed_002,INT-PL-002,IMG_20240713_004.jpg,before,plantation,19.7933596,75.3810567,2024-07-13T12:43:00,ok,Before implementation evidence.
+IMG_20260202_005,watershed_002,INT-PT-003,IMG_20260202_005.jpg,after,percolation_tank,19.7871644,75.3775782,2026-02-02T12:12:00,ok,After implementation evidence.
+IMG_20240527_006,watershed_002,INT-PT-003,IMG_20240527_006.jpg,before,percolation_tank,19.7868886,75.3777156,2024-05-27T12:34:00,ok,Before implementation evidence.
+IMG_20260515_007,watershed_002,INT-CB-004,IMG_20260515_007.jpg,after,contour_bund,19.7883311,75.3792492,2026-05-15T15:33:00,ok,After implementation evidence.
+IMG_20251018_008,watershed_002,INT-FP-005,IMG_20251018_008.jpg,after,farm_pond,19.7938344,75.3765267,2025-10-18T08:43:00,ok,After implementation evidence.
+IMG_20241012_009,watershed_002,INT-FP-005,IMG_20241012_009.jpg,before,farm_pond,19.7933719,75.3763041,2024-10-12T09:05:00,ok,Before implementation evidence.
+IMG_20260420_010,watershed_002,INT-GP-006,IMG_20260420_010.jpg,after,gully_plug,19.7907696,75.3667663,2026-04-20T09:09:00,ok,After implementation evidence.
+IMG_20250919_011,watershed_002,INT-CD-001,IMG_20250919_011.jpg,after,check_dam,19.7937825,75.3735691,2025-09-19T15:20:00,BLURRED,Captured in low light - flagged automatically.
+IMG_20260226_012,watershed_002,INT-PL-002,IMG_20260226_012.jpg,after,plantation,19.7936096,75.3813588,2026-02-26T16:54:00,UNDEREXPOSED,Under-exposed evening capture.
+IMG_20251124_013,watershed_002,INT-PT-003,IMG_20251124_013.jpg,after,percolation_tank,,,2025-11-24T12:54:00,MISSING_GPS,Geo-tag missing - device GPS was disabled.
+IMG_20260321_014,watershed_002,INT-CB-004,IMG_20260321_014.jpg,after,contour_bund,19.7861426,75.3877753,2026-03-21T09:57:00,OUTSIDE_BUFFER,Captured from the far bank - outside the 250 m buffer.
+IMG_20251206_015,watershed_002,INT-CD-001,IMG_20251206_015.jpg,after,check_dam,19.7938595,75.3736642,2025-12-06T10:34:00,ok,Second capture of the same structure on the same visit.

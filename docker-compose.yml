@@ -1,0 +1,26 @@
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: watershed-insight-api
+    ports:
+      - "8000:8000"
+    environment:
+      WS_CORS_ORIGINS: "*"
+      WS_BUFFER_M: "250"
+    volumes:
+      - ./reports/generated:/app/reports/generated
+      - ./data/sample/overlays:/app/data/sample/overlays
+    restart: unless-stopped
+
+  web:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: watershed-insight-web
+    ports:
+      - "3000:80"
+    depends_on:
+      - api
+    restart: unless-stopped

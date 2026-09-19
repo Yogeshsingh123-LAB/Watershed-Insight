@@ -1,126 +1,236 @@
-import React from 'react';
-import { X, FileText, MapPin, Calendar, CheckCircle2, ShieldAlert, Award } from 'lucide-react';
+import React, { useEffect, useState } from 'react'
+import {
+  Award, Calendar, CheckCircle2, Droplets, FileDown, Leaf, Loader2, MapPin,
+  Mountain, ShieldAlert, X,
+} from 'lucide-react'
+import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 
-export default function InterventionModal({ interventionData, onClose, onGenerateReport, isGeneratingPdf }) {
-  if (!interventionData) return null;
+import api from '../api'
 
-  const { intervention, analysis, matched_photos } = interventionData;
-  const photo = matched_photos && matched_photos.length > 0 ? matched_photos[0] : null;
+const TYPE_LABELS = {
+  check_dam: 'Check Dam',
+  farm_pond: 'Farm Pond',
+  percolation_tank: 'Percolation Tank',
+  plantation: 'Plantation',
+  contour_bund: 'Contour Bund',
+  gully_plug: 'Gully Plug',
+}
+
+export default function InterventionModal({ data, radius, onClose, onReport, busy }) {
+  const { intervention: item, analysis: a, matched_photos = [], timeseries = [], lulc } = data
+  const [interp, setInterp] = useState({})
+  const [catchment, setCatchment] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    matched_photos.slice(0, 2).forEach((p) => {
+      api.interpretation(p.photo_id)
+        .then((r) => { if (!cancelled) setInterp((prev) => ({ ...prev, [p.photo_id]: r })) })
+        .catch(() => {})
+    })
+    api.catchment(item.id)
+      .then((r) => { if (!cancelled) setCatchment(r.catchment) })
+      .catch(() => {})
+    return () => { cancelled = true }
+  }, [item.id, matched_photos])
+
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === 'Escape') onClose() }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
+  const scoreColor = a.impact_score >= 60 ? 'var(--pos)' : a.impact_score >= 42 ? 'var(--accent-amber)' : 'var(--neg)'
+  const photo = matched_photos[0]
 
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
             <Award size={20} color="#10b981" />
             <div>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: '700', color: 'var(--text-main)' }}>{intervention.name}</h3>
-              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
-                Intervention ID: {intervention.id} • Watershed: {intervention.watershed_id}
-              </span>
+              <div style={{ fontSize: '1rem', fontWeight: 700 }}>{item.name}</div>
+              <div className="tiny text-muted">
+                {TYPE_LABELS[item.type] || item.type} · {item.id} · {item.village} · installed {item.installation_date}
+              </div>
             </div>
           </div>
-          <button className="close-btn" onClick={onClose}>
-            <X size={22} />
-          </button>
+          <div className="flex">
+            <button className="btn-ghost" onClick={onReport} disabled={busy} style={{ padding: '7px 12px' }}>
+              {busy ? <Loader2 size={13} className="spinner" /> : <FileDown size={13} />}
+              Evidence PDF
+            </button>
+            <button className="close-btn" onClick={onClose}><X size={20} /></button>
+          </div>
         </div>
 
         <div className="modal-body">
-          {/* Left Column: Field Photo Card */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <div className="panel-section-title">DRISHTI Field Evidence Photo</div>
+          {/* ---------------------- left column ---------------------- */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
             {photo ? (
-              <div style={{ borderRadius: '10px', overflow: 'hidden', border: '1px solid var(--border-color)', background: '#0f172a' }}>
-                <img
-                  src={photo.url}
-                  alt={photo.photo_id}
-                  style={{ width: '100%', height: '220px', objectFit: 'cover' }}
-                />
-                <div style={{ padding: '12px', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                  <div style={{ color: 'var(--text-main)', fontWeight: '600', marginBottom: '4px' }}>
-                    Photo ID: {photo.photo_id}
+              <div className="photo-frame">
+                <img src={photo.url} alt={photo.photo_id} />
+                <div className="photo-meta">
+                  <div style={{ color: 'var(--text-main)', fontWeight: 700, marginBottom: 4 }}>
+                    {photo.photo_id}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '2px' }}>
-                    <MapPin size={12} color="#10b981" /> GPS: {photo.latitude}° N, {photo.longitude}° E
+                  <div className="row"><MapPin size={12} color="#10b981" />
+                    {photo.latitude?.toFixed(6)}, {photo.longitude?.toFixed(6)}
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                    <Calendar size={12} color="#3b82f6" /> Captured: {photo.timestamp}
+                  <div className="row"><Calendar size={12} color="#38bdf8" />
+                    {photo.timestamp ? String(photo.timestamp).replace('T', ' ') : 'no timestamp'}
                   </div>
+                  <div className="row">
+                    {photo.quality === 'verified'
+                      ? <span className="chip badge-positive"><CheckCircle2 size={10} /> verified · {photo.distance_to_intervention_m} m from structure</span>
+                      : <span className="chip badge-negative"><ShieldAlert size={10} /> {photo.validation?.join(', ') || 'questionable'}</span>}
+                  </div>
+                  {interp[photo.photo_id]?.available && (
+                    <div className="tiny text-muted" style={{ marginTop: 6 }}>
+                      Automated read: {interp[photo.photo_id].label_text.toLowerCase()} —
+                      vegetation {interp[photo.photo_id].composition_pct.vegetation}%,
+                      water {interp[photo.photo_id].composition_pct.water}%,
+                      soil {interp[photo.photo_id].composition_pct.soil_or_earthwork}%.
+                    </div>
+                  )}
                 </div>
               </div>
             ) : (
-              <div style={{ background: 'rgba(15,23,42,0.6)', padding: '30px', borderRadius: '10px', textAlign: 'center', color: 'var(--text-muted)' }}>
-                No DRISHTI field photo attached for this marker.
+              <div className="empty-state">
+                No geo-coded photograph is bound to this structure yet. Upload one from the
+                Photos tab to complete the evidence chain.
               </div>
             )}
 
-            <div style={{ background: 'rgba(15,23,42,0.6)', padding: '12px', borderRadius: '10px', border: '1px solid var(--border-color)', fontSize: '0.8rem' }}>
-              <div style={{ fontWeight: '600', color: 'var(--text-main)', marginBottom: '6px' }}>Structure Parameters</div>
-              <div>Sanctioned Cost: <strong>₹ {intervention.cost_inr?.toLocaleString('en-IN')}</strong></div>
-              <div>Storage Capacity: <strong>{intervention.capacity_tcm} TCM</strong></div>
-              <div>Execution Status: <span style={{ color: '#34d399', fontWeight: 'bold' }}>{intervention.status}</span></div>
+            <div className="metric-card" style={{ padding: '11px 12px' }}>
+              <div className="metric-title" style={{ marginBottom: 7 }}>Structure parameters</div>
+              <div className="data-row"><span className="k">Sanctioned cost</span><span className="v">₹ {Number(item.cost_inr || 0).toLocaleString('en-IN')}</span></div>
+              <div className="data-row"><span className="k">Storage capacity</span><span className="v">{item.capacity_tcm || 0} TCM</span></div>
+              <div className="data-row"><span className="k">Execution status</span><span className="v" style={{ color: 'var(--pos)' }}>{item.status}</span></div>
+              <div className="data-row"><span className="k">Beneficiaries</span><span className="v">{item.beneficiaries ?? '—'}</span></div>
+              <div className="data-row"><span className="k">GPS</span><span className="v mono">{item.latitude?.toFixed(5)}, {item.longitude?.toFixed(5)}</span></div>
+              {catchment && (
+                <div className="data-row">
+                  <span className="k">Upstream catchment</span>
+                  <span className="v">{catchment.area_ha} ha</span>
+                </div>
+              )}
             </div>
+
+            {matched_photos.length > 1 && (
+              <div>
+                <div className="metric-title" style={{ marginBottom: 6 }}>Additional evidence ({matched_photos.length - 1})</div>
+                <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                  {matched_photos.slice(1, 5).map((p) => (
+                    <img
+                      key={p.photo_id}
+                      src={p.thumbnail_url || p.url}
+                      alt={p.photo_id}
+                      title={`${p.photo_id} · ${p.timestamp || ''}`}
+                      style={{ width: 66, height: 50, objectFit: 'cover', borderRadius: 6, border: '1px solid var(--border-color)' }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
 
-          {/* Right Column: 250m Buffer Satellite Analysis */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div className="panel-section-title">Satellite Indicator Analysis (250m Buffer)</div>
-
-            {/* Indicators Table */}
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
-              <thead>
-                <tr style={{ background: 'rgba(15,23,42,0.8)', color: 'var(--text-muted)', textAlign: 'left' }}>
-                  <th style={{ padding: '8px', borderRadius: '6px 0 0 6px' }}>Indicator</th>
-                  <th style={{ padding: '8px' }}>T0 (Pre: Jun 24)</th>
-                  <th style={{ padding: '8px' }}>T1 (Post: Jul 25)</th>
-                  <th style={{ padding: '8px', borderRadius: '0 6px 6px 0' }}>Delta</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                  <td style={{ padding: '10px 8px', fontWeight: '600' }}>NDVI Vegetation Vigor</td>
-                  <td style={{ padding: '10px 8px' }}>{analysis?.ndvi_before}</td>
-                  <td style={{ padding: '10px 8px' }}>{analysis?.ndvi_after}</td>
-                  <td style={{ padding: '10px 8px', color: '#34d399', fontWeight: 'bold' }}>+{(analysis?.ndvi_change || 0).toFixed(3)}</td>
-                </tr>
-                <tr style={{ borderBottom: '1px solid var(--border-color)' }}>
-                  <td style={{ padding: '10px 8px', fontWeight: '600' }}>Surface Water Area (Ha)</td>
-                  <td style={{ padding: '10px 8px' }}>{analysis?.water_area_before_ha} Ha</td>
-                  <td style={{ padding: '10px 8px' }}>{analysis?.water_area_after_ha} Ha</td>
-                  <td style={{ padding: '10px 8px', color: '#60a5fa', fontWeight: 'bold' }}>+{(analysis?.water_area_change_ha || 0).toFixed(2)} Ha</td>
-                </tr>
-              </tbody>
-            </table>
-
-            {/* Analytical Synthesis Note */}
-            <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.3)', padding: '14px', borderRadius: '10px', fontSize: '0.85rem' }}>
-              <div style={{ color: '#34d399', fontWeight: '700', display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '6px' }}>
-                <CheckCircle2 size={16} /> Automated Evidence Synthesis
+          {/* ---------------------- right column --------------------- */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14, minWidth: 0 }}>
+            <div className="flex-between">
+              <div>
+                <div className="metric-title">{radius} m buffer impact assessment</div>
+                <div className="tiny text-dim">
+                  {a.epoch_a?.date} → {a.epoch_b?.date} · {a.buffer_area_ha?.toFixed(2)} ha assessed
+                </div>
               </div>
-              <p style={{ color: 'var(--text-main)', lineHeight: '1.4' }}>
-                {analysis?.interpretation}
-              </p>
+              <div style={{ textAlign: 'right' }}>
+                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.9rem', fontWeight: 700, color: scoreColor, lineHeight: 1 }}>
+                  {a.impact_score?.toFixed(0)}
+                </div>
+                <div className="tiny text-muted">{a.confidence} confidence</div>
+              </div>
             </div>
 
-            {/* Disclaimers */}
-            <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', background: 'rgba(15,23,42,0.4)', padding: '10px', borderRadius: '8px', border: '1px solid var(--border-color)' }}>
-              <strong style={{ color: '#fbbf24', display: 'flex', alignItems: 'center', gap: '4px', marginBottom: '4px' }}>
-                <ShieldAlert size={12} /> Scientific Limitation Note:
-              </strong>
-              Observed changes reflect spatial associations within 250m. Dates span pre-monsoon (T0) vs monsoon (T1) observations.
+            <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
+              <div className="kpi-tile">
+                <div className="label"><Leaf size={10} /> ΔNDVI (land)</div>
+                <div className="value" style={{ color: a.ndvi_change_land >= 0 ? 'var(--pos)' : 'var(--neg)', fontSize: '1.05rem' }}>
+                  {a.ndvi_change_land >= 0 ? '+' : ''}{a.ndvi_change_land?.toFixed(3)}
+                </div>
+                <div className="note">{a.ndvi_before_land?.toFixed(3)} → {a.ndvi_after_land?.toFixed(3)}</div>
+              </div>
+              <div className="kpi-tile">
+                <div className="label"><Droplets size={10} /> Δwater</div>
+                <div className="value" style={{ color: a.water_area_change_ha >= 0 ? 'var(--secondary)' : 'var(--neg)', fontSize: '1.05rem' }}>
+                  {a.water_area_change_ha >= 0 ? '+' : ''}{a.water_area_change_ha?.toFixed(2)}
+                </div>
+                <div className="note">{a.water_area_before_ha?.toFixed(2)} → {a.water_area_after_ha?.toFixed(2)} ha</div>
+              </div>
+              <div className="kpi-tile">
+                <div className="label"><Mountain size={10} /> Improved</div>
+                <div className="value" style={{ fontSize: '1.05rem' }}>{a.improved_pct}%</div>
+                <div className="note">{a.area_improved_ha?.toFixed(2)} ha greened up</div>
+              </div>
             </div>
 
-            <button
-              className="btn-primary"
-              onClick={() => onGenerateReport(intervention.id)}
-              disabled={isGeneratingPdf}
-            >
-              <FileText size={18} />
-              {isGeneratingPdf ? 'Generating PDF Evidence Pack...' : 'Download PDF Evidence Report'}
-            </button>
+            <div className="narrative-box">
+              <b>Automated synthesis.</b> {a.interpretation}
+            </div>
+
+            <div>
+              <div className="metric-title" style={{ marginBottom: 6 }}>Seasonal response inside the buffer</div>
+              <div style={{ height: 150 }}>
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={timeseries} margin={{ top: 5, right: 8, left: -22, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="rgba(148,163,184,.14)" />
+                    <XAxis dataKey="date" tick={{ fontSize: 9, fill: '#94a3b8' }} tickFormatter={(d) => String(d).slice(2, 7)} />
+                    <YAxis tick={{ fontSize: 9, fill: '#94a3b8' }} />
+                    <Tooltip contentStyle={{ background: '#0f172a', border: '1px solid rgba(148,163,184,.25)', borderRadius: 8, fontSize: 11 }} />
+                    <Line type="monotone" dataKey="ndvi" stroke="#10b981" strokeWidth={2} dot={{ r: 3 }} name="NDVI" />
+                    <Line type="monotone" dataKey="water_area_ha" stroke="#38bdf8" strokeWidth={1.8} dot={{ r: 2.5 }} name="Water (ha)" />
+                  </LineChart>
+                </ResponsiveContainer>
+              </div>
+            </div>
+
+            {lulc?.classes && (
+              <div>
+                <div className="metric-title" style={{ marginBottom: 6 }}>Land cover transition inside the buffer</div>
+                <table className="mini-table">
+                  <thead>
+                    <tr><th>Class</th><th>Baseline</th><th>Latest</th><th>Δ ha</th></tr>
+                  </thead>
+                  <tbody>
+                    {lulc.classes.filter((c) => Math.abs(c.delta_ha) > 0.01 || c.t1_ha > 0.5).map((c) => (
+                      <tr key={c.key}>
+                        <td>
+                          <span className="legend-swatch" style={{ background: c.color, display: 'inline-block', marginRight: 6 }} />
+                          {c.label.split(' / ')[0]}
+                        </td>
+                        <td>{c.t0_ha.toFixed(2)}</td>
+                        <td>{c.t1_ha.toFixed(2)}</td>
+                        <td style={{ color: c.delta_ha > 0 ? 'var(--pos)' : c.delta_ha < 0 ? 'var(--neg)' : 'var(--text-muted)', fontWeight: 700 }}>
+                          {c.delta_ha > 0 ? '+' : ''}{c.delta_ha.toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            )}
+
+            <div className="narrative-box warn" style={{ fontSize: '0.72rem' }}>
+              <b>Scientific limitation.</b> Indicators describe a spatial association within
+              {` ${radius} `}m of the structure, not proven causation. Seasonal rainfall,
+              cropping change and other schemes are confounders; pixels converted to open
+              water ({a.newly_inundated_ha?.toFixed(2) ?? 0} ha) are excluded from the
+              land-only vegetation comparison.
+            </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }

@@ -8,62 +8,71 @@
         "watershed_id": "watershed_001",
         "name": "Masonry Check Dam #001",
         "type": "check_dam",
-        "installation_date": "2024-11-15",
+        "installation_date": "2024-09-13",
         "status": "Completed",
-        "cost_inr": 450000,
-        "capacity_tcm": 12.5,
-        "latitude": 19.8425,
-        "longitude": 75.3412
+        "cost_inr": 601000,
+        "capacity_tcm": 9.1,
+        "latitude": 19.838958,
+        "longitude": 75.348546,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 43
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          75.3412,
-          19.8425
+          75.348546,
+          19.838958
         ]
       }
     },
     {
       "type": "Feature",
       "properties": {
-        "id": "INT-FP-002",
+        "id": "INT-PL-002",
         "watershed_id": "watershed_001",
-        "name": "Community Farm Pond #002",
-        "type": "farm_pond",
-        "installation_date": "2024-12-02",
-        "status": "Completed",
-        "cost_inr": 280000,
-        "capacity_tcm": 8.0,
-        "latitude": 19.8458,
-        "longitude": 75.3478
-      },
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          75.3478,
-          19.8458
-        ]
-      }
-    },
-    {
-      "type": "Feature",
-      "properties": {
-        "id": "INT-PL-003",
-        "watershed_id": "watershed_001",
-        "name": "Horticulture Afforestation #003",
+        "name": "Horti-Afforestation #002",
         "type": "plantation",
-        "installation_date": "2024-07-20",
+        "installation_date": "2024-08-28",
         "status": "Completed",
-        "cost_inr": 180000,
+        "cost_inr": 197000,
         "capacity_tcm": 0.0,
-        "latitude": 19.839,
-        "longitude": 75.338
+        "latitude": 19.842641,
+        "longitude": 75.351615,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 121
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          75.338,
-          19.839
+          75.351615,
+          19.842641
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PT-003",
+        "watershed_id": "watershed_001",
+        "name": "Percolation Tank #003",
+        "type": "percolation_tank",
+        "installation_date": "2025-02-15",
+        "status": "Completed",
+        "cost_inr": 960000,
+        "capacity_tcm": 14.82,
+        "latitude": 19.84616,
+        "longitude": 75.340111,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 27
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.340111,
+          19.84616
         ]
       }
     },
@@ -74,18 +83,321 @@
         "watershed_id": "watershed_001",
         "name": "Continuous Contour Bund #004",
         "type": "contour_bund",
-        "installation_date": "2024-09-10",
-        "status": "Completed",
-        "cost_inr": 150000,
+        "installation_date": "2025-01-24",
+        "status": "Ongoing",
+        "cost_inr": 124000,
         "capacity_tcm": 0.0,
-        "latitude": 19.848,
-        "longitude": 75.335
+        "latitude": 19.837557,
+        "longitude": 75.340961,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 129
       },
       "geometry": {
         "type": "Point",
         "coordinates": [
-          75.335,
-          19.848
+          75.340961,
+          19.837557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-FP-005",
+        "watershed_id": "watershed_001",
+        "name": "Farm Pond (lined) #005",
+        "type": "farm_pond",
+        "installation_date": "2024-06-08",
+        "status": "Completed",
+        "cost_inr": 310000,
+        "capacity_tcm": 1.23,
+        "latitude": 19.846662,
+        "longitude": 75.341391,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 54
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.341391,
+          19.846662
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-GP-006",
+        "watershed_id": "watershed_001",
+        "name": "Gully Plug / Nala Bund #006",
+        "type": "gully_plug",
+        "installation_date": "2025-02-13",
+        "status": "Completed",
+        "cost_inr": 84000,
+        "capacity_tcm": 0.6,
+        "latitude": 19.839809,
+        "longitude": 75.340429,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 32
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.340429,
+          19.839809
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CD-007",
+        "watershed_id": "watershed_001",
+        "name": "Masonry Check Dam #007",
+        "type": "check_dam",
+        "installation_date": "2025-02-25",
+        "status": "Ongoing",
+        "cost_inr": 604000,
+        "capacity_tcm": 7.46,
+        "latitude": 19.847013,
+        "longitude": 75.346719,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 132
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.346719,
+          19.847013
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PL-008",
+        "watershed_id": "watershed_001",
+        "name": "Horti-Afforestation #008",
+        "type": "plantation",
+        "installation_date": "2024-08-23",
+        "status": "Completed",
+        "cost_inr": 241000,
+        "capacity_tcm": 0.0,
+        "latitude": 19.848445,
+        "longitude": 75.335672,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 103
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.335672,
+          19.848445
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-FP-009",
+        "watershed_id": "watershed_001",
+        "name": "Farm Pond (lined) #009",
+        "type": "farm_pond",
+        "installation_date": "2024-07-10",
+        "status": "Completed",
+        "cost_inr": 199000,
+        "capacity_tcm": 2.31,
+        "latitude": 19.848718,
+        "longitude": 75.349235,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 108
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.349235,
+          19.848718
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CB-010",
+        "watershed_id": "watershed_001",
+        "name": "Continuous Contour Bund #010",
+        "type": "contour_bund",
+        "installation_date": "2024-12-08",
+        "status": "Ongoing",
+        "cost_inr": 132000,
+        "capacity_tcm": 0.0,
+        "latitude": 19.839725,
+        "longitude": 75.334954,
+        "village": "Nidhona Bk.",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 62
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.334954,
+          19.839725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CD-001",
+        "watershed_id": "watershed_002",
+        "name": "Masonry Check Dam #001",
+        "type": "check_dam",
+        "installation_date": "2024-06-01",
+        "status": "Completed",
+        "cost_inr": 312000,
+        "capacity_tcm": 6.98,
+        "latitude": 19.793935,
+        "longitude": 75.37386,
+        "village": "Pachod",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 65
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.37386,
+          19.793935
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PL-002",
+        "watershed_id": "watershed_002",
+        "name": "Horti-Afforestation #002",
+        "type": "plantation",
+        "installation_date": "2024-09-14",
+        "status": "Completed",
+        "cost_inr": 211000,
+        "capacity_tcm": 0.0,
+        "latitude": 19.79346,
+        "longitude": 75.381312,
+        "village": "Pachod",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 72
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.381312,
+          19.79346
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PT-003",
+        "watershed_id": "watershed_002",
+        "name": "Percolation Tank #003",
+        "type": "percolation_tank",
+        "installation_date": "2024-07-11",
+        "status": "Completed",
+        "cost_inr": 647000,
+        "capacity_tcm": 12.68,
+        "latitude": 19.786929,
+        "longitude": 75.377713,
+        "village": "Pachod",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 133
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.377713,
+          19.786929
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CB-004",
+        "watershed_id": "watershed_002",
+        "name": "Continuous Contour Bund #004",
+        "type": "contour_bund",
+        "installation_date": "2024-11-30",
+        "status": "Ongoing",
+        "cost_inr": 120000,
+        "capacity_tcm": 0.0,
+        "latitude": 19.788316,
+        "longitude": 75.379009,
+        "village": "Pachod",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 139
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.379009,
+          19.788316
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-FP-005",
+        "watershed_id": "watershed_002",
+        "name": "Farm Pond (lined) #005",
+        "type": "farm_pond",
+        "installation_date": "2024-12-20",
+        "status": "Completed",
+        "cost_inr": 268000,
+        "capacity_tcm": 0.99,
+        "latitude": 19.793511,
+        "longitude": 75.376541,
+        "village": "Pachod",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 67
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.376541,
+          19.793511
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-GP-006",
+        "watershed_id": "watershed_002",
+        "name": "Gully Plug / Nala Bund #006",
+        "type": "gully_plug",
+        "installation_date": "2024-09-19",
+        "status": "Completed",
+        "cost_inr": 119000,
+        "capacity_tcm": 0.71,
+        "latitude": 19.790931,
+        "longitude": 75.366626,
+        "village": "Pachod",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 27
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.366626,
+          19.790931
         ]
       }
     }

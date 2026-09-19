@@ -1,0 +1,191 @@
+{
+  "generated_at": "2026-09-19T20:01:02",
+  "problem_statement": "SIH PS26015",
+  "note": "Synthetic surrogate of the SRISHTI (satellite) and DRISHTI (geo-tagged photo) stacks.",
+  "hierarchy": [
+    {
+      "code": "MH",
+      "name": "Maharashtra",
+      "districts": [
+        {
+          "code": "MH-CSN",
+          "name": "Chhatrapati Sambhajinagar",
+          "blocks": [
+            {
+              "code": "MH-CSN-PAI",
+              "name": "Paithan",
+              "watersheds": [
+                {
+                  "id": "watershed_001",
+                  "code": "MWS-MH-2025-014",
+                  "name": "Aurangabad North Micro-Watershed",
+                  "area_ha": 457.12,
+                  "interventions": 10
+                },
+                {
+                  "id": "watershed_002",
+                  "code": "MWS-MH-2025-027",
+                  "name": "Paithan South Micro-Watershed",
+                  "area_ha": 356.67,
+                  "interventions": 6
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "watersheds": {
+    "watershed_001": {
+      "id": "watershed_001",
+      "code": "MWS-MH-2025-014",
+      "name": "Aurangabad North Micro-Watershed",
+      "state": "Maharashtra",
+      "state_code": "MH",
+      "district": "Chhatrapati Sambhajinagar",
+      "district_code": "MH-CSN",
+      "block": "Paithan",
+      "block_code": "MH-CSN-PAI",
+      "project": "IWMP Batch-XII / PMKSY-WDC 2.0",
+      "village": "Nidhona Bk.",
+      "rainfall_mm": 712,
+      "soil": "Medium black (Vertic Inceptisol)",
+      "aquifer": "Deccan basalt - weathered / fractured",
+      "population": 4180,
+      "households": 806,
+      "area_ha": 457.12,
+      "centre": [
+        19.8445,
+        75.343
+      ],
+      "bounds": [
+        75.328,
+        19.8345,
+        75.358,
+        19.8545
+      ],
+      "interventions": 10,
+      "photos": 22,
+      "epochs": [
+        {
+          "key": "before",
+          "date": "2024-05-28",
+          "label": "Pre-monsoon 2024 (baseline)",
+          "role": "T0",
+          "season": "pre_monsoon"
+        },
+        {
+          "key": "2024-11-05",
+          "date": "2024-11-05",
+          "label": "Post-monsoon 2024",
+          "role": "intermediate",
+          "season": "post_monsoon"
+        },
+        {
+          "key": "2025-05-22",
+          "date": "2025-05-22",
+          "label": "Pre-monsoon 2025",
+          "role": "intermediate",
+          "season": "pre_monsoon"
+        },
+        {
+          "key": "2025-10-18",
+          "date": "2025-10-18",
+          "label": "Post-monsoon 2025",
+          "role": "intermediate",
+          "season": "post_monsoon"
+        },
+        {
+          "key": "after",
+          "date": "2026-05-26",
+          "label": "Pre-monsoon 2026 (latest)",
+          "role": "T1",
+          "season": "pre_monsoon"
+        },
+        {
+          "key": "2026-09-02",
+          "date": "2026-09-02",
+          "label": "Monsoon 2026 (current)",
+          "role": "intermediate",
+          "season": "monsoon"
+        }
+      ]
+    },
+    "watershed_002": {
+      "id": "watershed_002",
+      "code": "MWS-MH-2025-027",
+      "name": "Paithan South Micro-Watershed",
+      "state": "Maharashtra",
+      "state_code": "MH",
+      "district": "Chhatrapati Sambhajinagar",
+      "district_code": "MH-CSN",
+      "block": "Paithan",
+      "block_code": "MH-CSN-PAI",
+      "project": "IWMP Batch-XII / PMKSY-WDC 2.0",
+      "village": "Pachod",
+      "rainfall_mm": 668,
+      "soil": "Shallow murrum (Entisol)",
+      "aquifer": "Deccan basalt - vesicular",
+      "population": 2960,
+      "households": 571,
+      "area_ha": 356.67,
+      "centre": [
+        19.792,
+        75.372
+      ],
+      "bounds": [
+        75.359,
+        19.783,
+        75.385,
+        19.801000000000002
+      ],
+      "interventions": 6,
+      "photos": 15,
+      "epochs": [
+        {
+          "key": "before",
+          "date": "2024-05-28",
+          "label": "Pre-monsoon 2024 (baseline)",
+          "role": "T0",
+          "season": "pre_monsoon"
+        },
+        {
+          "key": "2024-11-05",
+          "date": "2024-11-05",
+          "label": "Post-monsoon 2024",
+          "role": "intermediate",
+          "season": "post_monsoon"
+        },
+        {
+          "key": "2025-05-22",
+          "date": "2025-05-22",
+          "label": "Pre-monsoon 2025",
+          "role": "intermediate",
+          "season": "pre_monsoon"
+        },
+        {
+          "key": "2025-10-18",
+          "date": "2025-10-18",
+          "label": "Post-monsoon 2025",
+          "role": "intermediate",
+          "season": "post_monsoon"
+        },
+        {
+          "key": "after",
+          "date": "2026-05-26",
+          "label": "Pre-monsoon 2026 (latest)",
+          "role": "T1",
+          "season": "pre_monsoon"
+        },
+        {
+          "key": "2026-09-02",
+          "date": "2026-09-02",
+          "label": "Monsoon 2026 (current)",
+          "role": "intermediate",
+          "season": "monsoon"
+        }
+      ]
+    }
+  }
+}

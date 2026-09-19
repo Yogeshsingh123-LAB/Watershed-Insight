@@ -1,0 +1,64 @@
+{
+  "watershed_id": "watershed_002",
+  "bounds": [
+    75.359,
+    19.783,
+    75.385,
+    19.801000000000002
+  ],
+  "grid": {
+    "height": 250,
+    "width": 250
+  },
+  "sensor": "Sentinel-2 MSI L2A (synthetic surrogate)",
+  "epochs": [
+    {
+      "key": "before",
+      "date": "2024-05-28",
+      "label": "Pre-monsoon 2024 (baseline)",
+      "role": "T0",
+      "season": "pre_monsoon",
+      "cloud": 3.1
+    },
+    {
+      "key": "2024-11-05",
+      "date": "2024-11-05",
+      "label": "Post-monsoon 2024",
+      "role": "intermediate",
+      "season": "post_monsoon",
+      "cloud": 8.4
+    },
+    {
+      "key": "2025-05-22",
+      "date": "2025-05-22",
+      "label": "Pre-monsoon 2025",
+      "role": "intermediate",
+      "season": "pre_monsoon",
+      "cloud": 1.7
+    },
+    {
+      "key": "2025-10-18",
+      "date": "2025-10-18",
+      "label": "Post-monsoon 2025",
+      "role": "intermediate",
+      "season": "post_monsoon",
+      "cloud": 12.6
+    },
+    {
+      "key": "after",
+      "date": "2026-05-26",
+      "label": "Pre-monsoon 2026 (latest)",
+      "role": "T1",
+      "season": "pre_monsoon",
+      "cloud": 2.2
+    },
+    {
+      "key": "2026-09-02",
+      "date": "2026-09-02",
+      "label": "Monsoon 2026 (current)",
+      "role": "intermediate",
+      "season": "monsoon",
+      "cloud": 24.5
+    }
+  ]
+}

@@ -1,192 +1,397 @@
-# 🛰️ Watershed Insight (PS26015)
-
 <div align="center">
 
-![SIH 2026](https://img.shields.io/badge/SIH-2026-orange?style=for-the-badge)
-![Ministry of Rural Development](https://img.shields.io/badge/Ministry-DoLR-10b981?style=for-the-badge)
-![Python](https://img.shields.io/badge/Python-3.12-3776AB?style=for-the-badge&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-1.0.0-009688?style=for-the-badge&logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-badge&logo=react&logoColor=black)
-![Leaflet](https://img.shields.io/badge/Leaflet-Web--GIS-199900?style=for-the-badge&logo=leaflet&logoColor=white)
-![ReportLab](https://img.shields.io/badge/ReportLab-PDF_Generator-FF6F00?style=for-the-badge)
+# 🛰️ Watershed Insight
 
-**An AI-Assisted Geospatial Decision-Support Platform for Micro-Watershed Development & Impact Assessment**
+**An AI-Assisted Geospatial Decision-Support Platform for Micro-Watershed Monitoring,
+Geo-Coded Image Interpretation and Impact Assessment**
 
-*SRISHTI-DRISHTI Aligned Platform for Department of Land Resources (DoLR)*
+[![SIH 2026](https://img.shields.io/badge/SIH-2026-orange?style=for-the-square)](https://www.sih.gov.in/)
+[![PS ID](https://img.shields.io/badge/PS-26015-blue?style=for-the-square)](#problem-statement)
+[![Ministry](https://img.shields.io/badge/Ministry_of_Rural_Development-DoLR-10b981?style=for-the-square)](#problem-statement)
+[![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-square&logo=python&logoColor=white)](#quickstart)
+[![FastAPI](https://img.shields.io/badge/FastAPI-1.0-009688?style=for-the-square&logo=fastapi&logoColor=white)](#backend-rest-api)
+[![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-square&logo=react&logoColor=black)](#frontend-modules)
+[![Tests](https://img.shields.io/badge/tests-49_passing-16a34a?style=for-the-square)](#testing)
+
+*Smart India Hackathon 2026 · Problem Statement **PS26015** ·
+Department of Land Resources (DoLR), Ministry of Rural Development*
 
 ---
 
 </div>
 
-## 📌 Executive Summary & Problem Framing
+## 📌 The Problem
 
-Existing watershed management systems collect and visualize large volumes of heterogeneous spatial data (SRISHTI Web-GIS layers and DRISHTI field-collected geo-tagged photographs). However, converting these raw observations into **integrated, interpretable, and decision-ready evidence** remains a major challenge.
+> **PS26015 — "Application of Geospatial Techniques for visualization and analysis to
+> interpret Geo-Coded Images to enhance watershed Development Outcomes."**
 
-**Watershed Insight** solves this gap:
-$$\text{DATA} \longrightarrow \text{INFORMATION} \longrightarrow \text{ANALYSIS} \longrightarrow \text{INTERPRETATION} \longrightarrow \text{DECISION SUPPORT}$$
+India invests thousands of crores every year in watershed development (IWMP / PMKSY-WDC).
+Two rich data streams already exist:
 
-Instead of replacing the existing data collection ecosystem, Watershed Insight acts as an **analytical layer on top of SRISHTI-DRISHTI**, automatically cross-referencing satellite spectral indicators ($NDVI, NDWI$) with 250m intervention buffer zones and field photographs to generate automated **PDF Evidence Reports**.
-
----
-
-## 🔗 The Golden Analytical Chain
-
-```
-┌─────────────────┐       ┌────────────────────────┐       ┌─────────────────────────┐
-│ Satellite Data  │ ────► │ Geo-Processing Engine  │ ────► │  Intervention Analysis  │
-│ (Sentinel T0/T1)│       │ (NDVI & NDWI Deltas)   │       │ (250m Circular Buffer)  │
-└─────────────────┘       └────────────────────────┘       └────────────┬────────────┘
-                                                                        │
-┌─────────────────┐       ┌────────────────────────┐                    │
-│ PDF Evidence    │ ◄──── │   Web-GIS Dashboard    │ ◄──────────────────┘
-│ Report Export   │       │ (Leaflet & Recharts)   │
-└─────────────────┘       └────────────────────────┘
-```
-
----
-
-## 🧩 Five Core Modules
-
-| Module # | Name | Core Functionality & Purpose |
+| Stream | What it holds | Status today |
 | :--- | :--- | :--- |
-| **Module 1** | **Watershed Explorer** | Interactive Web-GIS workspace supporting location selection (`State` $\rightarrow$ `District` $\rightarrow$ `Project` $\rightarrow$ `Micro-Watershed`). Toggles micro-watershed boundaries, intervention pins, DRISHTI photo markers, and satellite rasters. |
-| **Module 2** | **Geo-Coded Photo Intelligence** | GPS-aware photo inspector parsing EXIF metadata (`GPSLatitude`, `GPSLongitude`, `DateTimeOriginal`). Automatically calculates spatial proximity and binds field photographs to nearest IWMP structures. |
-| **Module 3** | **Satellite Change Detection** | Temporal raster analytics engine computing $NDVI = \frac{NIR - Red}{NIR + Red}$, $NDWI = \frac{Green - NIR}{Green + NIR}$, and delta change maps ($\Delta = T_1 - T_0$). |
-| **Module 4** | **Intervention Impact Analysis** | Spatial buffer extraction algorithm analyzing satellite metrics specifically within a 250m circular radius around Check Dams, Farm Ponds, Plantations, and Contour Bunds. |
-| **Module 5** | **Evidence Generator** | Automated ReportLab PDF generator creating official multi-page evidence reports with photos, GPS stamps, satellite indicator delta tables, analytical synthesis notes, and scientific limitations. |
+| **SRISHTI** (Web-GIS) | Satellite layers, watershed boundaries, intervention inventories | Mapped, but rarely *analysed* |
+| **DRISHTI** (field app) | Lakhs of geo-tagged implementation photographs | Collected, but used only as *documentation* |
+
+The result: **data without decisions.** Photographs are filed, not interpreted; satellite
+imagery is displayed, not differenced against the structures it is supposed to evaluate.
+
+## 💡 What Watershed Insight Does
+
+Watershed Insight is the **analytical layer that sits on top of SRISHTI and DRISHTI** —
+it does not replace them. It closes the loop:
+
+```
+   DATA  ─────►  INFORMATION  ─────►  ANALYSIS  ─────►  INTERPRETATION  ─────►  DECISION SUPPORT
+ SRISHTI         Spectral indices      250 m buffer        Automated             Signed PDF
+ DRISHTI         EXIF + GPS binding    zonal statistics    synthesis             evidence packs
+   DEM           LULC / drainage       change detection    impact scoring        prioritisation
+```
+
+For **every** IWMP structure the platform answers one auditable question:
+
+> *"Did this ₹ 3.2 lakh check dam actually change the land and water around it — and can I
+> prove it with satellite pixels and geo-tagged photographs together?"*
 
 ---
 
-## 🏛 System Architecture
+## 🧩 The Five Modules
 
-```mermaid
-flowchart TD
-    subgraph Data Layer
-        SAT[Sentinel-2 / Landsat Rasters T0 & T1]
-        PHOTO[Geo-Coded Photos GPS + Date + Type]
-        GIS[Watershed Boundaries & DEM / Drainage]
-    end
+| # | Module | What it delivers | Key techniques |
+| :--- | :--- | :--- | :--- |
+| **1** | **Watershed Explorer** | State → District → Block → Micro-watershed cascade, 13 toggleable Web-GIS layers, 6 acquisition epochs | Leaflet, RGBA raster overlays, GeoJSON |
+| **2** | **Geo-Coded Photo Intelligence** | EXIF GPS/time extraction, binding to the nearest structure, evidence validation, *content* interpretation of each photograph | `piexif`, haversine binding, ExG / VARI colour indices, Laplacian sharpness |
+| **3** | **Satellite Change Detection** | NDVI / NDWI / NDBI / SAVI, season-matched Δ maps, change-class accounting, hotspot ranking | Multi-epoch band math, area-weighted zonal statistics |
+| **4** | **Intervention Impact Analysis** | 250 m buffer assessment, inundation-aware vegetation response, LULC transition, DEM catchment delineation, 0-100 composite impact score, ₹/ha cost-effectiveness | D8 flow routing, Strahler ordering, rule-based LULC, composite scoring |
+| **5** | **Evidence Generator** | Two ReportLab PDF products: a per-structure **Evidence Pack** and a full **Micro-Watershed Assessment** | ReportLab Platypus + embedded matplotlib figures |
 
-    subgraph Backend - FastAPI Engine
-        INGEST[FastAPI Ingestion Engine]
-        PREPROC[Validation, Reprojection & Clipping]
-        EXIF[EXIF Proximity & Spatial Join Extractor]
-    end
+---
 
-    subgraph Analytical Engine
-        NDVI_ENG[NDVI Vegetation Engine]
-        NDWI_ENG[NDWI Water Extent Engine]
-        BUFFER[250m Circular Buffer Analytics]
-    end
+## 🏛 Architecture
 
-    subgraph Web-GIS Dashboard
-        REACT[React + Vite Frontend]
-        MAP[Leaflet Web-GIS Map]
-        CHARTS[Recharts Analytical Panels]
-        MODAL[Field Evidence & Buffer Inspector]
-    end
+```
+ ┌───────────────────────────────────────────────────────────────────────────────┐
+ │                          React 18 + Vite dashboard                             │
+ │  Explorer │ Change │ Photos │ Thematic │ Reports      ·  Leaflet · Recharts    │
+ └───────────────────────────────┬───────────────────────────────────────────────┘
+                                 │  /api/v1  (Vite proxy or nginx)
+ ┌───────────────────────────────▼───────────────────────────────────────────────┐
+ │                            FastAPI application                                 │
+ │  watersheds · interventions · photos · analytics · reports   (5 routers)       │
+ └───────────┬──────────────────────────────────────────┬────────────────────────┘
+             │                                          │
+ ┌───────────▼──────────────┐              ┌────────────▼────────────────────────┐
+ │  geospatial/ engine      │              │  reports/ evidence generator        │
+ │  raster_processor        │              │  generate_intervention_pdf()        │
+ │  lulc · hydrology        │─────────────►│  generate_watershed_pdf()           │
+ │  exif · photo_interpreter│              │  (ReportLab + matplotlib figures)   │
+ │  mapping · geo_utils     │              └─────────────────────────────────────┘
+ └───────────┬──────────────┘
+             │
+ ┌───────────▼───────────────────────────────────────────────────────────────────┐
+ │  data/sample — boundaries · DEM · 6-epoch band stacks · interventions · photos │
+ └───────────────────────────────────────────────────────────────────────────────┘
+```
 
-    subgraph Evidence Generator
-        PDF_GEN[ReportLab PDF Pack Generator]
-    end
+Full component-level design: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · API reference: **[docs/API.md](docs/API.md)** · build log: **[walkthrough.md](walkthrough.md)**.
 
-    SAT & PHOTO & GIS --> INGEST
-    INGEST --> PREPROC & EXIF
-    PREPROC --> NDVI_ENG & NDWI_ENG --> BUFFER
-    BUFFER & EXIF --> REACT
-    REACT --> MAP & CHARTS & MODAL
-    MODAL --> PDF_GEN
+### Why NumPy only — no GDAL / rasterio / geopandas
+
+The engine implements its own geodetic maths, D8 hydrology, rasterisation and
+point-in-polygon tests. That keeps the platform deployable on a ₹ 500/month VM,
+removes a notorious installation barrier for district teams, and keeps every formula
+visible and auditable in ~2,000 lines of readable Python.
+
+---
+
+## 🚀 Quickstart
+
+```bash
+git clone https://github.com/Yogeshsingh123-LAB/Watershed-Insight.git
+cd Watershed-Insight
+
+# 1 — dependencies
+python -m pip install -r requirements.txt
+cd frontend && npm install && cd ..
+
+# 2 — build the sample dataset (~10 s)
+python scripts/generate_sample_data.py
+
+# 3 — backend  (http://localhost:8000/docs)
+python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
+
+# 4 — frontend  (http://localhost:3000)  — in a second terminal
+cd frontend && npm run dev
+```
+
+> **Nothing to configure.** The bundled dataset is a physically consistent synthetic
+> surrogate of the SRISHTI/DRISHTI stacks: a fractal DEM with a carved drainage network,
+> six Sentinel-like acquisitions (2024 → 2026), 16 IWMP structures and 37 geo-tagged
+> field photographs with **real EXIF GPS**.
+
+### One-command verification
+
+```bash
+python scripts/verify_pipeline.py --pdf --api http://127.0.0.1:8000
+# → 24 passed, 0 failed
+```
+
+### Docker
+
+```bash
+docker compose up --build     # API on :8000 · dashboard on :3000
 ```
 
 ---
 
-## 📡 Backend REST API Specifications
+## 🔬 The Analytical Chain in Detail
 
-| Method | Endpoint | Description |
+### 1 · Spectral indices (Module 3)
+
+| Index | Formula | Reads |
 | :--- | :--- | :--- |
-| `GET` | `/api/v1/watersheds` | Returns micro-watershed GeoJSON boundary & summary statistics |
-| `GET` | `/api/v1/interventions` | Returns list of IWMP interventions with coordinates & types |
-| `GET` | `/api/v1/photos` | Returns DRISHTI field photos with EXIF metadata & static URLs |
-| `GET` | `/api/v1/interventions/{id}/analysis` | Runs 250m buffer analysis ($T_0$ vs $T_1$ $NDVI, NDWI$, water area delta, synthesis) |
-| `POST` | `/api/v1/reports/pdf` | Generates and downloads ReportLab PDF Evidence Report for intervention |
+| NDVI | (NIR − Red) / (NIR + Red) | Vegetation vigour / canopy density |
+| NDWI | (Green − NIR) / (Green + NIR) | Surface water extent |
+| NDBI | (SWIR − NIR) / (SWIR + NIR) | Built-up & bare/hardpan |
+| SAVI | 1.5 · (NIR − Red) / (NIR + Red + 0.5) | Vegetation on sparse, bright soils |
+
+Thresholds are constants, not magic: **NDWI > 0.10** → surface water,
+**NDVI > 0.30** → vegetated, **NDVI > 0.50** → dense canopy. They are printed in every
+generated PDF.
+
+### 2 · Impact analysis around a structure (Module 4)
+
+A **250 m circular buffer** (adjustable 50–800 m) is evaluated in *ground metres*, not
+degrees, so it stays a true circle at any latitude. Pixel areas are computed per raster
+row from the local latitude, so **every hectare figure is a real hectare**.
+
+The subtle part — and the thing most naïve dashboards get wrong — is **inundation**:
+
+```
+A check dam floods 1.2 ha that used to be scrubland.
+  → buffer-mean NDVI FALLS, even though the structure is working perfectly.
+```
+
+So the platform reports **two** numbers: raw buffer NDVI **and** *land-only* NDVI, which
+excludes pixels that were water before **or** after the intervention. The composite
+0-100 score is built from three auditable components:
+
+```
+score = vegetation response (0-40)   ← land-only ΔNDVI
+      + water response      (0-40)   ← surface-water gain as % of buffer
+      + spatial extent      (0-20)   ← share of the buffer that improved
+```
+
+Each structure is then labelled **High / Moderate / Low-Moderate / Inconclusive** and
+given a plain-language recommendation ("replicate", "desilt and re-observe",
+"field inspection required").
+
+### 3 · Geo-coded photo interpretation (Module 2)
+
+Every DRISHTI photograph is reduced to *physical* observations with deterministic
+colour-index models — no external vision API, fully reproducible offline:
+
+* **ExG** (2G − R − B) → vegetation fraction · **VARI** → illumination-robust greenness
+* **Blue-dominance below the horizon** → impounded water (sky above the horizon is
+  excluded, so a blue sky is never mistaken for a pond)
+* **ExR** (1.4R − G) → bare soil / earthwork · grey low-saturation → masonry structure
+* **Variance of the Laplacian** → sharpness, i.e. *is this usable as evidence?*
+
+The photograph is then **cross-checked against the satellite buffer analysis**. Agreement
+is corroboration; **disagreement is the insight** ("photo shows water, satellite shows
+none → check the capture date").
+
+Evidence validation flags: `MISSING_GPS`, `OUTSIDE_BUFFER`, `PRE_IMPLEMENTATION_BASELINE`,
+`TIMESTAMP_PREDATES_STRUCTURE`, `DUPLICATE_LOCATION_WITH_…`, `BLURRED`, `UNDEREXPOSED`.
+
+### 4 · Terrain & drainage (from the DEM)
+
+Priority-flood sink filling → D8 flow direction → flow accumulation → stream extraction →
+**Strahler ordering** → pour-point snapping and **catchment delineation**, plus slope,
+aspect, TWI and the IWMP morphometric parameters (drainage density, stream frequency,
+form factor, elongation ratio, relief ratio).
+
+### 5 · LULC and the transition matrix
+
+Six Level-2 classes (water, dense vegetation, cropland, scrub/degraded, bare/fallow,
+built-up) classified by a documented decision tree, then cross-tabulated T0 → T1 so the
+platform can say **"201.99 ha of scrub became cropland"** rather than just "NDVI went up".
 
 ---
 
-## 🗄 Project File Structure
+## 📊 What the bundled dataset shows
+
+| Indicator | Baseline (2024-05-28) | Latest (2026-05-26) | Change |
+| :--- | :--- | :--- | :--- |
+| Mean NDVI | 0.250 | 0.296 | **+0.046 (+18.6 %)** |
+| Surface water | 0.00 ha | 12.77 ha | **+12.77 ha** |
+| Vegetated area (NDVI > 0.30) | 68.5 ha | 272.1 ha | **+203.6 ha** |
+| LULC area changed class | — | — | 246.6 ha (53.9 %) |
+
+Both epochs are **pre-monsoon**, so the comparison is season-neutral: the gain is not
+"it rained", it is "water is being held later into the dry season".
+
+Structure ranking (250 m buffer) for `MWS-MH-2025-014`:
+
+| Rank | Structure | Score | ΔNDVI (land) | ΔWater | Verdict |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | Percolation Tank #003 | **70** | +0.072 | +9.52 ha | High — replicate the design |
+| 2 | Farm Pond (lined) #005 | **68** | +0.068 | +9.14 ha | High — replicate the design |
+| 3 | Horti-Afforestation #008 | 55 | +0.205 | 0.00 ha | Moderate — maintain & re-observe |
+| … | … | … | … | … | … |
+| 10 | Farm Pond (lined) #009 | 33 | +0.078 | +0.64 ha | Low-Moderate — field inspection |
+
+Photo-evidence audit: **37 photographs · 91.9 % machine-verified · 2 missing GPS ·
+1 outside the buffer · 11 pre-works baselines.**
+
+---
+
+## 📡 Backend REST API
+
+Interactive docs at **`/docs`** (Swagger) and **`/redoc`**. Full reference:
+**[docs/API.md](docs/API.md)**.
+
+| Method | Endpoint | Purpose |
+| :--- | :--- | :--- |
+| `GET` | `/api/v1/health` | Liveness + dataset status |
+| `GET` | `/api/v1/watersheds/catalog` | State → District → Block → Micro-watershed tree |
+| `GET` | `/api/v1/watersheds` | List with headline indicators |
+| `GET` | `/api/v1/watersheds/{id}` | Boundary + metadata + stats + epochs |
+| `GET` | `/api/v1/watersheds/{id}/summary` | **Whole dashboard in one round-trip** |
+| `GET` | `/api/v1/watersheds/{id}/timeseries` | Multi-epoch NDVI / NDWI / water profile |
+| `GET` | `/api/v1/watersheds/{id}/lulc` | LULC areas + T0→T1 transition matrix |
+| `GET` | `/api/v1/watersheds/{id}/drainage` | Stream network (GeoJSON) + morphometry (+ catchment) |
+| `GET` | `/api/v1/watersheds/{id}/terrain` | Slope classes, TWI, elevation distribution |
+| `GET` | `/api/v1/watersheds/{id}/overlays[/{name}]` | Rendered transparent map overlays |
+| `GET` | `/api/v1/interventions` | Structures as GeoJSON (filter by type/status) |
+| `GET` | `/api/v1/interventions/ranking` | Impact ranking + recommendations + ₹/ha |
+| `GET` | `/api/v1/interventions/{id}/analysis` | Full evidence bundle (buffer + LULC + photos + cross-checks) |
+| `GET` | `/api/v1/interventions/{id}/catchment` | DEM-delineated contributing area |
+| `GET` | `/api/v1/analytics/{id}/change-detection` | Δ statistics between any two epochs |
+| `GET` | `/api/v1/analytics/{id}/hotspots` | Block-aggregated change hotspots |
+| `GET` | `/api/v1/photos` | Photo archive with binding + validation |
+| `POST` | `/api/v1/photos/upload` | Ingest geo-tagged JPEGs (EXIF → bind → validate) |
+| `GET` | `/api/v1/photos/{id}/interpretation` | Automated content interpretation |
+| `POST` | `/api/v1/reports/intervention/{id}` | **PDF evidence pack** |
+| `POST` | `/api/v1/reports/watershed/{id}` | **PDF micro-watershed assessment** |
+
+---
+
+## 🖥 Frontend Modules
+
+| Tab | Contents |
+| :--- | :--- |
+| **Overview** | KPI tiles, selected-structure score card, seasonal response chart, intervention ranking, evidence audit |
+| **Change** | Index/epoch pickers, pixel-change class histogram, gainer/loser hotspots, monsoon water cycle |
+| **Photos** | Drag-and-drop uploader, evidence-quality stats, validation-flag histogram, gallery, per-photo interpretation modal |
+| **Thematic** | LULC layer shortcuts, T0/T1 composition chart, top transitions, morphometry, slope classes, catchment |
+| **Reports** | Evidence-pack & assessment generators, contents summary, recently generated documents |
+
+Detail modal: structure parameters, geo-coded photograph with EXIF stamp and automated
+read, buffer KPIs, seasonal chart, LULC transition table and the limitation notice.
+
+---
+
+## 🗂 Repository Layout
 
 ```
 Watershed-Insight/
-├── backend/
-│   └── app/
-│       └── main.py              # FastAPI application & REST endpoints
+├── backend/app/
+│   ├── main.py                 # FastAPI app, static mounts, lifespan warm-up
+│   ├── config.py               # env-driven settings
+│   ├── routers/                # watersheds · interventions · photos · analytics · reports
+│   └── services/store.py       # data access, caching, analytics, photo index
 ├── geospatial/
-│   └── raster_processor.py      # NDVI/NDWI & 250m buffer analysis engine
-├── reports/
-│   └── pdf_generator.py         # ReportLab PDF Evidence Pack generator
+│   ├── geo_utils.py            # haversine, raster grid, masks, statistics
+│   ├── raster_processor.py     # epochs, indices, buffer & zonal analytics, change detection
+│   ├── lulc.py                 # classification, areas, transition matrix
+│   ├── hydrology.py            # sink fill, D8, Strahler, catchment, morphometry
+│   ├── exif_engine.py          # EXIF I/O, binding, evidence validation
+│   ├── photo_interpreter.py    # colour-index content interpretation + cross-check
+│   └── mapping.py              # overlays + report figures
+├── reports/pdf_generator.py    # Module 5 — the two PDF products
 ├── scripts/
-│   └── generate_sample_data.py  # Synthetic sample dataset builder (GeoJSON, Rasters, EXIF)
-├── data/
-│   └── sample/                  # Boundaries, Interventions, Satellite Rasters, Field Photos
-├── frontend/
-│   ├── src/
-│   │   ├── components/          # Navbar, Sidebar, WatershedMap, AnalyticsPanel, Modal
-│   │   ├── App.jsx              # Application state & API orchestration
-│   │   ├── index.css            # Custom glassmorphism & dark slate design system
-│   │   └── main.jsx             # React entry point
-│   ├── package.json             # Frontend npm dependencies
-│   └── vite.config.js           # Vite dev server proxy setup
-├── .gitignore
-├── README.md
-└── walkthrough.md               # End-to-end verification walkthrough & screenshots
+│   ├── generate_sample_data.py # the reproducible synthetic dataset
+│   └── verify_pipeline.py      # 24-step end-to-end verification
+├── tests/                      # 49 tests (engine + API + PDF validity)
+├── frontend/src/               # React dashboard
+├── docs/                       # ARCHITECTURE.md · API.md · walkthrough
+├── data/sample/                # generated dataset (boundaries, DEM, 6 epochs, photos)
+├── Dockerfile · docker-compose.yml · requirements.txt · Makefile
+├── README.md · walkthrough.md · LICENSE
+└── docs/ · tests/ · scripts/
 ```
 
 ---
 
-## 🚀 Quickstart Guide
+## 🧪 Testing
 
-### Prerequisites
-- **Python 3.10+**
-- **Node.js v18+ & npm**
-
-### Step 1: Install Python Dependencies
 ```bash
-python -m pip install fastapi uvicorn geopandas rasterio shapely matplotlib pydantic reportlab piexif
+python -m pytest tests/ -v        # 49 tests, ~8 s
 ```
 
-### Step 2: Generate Sample Geo-Spatial Dataset
-```bash
-python scripts/generate_sample_data.py
-```
-
-### Step 3: Launch FastAPI Backend Server
-```bash
-python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000
-```
-
-### Step 4: Launch React Web-GIS Frontend
-In a separate terminal window:
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Open `http://localhost:3000` in your web browser.
+| Suite | Covers |
+| :--- | :--- |
+| `tests/test_geospatial.py` | Geodesy (haversine against known distances), raster grid ↔ world, buffer area vs πr², index maths, LULC rules, transition conservation, D8 routing on a plane, sink filling, Strahler ordering, EXIF DMS round-trip, photo interpretation |
+| `tests/test_api.py` | Every REST endpoint, payload consistency (areas add up, 100 % partitions), ranking monotonicity, upload → binding → validation, PDF validity (`%PDF` magic bytes) |
 
 ---
 
-## ⏱️ 3-Minute SIH Presentation Script
+## 🛣 Roadmap / Production Integration
 
-1. **0:00–0:30 (Problem Statement)**: Explain the gap between collected geo-coded field photos (DRISHTI) and satellite monitoring (SRISHTI) for DoLR officers.
-2. **0:30–1:00 (Watershed Explorer)**: Select pilot micro-watershed (`MWS-MH-2025-014`). Show boundary layer, intervention markers, and photo pins.
-3. **1:00–1:40 (Change Detection)**: Compare baseline $T_0$ (Pre-intervention) vs $T_1$ (Post-intervention), demonstrating $NDVI$ vegetation growth (+75%) and surface water expansion (+1.73 Ha).
-4. **1:40–2:10 (250m Buffer Evidence)**: Click Masonry Check Dam #001 pin. Show 250m buffer analysis, attached DRISHTI photo, GPS EXIF stamp, and indicator deltas.
-5. **2:10–2:40 (Evidence PDF Pack)**: Click **"Download PDF Evidence Report"** to instantly generate the ReportLab PDF evidence document.
-6. **2:40–3:00 (Conclusion)**: Pitch the core message: *"Watershed Insight turns satellite imagery and field photos into spatially validated, decision-ready evidence."*
+The platform is deliberately adapter-shaped so real data can be swapped in:
+
+1. **Satellite ingestion** — replace `bands.npz` with a Sentinel-2 / Landsat fetch
+   (Sentinel Hub, GEE export, or BHUVAN) writing the same `{red, green, nir, swir}` +
+   `bounds` contract. `RasterProcessor` needs no change.
+2. **SRISHTI sync** — point `WS_DATA_DIR` at a nightly mirror of the SRISHTI GeoJSON
+   services for boundaries and intervention inventories.
+3. **DRISHTI sync** — the `/photos/upload` endpoint already accepts the DRISHTI export
+   format; wire it to a scheduled drop folder.
+4. **Scale-out** — `DataStore` is a per-watershed lazy cache; move it behind Redis or
+   precompute overlays per epoch in a batch job for state-wide deployment.
+5. **Model upgrades** — the photo interpreter can be swapped for a fine-tuned classifier
+   while keeping the same output contract (`composition_pct`, `label`, `confidence`).
 
 ---
 
-## 📜 License & Acknowledgments
+## ⚖️ Scientific Honesty
 
-This project is licensed under the **MIT License**.
-Developed for **Smart India Hackathon 2026** under Problem Statement **PS26015** (Ministry of Rural Development / Department of Land Resources).
+Every generated report carries a **Methodology & Limitations** section:
+
+1. **Epoch pairing** — T0 and T1 are season-matched where possible; where they are not,
+   part of the change is rainfall, not intervention.
+2. **Resolution** — 10–20 m pixels: bunds, gully plugs and small farm ponds are sub-pixel
+   and their signal is diluted.
+3. **Buffer assumption** — a circular 250 m buffer is a standardised proxy; the true zone
+   of influence depends on slope, soil depth and structure size.
+4. **Attribution** — indicators demonstrate a *spatial association*, not causation.
+   Rainfall variability, cropping change, groundwater extraction and other schemes are
+   confounders.
+5. **Photo evidence** — colour-index interpretation is supporting, not conclusive.
+6. **Cloud** — residual cloud shadow can depress NDVI locally.
+
+---
+
+## 🏆 60-Second Demo Script
+
+1. **Explorer** — pick `MWS-MH-2025-014`; the boundary, 10 structures, 37 photo pins and
+   the NDVI raster appear.
+2. **Change** — show ΔNDVI +0.046 and 29 % of the watershed improving; point at the
+   gainer/loser hotspots.
+3. **Photos** — open a photograph: EXIF GPS, "23.6 m from structure", automated read
+   ("water impoundment visible — water 15.9 %"), and the satellite cross-check.
+4. **Impact** — click *Percolation Tank #003*: score **70/100 (High)**, +9.52 ha of water,
+   land-only ΔNDVI +0.072, LULC transition, catchment delineated from the DEM.
+5. **Evidence** — *Generate PDF*: a 4-page, signed, audit-ready evidence pack with maps,
+   indicator tables, photographs and the limitations section.
+
+> **"Watershed Insight turns satellite pixels and geo-tagged photographs into spatially
+> validated, decision-ready evidence."**
+
+---
+
+## 📜 License
+
+MIT — see [LICENSE](LICENSE). Built for Smart India Hackathon 2026 (PS26015);
+synthetic dataset provided for demonstration and evaluation.

@@ -1,156 +1,143 @@
-import os
-import json
-from fastapi import FastAPI, HTTPException, Query, Response
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse
-from pydantic import BaseModel
+"""
+main.py - Watershed Insight FastAPI application (SIH PS26015).
 
-from geospatial.raster_processor import RasterProcessor
-from reports.pdf_generator import generate_evidence_pdf
+An analytical layer on top of the SRISHTI (satellite / Web-GIS) and DRISHTI
+(geo-tagged field photograph) stacks of the Department of Land Resources:
+
+    DATA -> INFORMATION -> ANALYSIS -> INTERPRETATION -> DECISION SUPPORT
+
+Run locally:
+    python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000 --reload
+"""
+
+from __future__ import annotations
+
+import os
+import platform
+import sys
+import time
+from contextlib import asynccontextmanager
+from typing import Any, Dict
+
+from fastapi import FastAPI, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from fastapi.staticfiles import StaticFiles
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-DATA_DIR = os.path.join(BASE_DIR, "data", "sample")
+if BASE_DIR not in sys.path:
+    sys.path.insert(0, BASE_DIR)
+
+from .config import settings  # noqa: E402
+from .routers import analytics, interventions, photos, reports, watersheds  # noqa: E402
+from .services.store import WatershedNotFound, get_store  # noqa: E402
+
+APP_START = time.time()
+
+
+@asynccontextmanager
+async def lifespan(_app: FastAPI):
+    """Warm the caches on startup so the first dashboard request is instant."""
+    try:
+        store = get_store()
+        store.build_photo_index()
+        if store.list_watersheds():
+            store.watershed_stats(store.list_watersheds()[0]["id"])
+    except Exception as exc:  # pragma: no cover - startup diagnostics
+        print(f"[startup] warm-up skipped: {exc}")
+    yield
+
 
 app = FastAPI(
-    title="Watershed Insight API",
-    description="Backend API for AI-assisted Geospatial Watershed Monitoring & Impact Analysis (PS26015)",
-    version="1.0.0"
+    title=settings.project_name,
+    version=settings.version,
+    description=(
+        "Geospatial decision-support API for micro-watershed monitoring and impact "
+        "assessment. Aligns SRISHTI satellite layers with DRISHTI geo-coded field "
+        "photographs to produce spatially validated, audit-ready evidence.\n\n"
+        "Built for Smart India Hackathon 2026 - Problem Statement PS26015 "
+        "(Ministry of Rural Development / Department of Land Resources)."
+    ),
+    docs_url="/docs",
+    redoc_url="/redoc",
+    lifespan=lifespan,
 )
 
-# Enable CORS for React Frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=settings.cors_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Mount Static Directories for Photos and Satellite Preview Rasters
-app.mount("/static/photos", StaticFiles(directory=os.path.join(DATA_DIR, "photos")), name="photos")
-app.mount("/static/satellite", StaticFiles(directory=os.path.join(DATA_DIR, "satellite")), name="satellite")
 
-# Initialize Raster Engine
-raster_processor = RasterProcessor(watershed_id="watershed_001")
+# --------------------------------------------------------------------------- #
+# Static assets (photos, satellite previews, generated overlays & reports)
+# --------------------------------------------------------------------------- #
+def _mount_if_exists(route: str, directory: str, name: str) -> None:
+    os.makedirs(directory, exist_ok=True)
+    app.mount(route, StaticFiles(directory=directory), name=name)
 
-@app.get("/")
-def read_root():
+
+_mount_if_exists("/static/photos", settings.photos_dir, "photos")
+_mount_if_exists("/static/satellite", os.path.join(settings.data_dir, "satellite"), "satellite")
+_mount_if_exists("/static/overlays", settings.output_dir, "overlays")
+_mount_if_exists("/static/reports", settings.reports_dir, "reports")
+
+
+# --------------------------------------------------------------------------- #
+# Routers
+# --------------------------------------------------------------------------- #
+app.include_router(watersheds.router, prefix=settings.api_prefix)
+app.include_router(interventions.router, prefix=settings.api_prefix)
+app.include_router(photos.router, prefix=settings.api_prefix)
+app.include_router(analytics.router, prefix=settings.api_prefix)
+app.include_router(reports.router, prefix=settings.api_prefix)
+
+
+# --------------------------------------------------------------------------- #
+# Health / meta
+# --------------------------------------------------------------------------- #
+@app.get("/", tags=["Meta"])
+def root() -> Dict[str, Any]:
     return {
-        "status": "online",
-        "platform": "Watershed Insight - SRISHTI-DRISHTI Aligned Platform",
-        "problem_statement": "PS26015",
-        "docs_url": "/docs"
+        "platform": "Watershed Insight",
+        "problem_statement": "SIH PS26015",
+        "organisation": "Ministry of Rural Development / Department of Land Resources",
+        "version": settings.version,
+        "docs": "/docs",
+        "health": "/api/v1/health",
     }
 
-@app.get("/api/v1/watersheds")
-def get_watersheds():
-    boundary_path = os.path.join(DATA_DIR, "boundaries", "watershed_001.geojson")
-    if not os.path.exists(boundary_path):
-        raise HTTPException(status_code=404, detail="Watershed data not found.")
-        
-    with open(boundary_path, "r") as f:
-        boundary_data = json.load(f)
-        
-    stats = raster_processor.get_watershed_overview_stats()
-    
-    return {
-        "watersheds": [
-            {
-                "id": "watershed_001",
-                "name": "MWS-MH-2025-014 (Aurangabad North)",
-                "district": "Chhatrapati Sambhajinagar",
-                "state": "Maharashtra",
-                "area_ha": 420.5,
-                "stats": stats,
-                "boundary": boundary_data
-            }
-        ]
-    }
 
-@app.get("/api/v1/interventions")
-def get_interventions():
-    interventions_path = os.path.join(DATA_DIR, "interventions", "interventions.geojson")
-    if not os.path.exists(interventions_path):
-        raise HTTPException(status_code=404, detail="Interventions data not found.")
-        
-    with open(interventions_path, "r") as f:
-        data = json.load(f)
-        
-    return data
-
-@app.get("/api/v1/photos")
-def get_photos():
-    photos_path = os.path.join(DATA_DIR, "metadata", "photos.csv")
-    if not os.path.exists(photos_path):
-        raise HTTPException(status_code=404, detail="Photos metadata not found.")
-        
-    import csv
-    photos = []
-    with open(photos_path, "r") as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            row["url"] = f"/static/photos/{row['file_name']}"
-            photos.append(row)
-            
-    return {"photos": photos}
-
-@app.get("/api/v1/interventions/{intervention_id}/analysis")
-def get_intervention_analysis(intervention_id: str, radius_m: int = Query(250, ge=50, le=1000)):
-    interventions_path = os.path.join(DATA_DIR, "interventions", "interventions.geojson")
-    with open(interventions_path, "r") as f:
-        data = json.load(f)
-        
-    target = None
-    for feat in data["features"]:
-        if feat["properties"]["id"] == intervention_id:
-            target = feat["properties"]
-            break
-            
-    if not target:
-        raise HTTPException(status_code=404, detail=f"Intervention {intervention_id} not found.")
-        
-    analysis = raster_processor.analyze_intervention_buffer(
-        lat=target["latitude"],
-        lng=target["longitude"],
-        buffer_radius_m=radius_m
-    )
-    
-    # Attach photos matched to this intervention
-    photos_path = os.path.join(DATA_DIR, "metadata", "photos.csv")
-    import csv
-    matched_photos = []
-    if os.path.exists(photos_path):
-        with open(photos_path, "r") as f:
-            reader = csv.DictReader(f)
-            for row in reader:
-                if row["intervention_id"] == intervention_id:
-                    row["url"] = f"/static/photos/{row['file_name']}"
-                    matched_photos.append(row)
-                    
-    return {
-        "intervention": target,
-        "analysis": analysis,
-        "matched_photos": matched_photos
-    }
-
-class ReportRequest(BaseModel):
-    intervention_id: str
-
-@app.post("/api/v1/reports/pdf")
-def generate_report(req: ReportRequest):
-    reports_dir = os.path.join(BASE_DIR, "reports", "generated")
-    os.makedirs(reports_dir, exist_ok=True)
-    
-    pdf_filename = f"Evidence_Report_{req.intervention_id}.pdf"
-    pdf_path = os.path.join(reports_dir, pdf_filename)
-    
+@app.get(f"{settings.api_prefix}/health", tags=["Meta"])
+def health() -> Dict[str, Any]:
+    store = get_store()
     try:
-        generate_evidence_pdf(req.intervention_id, pdf_path)
-        return FileResponse(
-            pdf_path,
-            media_type="application/pdf",
-            filename=pdf_filename
-        )
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Failed to generate PDF report: {str(e)}")
+        watersheds_meta = store.list_watersheds()
+        dataset_ok = bool(watersheds_meta)
+        detail = {"watersheds": len(watersheds_meta)}
+    except Exception as exc:  # pragma: no cover - startup diagnostics
+        dataset_ok, detail = False, {"error": str(exc)}
+
+    return {
+        "status": "online" if dataset_ok else "degraded",
+        "uptime_s": round(time.time() - APP_START, 1),
+        "python": platform.python_version(),
+        "data_dir": settings.data_dir,
+        "default_buffer_m": settings.default_buffer_m,
+        **detail,
+        "hint": "Run `python scripts/generate_sample_data.py` if the dataset is missing.",
+    }
+
+
+@app.exception_handler(WatershedNotFound)
+async def watershed_not_found(request: Request, exc: WatershedNotFound):
+    return JSONResponse(status_code=404, content={"detail": str(exc)})
+
+
+if __name__ == "__main__":  # pragma: no cover
+    import uvicorn
+
+    uvicorn.run("backend.app.main:app", host="0.0.0.0", port=8000, reload=settings.debug)
