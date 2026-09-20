@@ -188,6 +188,70 @@ def _title_block(title: str, subtitle: str, meta_rows: Sequence[Sequence[str]]) 
 # --------------------------------------------------------------------------- #
 # 1. Intervention Evidence Pack
 # --------------------------------------------------------------------------- #
+def _confidence_table(bundle: dict) -> Table:
+    """Confidence components + background comparison, for the methodology page."""
+    from geospatial.scoring import confidence_formula
+    conf = bundle.get("confidence") or {}
+    control = bundle.get("control_context") or {}
+    a = bundle.get("analysis") or {}
+    labels = {
+        "observation_completeness": "Cloud-free coverage of the weaker epoch",
+        "temporal_replication": "Usable epochs (4 = full marks)",
+        "seasonal_matching": "Season match between T0 and T1",
+        "photo_corroboration": "Verified geo-tagged photos in buffer",
+        "spatial_coverage": "Buffer fully inside the imagery",
+        "baseline_control": "Pre-works baseline observation exists",
+    }
+    rows = [[_p("<b>Confidence factor</b>"), _p("<b>Weight</b>"),
+             _p("<b>Measured</b>"), _p("<b>Points</b>")]]
+    for key, weight in (conf.get("weights") or {}).items():
+        rows.append([
+            _p(labels.get(key, key)),
+            _p(f"{weight * 100:.0f} %"),
+            _p(f"{(conf.get('factors') or {}).get(key, 0) * 100:.0f} %"),
+            _p(f"{(conf.get('components') or {}).get(key, 0):.1f}"),
+        ])
+    rows.append([_p("<b>Confidence</b>"), _p(""), _p(""),
+                 _p(f"<b>{conf.get('score', 0):.1f} / 100 ({conf.get('band', 'n/a')})</b>")])
+    table = Table(rows, colWidths=[80 * mm, 22 * mm, 26 * mm, 22 * mm])
+    table.setStyle(TableStyle([
+        ("GRID", (0, 0), (-1, -1), 0.4, BORDER),
+        ("BACKGROUND", (0, 0), (-1, 0), LIGHT),
+        ("BACKGROUND", (0, -1), (-1, -1), LIGHT),
+        ("VALIGN", (0, 0), (-1, -1), "TOP"),
+        ("TOPPADDING", (0, 0), (-1, -1), 3),
+        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+    ]))
+    body = [_p("<b>Impact is not confidence.</b> The impact score answers "
+               "<i>how much</i> change was measured; the confidence score "
+               "answers <i>how much that number can be trusted</i>. They are "
+               "computed independently and must be read together."),
+            _p(confidence_formula()),
+            Spacer(1, 4), table]
+    if control.get("available"):
+        body += [
+            Spacer(1, 6),
+            _p(f"<b>Background comparison.</b> The identical scoring chain was "
+               f"run at {control['n']} seeded random control points inside the "
+               f"watershed: mean {control['mean']:.1f}, standard deviation "
+               f"{control['std']:.1f}, median {control['median']:.1f}. This "
+               f"structure sits at the "
+               f"<b>{bundle.get('percentile_vs_control', 0):.0f}th percentile</b> "
+               f"of that background. Its buffer change net of the "
+               f"watershed-wide change is "
+               f"<b>{a.get('net_ndvi_change_land', 0):+.3f} NDVI</b> "
+               f"(buffer {a.get('ndvi_change_land', 0):+.3f} minus watershed "
+               f"{(a.get('background') or {}).get('ndvi_change', 0):+.3f}), "
+               f"which is the difference-in-differences estimate of the "
+               f"structure's own effect as opposed to a good monsoon."),
+        ]
+    return Table([[item] for item in body], colWidths=[160 * mm],
+                 style=TableStyle([("LEFTPADDING", (0, 0), (-1, -1), 0),
+                                   ("RIGHTPADDING", (0, 0), (-1, -1), 0),
+                                   ("TOPPADDING", (0, 0), (-1, -1), 1),
+                                   ("BOTTOMPADDING", (0, 0), (-1, -1), 1)]))
+
+
 def generate_intervention_pdf(store, intervention_id: str, output_path: str,
                               radius_m: float = 250.0,
                               include_photos: bool = True) -> str:
@@ -220,14 +284,17 @@ def generate_intervention_pdf(store, intervention_id: str, output_path: str,
     )
 
     # ---- KPI strip ------------------------------------------------------ #
+    conf = bundle.get("confidence") or {}
+    control = bundle.get("control_context") or {}
     kpis = Table([[
         _kpi_card("Impact score", f"{a['impact_score']:.0f}/100",
-                  f"Confidence: {a['confidence']}",
+                  f"Evidence: {a.get('evidence_strength', 'n/a')}",
                   GOOD if a["impact_score"] >= 60 else WARN if a["impact_score"] >= 40 else BAD),
-        _kpi_card("Vegetation (land)", _fmt(a["ndvi_change_land"], sign=True, decimals=3),
-                  f"NDVI {a['ndvi_before_land']:.3f} → {a['ndvi_after_land']:.3f}"),
-        _kpi_card("Surface water", _fmt(a["water_area_change_ha"], " ha", sign=True),
-                  f"{a['water_area_before_ha']:.2f} → {a['water_area_after_ha']:.2f} ha"),
+        _kpi_card("Confidence", f"{conf.get('score', 0):.0f}/100",
+                  f"{conf.get('band', 'n/a')} · {control.get('n', 0) and 'p' + str(round(bundle.get('percentile_vs_control') or 0)) + ' vs control' or 'no control sample'}",
+                  GOOD if conf.get("score", 0) >= 75 else WARN if conf.get("score", 0) >= 55 else BAD),
+        _kpi_card("Net of background", _fmt(a.get("net_ndvi_change_land", 0.0), sign=True, decimals=3),
+                  f"watershed-wide ΔNDVI {(a.get('background') or {}).get('ndvi_change', 0):+.3f}"),
     ]], colWidths=[60 * mm, 60 * mm, 60 * mm])
     kpis.setStyle(TableStyle([("LEFTPADDING", (0, 0), (-1, -1), 0),
                               ("RIGHTPADDING", (0, 0), (-1, -1), 0),
@@ -410,6 +477,8 @@ def generate_intervention_pdf(store, intervention_id: str, output_path: str,
 
     # ---- 7. methodology --------------------------------------------------- #
     story.append(Paragraph("7. Methodology, Thresholds &amp; Scientific Limitations", S["h1"]))
+    story.append(_confidence_table(bundle))
+    story.append(Spacer(1, 6))
     for line in _limitations(proc, a, radius_m):
         story.append(Paragraph(line, S["body"]))
 
