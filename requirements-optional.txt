@@ -1,0 +1,11 @@
+# Optional extras - ONLY needed for real Earth-observation ingestion.
+#
+# The analysis engine, API and dashboard run on requirements.txt alone
+# (NumPy / Pillow / matplotlib / FastAPI).  These packages are required solely by
+# scripts/ingest_sentinel.py, which reads public Sentinel-2 COGs and terrain
+# tiles and converts them to the plain .npz contract the engine consumes.
+#
+#     pip install -r requirements-optional.txt
+#     python scripts/ingest_sentinel.py --out data/real --site-candidates 6
+rasterio>=1.3
+pystac-client>=0.7

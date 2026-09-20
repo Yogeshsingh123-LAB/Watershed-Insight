@@ -116,7 +116,11 @@ def main() -> int:
     def _ranking():
         rows = store.ranking(ws_id)
         top = rows[0]
-        return f"{len(rows)} ranked; top {top['id']} = {top['impact_score']:.0f}/100 ({top['confidence']})"
+        return (f"{len(rows)} ranked; top {top['id']} impact "
+                f"{top['impact_score']:.0f}/100 "
+                f"(p{top.get('percentile_vs_control', 0):.0f} vs control), "
+                f"confidence {top['confidence_score']:.0f}/100 "
+                f"({top['confidence_band']})")
 
     check("4.1 Intervention impact ranking", _ranking)
 
