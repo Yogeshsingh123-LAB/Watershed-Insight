@@ -46,10 +46,15 @@ from geospatial.hydrology import (
 )
 from geospatial.lulc import (
     classify,
+    load_calibration,
     stacked_area_table,
     transition_matrix,
 )
 from geospatial.photo_interpreter import interpret_photo
+from geospatial.scoring import (
+    confidence as compute_confidence,
+    percentile_rank,
+)
 from geospatial.raster_processor import RasterProcessor
 from geospatial import mapping
 
@@ -100,6 +105,8 @@ class DataStore:
         self._interventions: Optional[List[dict]] = None
         self._catalog: Optional[dict] = None
         self._bmask: Dict[str, np.ndarray] = {}
+        self._calibration: Optional[Dict[str, float]] = None
+        self._null_cache: Dict[tuple, List[float]] = {}
 
     # ------------------------------------------------------------------ #
     # Catalog / boundaries
@@ -130,6 +137,109 @@ class DataStore:
         if not data:
             raise WatershedNotFound(f"Boundary not found for '{watershed_id}'")
         return data
+
+
+    # ------------------------------------------------------------------ #
+    # Evidence quality & statistical control
+    # ------------------------------------------------------------------ #
+    def _complete_confidence(self, analysis: dict, item: dict,
+                             photos: Sequence["PhotoMetadata"]) -> dict:
+        """
+        Finish the confidence computation with the two factors only the data
+        layer can supply: independent photographic evidence, and whether a
+        pre-works baseline observation exists.
+        """
+        conf = dict(analysis.get("confidence") or {})
+        factors = dict(conf.get("factors") or {})
+        verified = [p for p in photos
+                    if (p.quality or "").lower() == "verified"
+                    and bool(p.within_buffer)]
+        factors["photo_corroboration"] = min(1.0, len(verified) / 3.0)
+
+        installed = item.get("installation_date") or item.get("commissioned_on")
+        epochs = [e.date for e in self.processor(item["watershed_id"]).epochs]
+        has_baseline = bool(installed) and any(d < str(installed) for d in epochs)
+        has_baseline = has_baseline or any(
+            "PRE_IMPLEMENTATION_BASELINE" in (p.validation or []) for p in photos)
+        factors["baseline_control"] = 1.0 if has_baseline else 0.4
+
+        conf = compute_confidence(factors)
+        conf["verified_photos_in_buffer"] = len(verified)
+        conf["baseline_observation"] = bool(has_baseline)
+        return conf
+
+    def null_distribution(self, watershed_id: str, radius_m: float = 250.0,
+                          n_samples: int = 200, seed: int = 20260920) -> List[float]:
+        """
+        Background distribution of the impact score at random control points.
+
+        An impact score is only meaningful against a baseline: 45/100 sounds
+        mediocre until you learn that random points in the same watershed score
+        12 +/- 8.  This samples ``n_samples`` random locations *inside the
+        boundary* (excluding a margin so buffers stay on the data), runs the
+        identical scoring chain, and returns the resulting scores.  It is the
+        platform's answer to "is that number actually high?".
+        """
+        key = (watershed_id, round(radius_m, 1), n_samples)
+        if key in self._null_cache:
+            return self._null_cache[key]
+        rng = np.random.default_rng(seed)
+        proc = self.processor(watershed_id)
+        mask = self.boundary_mask(watershed_id)
+        rows, cols = np.nonzero(mask)
+        if rows.size == 0:
+            self._null_cache[key] = []
+            return []
+        # keep buffers fully on the data
+        margin = int(np.ceil(radius_m / max(proc.grid.dx * 111_320.0, 1e-6)))
+        keep = ((rows >= margin) & (rows < proc.grid.height - margin)
+                & (cols >= margin) & (cols < proc.grid.width - margin))
+        rows, cols = rows[keep], cols[keep]
+        if rows.size == 0:
+            self._null_cache[key] = []
+            return []
+        n = min(n_samples, rows.size)
+        pick = rng.choice(rows.size, size=n, replace=False)
+        scores = []
+        for i in pick:
+            r, c = int(rows[i]), int(cols[i])
+            try:
+                res = proc.analyse_buffer(float(proc.grid.lat_of(r)),
+                                          float(proc.grid.lon_of(c)), radius_m)
+                value = res.get("impact_score")
+                if value is not None and value == value:      # drop NaN
+                    scores.append(float(value))
+            except Exception:                                  # pragma: no cover
+                continue
+        self._null_cache[key] = scores
+        return scores
+
+    def control_context(self, watershed_id: str, radius_m: float = 250.0) -> dict:
+        """Summary of the background distribution used for percentile ranking."""
+        scores = self.null_distribution(watershed_id, radius_m)
+        if not scores:
+            return {"available": False, "n": 0}
+        arr = np.array(scores, dtype="float64")
+        return {
+            "available": True,
+            "n": int(arr.size),
+            "mean": round(float(arr.mean()), 2),
+            "std": round(float(arr.std()), 2),
+            "median": round(float(np.median(arr)), 2),
+            "p90": round(float(np.percentile(arr, 90)), 2),
+            "p95": round(float(np.percentile(arr, 95)), 2),
+            "max": round(float(arr.max()), 2),
+            "method": (f"{arr.size} random control points inside the boundary, "
+                       f"identical {int(radius_m)} m buffer scoring chain "
+                       f"(seeded, reproducible)"),
+        }
+
+    def calibration(self) -> Dict[str, float]:
+        """Effective LULC thresholds: dataset override if present, else defaults."""
+        if self._calibration is None:
+            with self._lock:
+                self._calibration = load_calibration(self.data_dir)
+        return self._calibration
 
     # ------------------------------------------------------------------ #
     # Interventions
@@ -231,7 +341,8 @@ class DataStore:
                 proc = self.processor(watershed_id)
                 stack = proc.get_epoch(epoch_key)
                 self._lulc[key] = classify(stack.ndvi, stack.ndwi, stack.ndbi,
-                                           grid=proc.grid, epoch_key=epoch_key)
+                                           grid=proc.grid, epoch_key=epoch_key,
+                                           thresholds=self.calibration())
         return self._lulc[key]
 
     # ------------------------------------------------------------------ #
@@ -603,19 +714,25 @@ class DataStore:
         analysis = proc.analyse_buffer(item["latitude"], item["longitude"],
                                        radius_m, epoch_a, epoch_b)
         photos = self.photos_for(intervention_id=intervention_id)
-        return {
+        bundle = {
             "intervention": item,
             "analysis": analysis,
             "timeseries": proc.time_series(item["latitude"], item["longitude"], radius_m),
             "lulc": self.lulc_summary(item["watershed_id"], item["latitude"],
                                       item["longitude"], radius_m),
             "matched_photos": [p.to_dict() for p in photos],
+            "control_context": self.control_context(item["watershed_id"], radius_m),
             "cross_checks": [
                 {**self.photo_interpretation(p.photo_id),
                  "cross_check": _cross_check(p, analysis)}
                 for p in photos[:6]
             ],
         }
+        bundle["confidence"] = self._complete_confidence(analysis, item, photos)
+        bundle["percentile_vs_control"] = percentile_rank(
+            analysis.get("impact_score") or 0.0,
+            self.null_distribution(item["watershed_id"], radius_m))
+        return bundle
 
     def ranking(self, watershed_id: str, radius_m: float = 250.0) -> List[dict]:
         """
@@ -626,6 +743,8 @@ class DataStore:
         rows = []
         for item in self.interventions_for(watershed_id):
             analysis = proc.analyse_buffer(item["latitude"], item["longitude"], radius_m)
+            photos = self.photos_for(intervention_id=item["id"])
+            conf = self._complete_confidence(analysis, item, photos)
             cost = float(item.get("cost_inr") or 0.0)
             veg_gain = float(analysis.get("veg_area_change_ha") or 0.0)
             water_gain = float(analysis.get("water_area_change_ha") or 0.0)
@@ -639,21 +758,28 @@ class DataStore:
                 "longitude": item["longitude"],
                 "cost_inr": cost,
                 "impact_score": analysis["impact_score"],
-                "confidence": analysis["confidence"],
+                "impact_points": analysis.get("impact_points"),
+                "evidence_strength": analysis.get("evidence_strength"),
+                "confidence": conf,
+                "confidence_score": conf["score"],
+                "confidence_band": conf["band"],
+                "verified_photos_in_buffer": conf.get("verified_photos_in_buffer", 0),
                 "ndvi_change": analysis["ndvi_change"],
                 "ndvi_change_land": analysis["ndvi_change_land"],
                 "water_area_change_ha": analysis["water_area_change_ha"],
                 "veg_area_change_ha": veg_gain,
-                "photos": len(self.photos_for(intervention_id=item["id"])),
+                "photos": len(photos),
                 "cost_per_ha_improved_inr": (
                     int(cost / max(veg_gain + water_gain, 0.01)) if cost else None
                 ),
                 "interpretation": analysis["interpretation"],
             })
         rows.sort(key=lambda r: r["impact_score"], reverse=True)
+        population = self.null_distribution(watershed_id, radius_m)
         for i, row in enumerate(rows, start=1):
             row["rank"] = i
             row["recommendation"] = _recommendation(row)
+            row["percentile_vs_control"] = percentile_rank(row["impact_score"], population)
         return rows
 
     def watershed_summary(self, watershed_id: str) -> dict:
