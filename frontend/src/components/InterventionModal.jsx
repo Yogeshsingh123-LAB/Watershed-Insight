@@ -149,9 +149,40 @@ export default function InterventionModal({ data, radius, onClose, onReport, bus
                 <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.9rem', fontWeight: 700, color: scoreColor, lineHeight: 1 }}>
                   {a.impact_score?.toFixed(0)}
                 </div>
-                <div className="tiny text-muted">{a.confidence} confidence</div>
+                <div className="tiny text-muted">{a.evidence_strength || a.confidence} response</div>
               </div>
             </div>
+
+            {(bundle?.confidence || bundle?.control_context) && (
+              <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)', marginTop: 10 }}>
+                <div className="kpi-tile">
+                  <div className="label">Confidence</div>
+                  <div className="value" style={{ fontSize: '1.05rem' }}>
+                    {bundle.confidence?.score?.toFixed(0) ?? '—'}
+                    <span className="tiny text-dim"> / 100</span>
+                  </div>
+                  <div className="tiny text-dim">{bundle.confidence?.band}</div>
+                </div>
+                <div className="kpi-tile">
+                  <div className="label">vs random control</div>
+                  <div className="value" style={{ fontSize: '1.05rem' }}>
+                    {bundle.percentile_vs_control != null ? `p${bundle.percentile_vs_control.toFixed(0)}` : '—'}
+                  </div>
+                  <div className="tiny text-dim">
+                    background {(bundle.control_context?.mean ?? 0).toFixed(1)} ± {(bundle.control_context?.std ?? 0).toFixed(1)}
+                  </div>
+                </div>
+                <div className="kpi-tile">
+                  <div className="label">Net of background</div>
+                  <div className="value" style={{ fontSize: '1.05rem', color: (a.net_ndvi_change_land ?? 0) >= 0 ? 'var(--pos)' : 'var(--neg)' }}>
+                    {(a.net_ndvi_change_land ?? 0) >= 0 ? '+' : ''}{(a.net_ndvi_change_land ?? 0).toFixed(3)}
+                  </div>
+                  <div className="tiny text-dim">
+                    buffer {a.ndvi_change_land >= 0 ? '+' : ''}{a.ndvi_change_land?.toFixed(3)} − watershed {a.background?.ndvi_change >= 0 ? '+' : ''}{a.background?.ndvi_change?.toFixed(3)}
+                  </div>
+                </div>
+              </div>
+            )}
 
             <div className="kpi-grid" style={{ gridTemplateColumns: 'repeat(3, 1fr)' }}>
               <div className="kpi-tile">

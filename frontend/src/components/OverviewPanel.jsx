@@ -102,9 +102,14 @@ export default function OverviewPanel({ summary, analysis, onSelect, onFly, onRe
           <div style={{ display: 'flex', alignItems: 'baseline', gap: 10, margin: '6px 0 8px' }}>
             <span className="metric-main-value" style={{ color: scoreColor }}>{a.impact_score?.toFixed(0)}</span>
             <span className="tiny text-muted">/ 100 composite impact</span>
-            <span className={`chip ${a.confidence === 'High' ? 'badge-positive' : a.confidence === 'Moderate' ? 'badge-amber' : 'badge-neutral'}`}>
-              {a.confidence} confidence
+            <span className={`chip ${(a.evidence_strength || a.confidence) === 'High' ? 'badge-positive' : (a.evidence_strength || a.confidence) === 'Moderate' ? 'badge-amber' : 'badge-neutral'}`}>
+              {a.evidence_strength || a.confidence} response
             </span>
+            {a.confidence_score != null && (
+              <span className="chip badge-neutral" title={Object.entries(a.confidence?.factors || {}).map(([k, v]) => `${k}: ${(v * 100).toFixed(0)}%`).join(', ')}>
+                {a.confidence_score?.toFixed(0)}% confidence
+              </span>
+            )}
           </div>
 
           <div className="data-row">
@@ -206,7 +211,14 @@ export default function OverviewPanel({ summary, analysis, onSelect, onFly, onRe
                 }}>
                   {r.impact_score?.toFixed(0)}
                 </div>
-                <div className="tiny text-dim">{r.confidence}</div>
+                <div className="tiny text-dim" title="Measured impact (0-100)">
+                  impact
+                </div>
+                {r.confidence_score != null && (
+                  <div className="tiny" style={{ color: 'var(--text-dim)' }}>
+                    {r.confidence_score?.toFixed(0)}% conf · p{r.percentile_vs_control?.toFixed(0)}
+                  </div>
+                )}
               </div>
             </div>
             <div className="progress-track" style={{ marginTop: 6 }}>
