@@ -1,0 +1,37 @@
+{
+  "type": "Feature",
+  "properties": {
+    "id": "real_rs_001",
+    "code": "MWS-MH-RALEGAON-001",
+    "name": "Ralegaon Siddhi Micro-Watershed Window",
+    "area_ha": 726.42,
+    "geometry_note": "Rectangular analysis window over the AOI (not a surveyed micro-watershed boundary)."
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [
+          74.6208,
+          19.2122
+        ],
+        [
+          74.64580000000001,
+          19.2122
+        ],
+        [
+          74.64580000000001,
+          19.237199999999998
+        ],
+        [
+          74.6208,
+          19.237199999999998
+        ],
+        [
+          74.6208,
+          19.2122
+        ]
+      ]
+    ]
+  }
+}

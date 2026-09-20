@@ -1,0 +1,161 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CAN-001",
+        "code": "CAND-001",
+        "name": "Percolation Tank candidate #001",
+        "type": "Percolation Tank",
+        "watershed_id": "real_rs_001",
+        "latitude": 19.23715,
+        "longitude": 74.63415,
+        "stream_order": 4,
+        "catchment_cells": 34719,
+        "cost_inr": 480000,
+        "status": "Siting candidate (not field-verified)",
+        "verified": false,
+        "source": "DEM-derived hydrological siting",
+        "geometry_note": "Location computed from the real DEM stream network; requires ground confirmation before use as evidence."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.63415,
+          19.23715
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CAN-002",
+        "code": "CAND-002",
+        "name": "Percolation Tank candidate #002",
+        "type": "Percolation Tank",
+        "watershed_id": "real_rs_001",
+        "latitude": 19.22065,
+        "longitude": 74.63625,
+        "stream_order": 3,
+        "catchment_cells": 6588,
+        "cost_inr": 480000,
+        "status": "Siting candidate (not field-verified)",
+        "verified": false,
+        "source": "DEM-derived hydrological siting",
+        "geometry_note": "Location computed from the real DEM stream network; requires ground confirmation before use as evidence."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.63625,
+          19.22065
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CAN-003",
+        "code": "CAND-003",
+        "name": "Masonry Check Dam candidate #003",
+        "type": "Masonry Check Dam",
+        "watershed_id": "real_rs_001",
+        "latitude": 19.22735,
+        "longitude": 74.63575,
+        "stream_order": 2,
+        "catchment_cells": 2389,
+        "cost_inr": 320000,
+        "status": "Siting candidate (not field-verified)",
+        "verified": false,
+        "source": "DEM-derived hydrological siting",
+        "geometry_note": "Location computed from the real DEM stream network; requires ground confirmation before use as evidence."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.63575,
+          19.22735
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CAN-004",
+        "code": "CAND-004",
+        "name": "Gully Plug / Nala Bund candidate #004",
+        "type": "Gully Plug / Nala Bund",
+        "watershed_id": "real_rs_001",
+        "latitude": 19.23665,
+        "longitude": 74.64575,
+        "stream_order": 1,
+        "catchment_cells": 732,
+        "cost_inr": 74000,
+        "status": "Siting candidate (not field-verified)",
+        "verified": false,
+        "source": "DEM-derived hydrological siting",
+        "geometry_note": "Location computed from the real DEM stream network; requires ground confirmation before use as evidence."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.64575,
+          19.23665
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CAN-005",
+        "code": "CAND-005",
+        "name": "Percolation Tank candidate #005",
+        "type": "Percolation Tank",
+        "watershed_id": "real_rs_001",
+        "latitude": 19.23465,
+        "longitude": 74.63445,
+        "stream_order": 4,
+        "catchment_cells": 29061,
+        "cost_inr": 480000,
+        "status": "Siting candidate (not field-verified)",
+        "verified": false,
+        "source": "DEM-derived hydrological siting",
+        "geometry_note": "Location computed from the real DEM stream network; requires ground confirmation before use as evidence."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.63445,
+          19.23465
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "CAN-006",
+        "code": "CAND-006",
+        "name": "Percolation Tank candidate #006",
+        "type": "Percolation Tank",
+        "watershed_id": "real_rs_001",
+        "latitude": 19.21915,
+        "longitude": 74.63375,
+        "stream_order": 3,
+        "catchment_cells": 5782,
+        "cost_inr": 480000,
+        "status": "Siting candidate (not field-verified)",
+        "verified": false,
+        "source": "DEM-derived hydrological siting",
+        "geometry_note": "Location computed from the real DEM stream network; requires ground confirmation before use as evidence."
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          74.63375,
+          19.21915
+        ]
+      }
+    }
+  ]
+}

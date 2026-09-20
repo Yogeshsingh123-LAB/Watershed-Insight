@@ -1,0 +1,33 @@
+{
+  "_comment": "LULC and index thresholds calibrated for THIS dataset. Loaded at runtime by geospatial.lulc.load_calibration(); any key omitted falls back to the engine default.",
+  "dataset": "real_rs_001 - Ralegaon Siddhi AOI, Parner taluka, Ahmednagar district, Maharashtra",
+  "calibrated_on": "2026-09-20",
+  "calibrated_from": "Sentinel-2 L2A (MGRS 43QDB), 6 epochs 2024-05-03 .. 2026-09-15; 250x250 grid @ ~11 m",
+  "thresholds": {
+    "water_ndwi": 0.2,
+    "water_fallback_ndwi": 0.05,
+    "ndvi_dense": 0.5,
+    "ndvi_crop": 0.3,
+    "ndvi_scrub": 0.15,
+    "ndbi_builtup": 0.2
+  },
+  "evidence": {
+    "ndvi_pre_monsoon_2026_p50": 0.137,
+    "ndvi_pre_monsoon_2026_p99": 0.41,
+    "ndvi_post_monsoon_2025_p50": 0.482,
+    "ndbi_pre_monsoon_2026_p50": 0.136,
+    "ndbi_pre_monsoon_2026_p1": 0.013,
+    "ndbi_pre_monsoon_2026_p90": 0.18,
+    "ndbi_pre_monsoon_2026_p99": 0.236,
+    "ndwi_pre_monsoon_2026_max": -0.018,
+    "mndwi_pre_monsoon_2026_max": -0.058,
+    "swir_pre_monsoon_2026_min": 0.1237,
+    "swir_post_monsoon_2025_min": 0.0264
+  },
+  "notes": [
+    "NDBI is NOT a built-up discriminator over dry basaltic terrain: measured NDBI spans +0.013 (p1) to +0.236 (p99) with a median of +0.136, so the textbook 'NDBI > 0.02 = built-up' rule labels 470 ha (65%) of this rural AOI as settlement. The built-up class is therefore taken from the > 0.20 tail (7.8 ha, ~1%), which is consistent with a village settlement plus hardpan.",
+    "Separating bare soil from built-up reliably requires a reference settlement layer (e.g. GHSL or a digitised revenue map) or a supervised classifier; with VNIR+SWIR alone the two are spectrally confusable. Treat 'built-up' here as provisional.",
+    "No open water is detectable in either pre-monsoon epoch: SWIR never falls below 0.1237 and MNDWI peaks at -0.058, i.e. there is genuinely no surface storage in this 726 ha window in May. A small water body (~0.16 ha by NDWI > 0.10, ~0.06 ha by MNDWI > 0) does appear post-monsoon. The zero is a real observation, not a detection failure.",
+    "NDVI thresholds transfer well: pre-monsoon p50 = 0.137 (fallow/scrub) and post-monsoon p50 = 0.482 (cropland) sit on either side of the 0.30 cropland cut, and the 0.50 dense-canopy cut captures the irrigated/riparian tail."
+  ]
+}

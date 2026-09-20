@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-09-20T08:31:18",
+  "problem_statement": "SIH PS26015",
+  "note": "REAL EO DATASET - Sentinel-2 L2A (AWS Open Data) + terrain-tile DEM. Interventions are DEM-sited candidates pending field verification.",
+  "real_data": true,
+  "hierarchy": [
+    {
+      "code": "MH",
+      "name": "Maharashtra",
+      "districts": [
+        {
+          "code": "MH-AN",
+          "name": "Ahmednagar",
+          "blocks": [
+            {
+              "code": "MH-AN-PNR",
+              "name": "Parner",
+              "watersheds": [
+                {
+                  "id": "real_rs_001",
+                  "code": "MWS-MH-RALEGAON-001",
+                  "name": "Ralegaon Siddhi Micro-Watershed Window",
+                  "area_ha": 726.42,
+                  "interventions": 6
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "watersheds": {
+    "real_rs_001": {
+      "id": "real_rs_001",
+      "code": "MWS-MH-RALEGAON-001",
+      "name": "Ralegaon Siddhi Micro-Watershed Window",
+      "state": "Maharashtra",
+      "state_code": "MH",
+      "district": "Ahmednagar",
+      "district_code": "MH-AN",
+      "block": "Parner",
+      "block_code": "MH-AN-PNR",
+      "project": "PMKSY-WDC 2.0 (real-data validation AOI)",
+      "village": "Ralegaon Siddhi",
+      "rainfall_mm": 560,
+      "soil": "Medium black / shallow basaltic (Deccan traps)",
+      "aquifer": "Deccan basalt - weathered / fractured",
+      "population": null,
+      "households": null,
+      "area_ha": 726.42,
+      "centre": [
+        19.2247,
+        74.6333
+      ],
+      "bounds": [
+        74.6208,
+        19.2122,
+        74.64580000000001,
+        19.237199999999998
+      ],
+      "real_data": true,
+      "data_sources": {
+        "satellite": "Sentinel-2 MSI L2A (AWS Open Data / Earth Search STAC)",
+        "dem": "AWS Terrain Tiles (terrarium, ~30 m source)",
+        "interventions": "DEM-derived siting candidates (not field-verified)"
+      }
+    }
+  }
+}

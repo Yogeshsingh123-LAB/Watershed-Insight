@@ -1,0 +1,83 @@
+{
+  "generated_at": "2026-09-20T08:31:18",
+  "problem_statement": "SIH PS26015",
+  "source": "Sentinel-2 L2A COGs (AWS Open Data) via STAC",
+  "stac_endpoint": "https://earth-search.aws.element84.com/v1",
+  "collection": "sentinel-2-l2a",
+  "cloud_mask": "Sentinel-2 Scene Classification Layer (0|1|3|8|9|10 masked)",
+  "note": "Real Earth-observation data. Bands are surface reflectance in [0, 1]; masked pixels are NaN.",
+  "epochs": [
+    {
+      "key": "2024-05-03_T0",
+      "date": "2024-05-03",
+      "label": "Pre-monsoon 2024",
+      "role": "T0",
+      "season": "Pre-monsoon",
+      "cloud_cover_pct": 0.0,
+      "valid_pixel_fraction": 1.0,
+      "sensor": "Sentinel-2 MSI (L2A) - SENTINEL-2A tile MGRS-43QDB",
+      "scene_id": "S2A_43QDB_20240503_0_L2A",
+      "product": "S2A_43QDB_20240503_0_L2A"
+    },
+    {
+      "key": "2024-11-29_intermediate",
+      "date": "2024-11-29",
+      "label": "Post-monsoon 2024",
+      "role": "intermediate",
+      "season": "Post-monsoon",
+      "cloud_cover_pct": 0.0,
+      "valid_pixel_fraction": 1.0,
+      "sensor": "Sentinel-2 MSI (L2A) - SENTINEL-2A tile MGRS-43QDB",
+      "scene_id": "S2A_43QDB_20241129_0_L2A",
+      "product": "S2A_43QDB_20241129_0_L2A"
+    },
+    {
+      "key": "2025-04-20_intermediate",
+      "date": "2025-04-20",
+      "label": "Pre-monsoon 2025",
+      "role": "intermediate",
+      "season": "Pre-monsoon",
+      "cloud_cover_pct": 0.0,
+      "valid_pixel_fraction": 1.0,
+      "sensor": "Sentinel-2 MSI (L2A) - SENTINEL-2A tile MGRS-43QDB",
+      "scene_id": "S2A_43QDB_20250420_0_L2A",
+      "product": "S2A_43QDB_20250420_0_L2A"
+    },
+    {
+      "key": "2025-11-14_intermediate",
+      "date": "2025-11-14",
+      "label": "Post-monsoon 2025",
+      "role": "intermediate",
+      "season": "Post-monsoon",
+      "cloud_cover_pct": 0.0,
+      "valid_pixel_fraction": 1.0,
+      "sensor": "Sentinel-2 MSI (L2A) - SENTINEL-2C tile MGRS-43QDB",
+      "scene_id": "S2C_43QDB_20251114_0_L2A",
+      "product": "S2C_43QDB_20251114_0_L2A"
+    },
+    {
+      "key": "2026-05-28_T1",
+      "date": "2026-05-28",
+      "label": "Pre-monsoon 2026",
+      "role": "T1",
+      "season": "Pre-monsoon",
+      "cloud_cover_pct": 0.0,
+      "valid_pixel_fraction": 1.0,
+      "sensor": "Sentinel-2 MSI (L2A) - SENTINEL-2B tile MGRS-43QDB",
+      "scene_id": "S2B_43QDB_20260528_0_L2A",
+      "product": "S2B_43QDB_20260528_0_L2A"
+    },
+    {
+      "key": "2026-09-15_intermediate",
+      "date": "2026-09-15",
+      "label": "Monsoon 2026",
+      "role": "intermediate",
+      "season": "Monsoon",
+      "cloud_cover_pct": 17.98,
+      "valid_pixel_fraction": 0.6274,
+      "sensor": "Sentinel-2 MSI (L2A) - SENTINEL-2B tile MGRS-43QDB",
+      "scene_id": "S2B_43QDB_20260915_0_L2A",
+      "product": "S2B_43QDB_20260915_0_L2A"
+    }
+  ]
+}
