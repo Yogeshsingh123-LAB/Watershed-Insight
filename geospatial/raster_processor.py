@@ -37,6 +37,13 @@ from .geo_utils import (
     pct_change,
     safe_div,
 )
+from .scoring import (
+    confidence as compute_confidence,
+    impact_components,
+    impact_points,
+    impact_score as composite_impact,
+    seasonal_matching,
+)
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA_DIR = os.path.join(BASE_DIR, "data", "sample")
@@ -114,6 +121,29 @@ class RasterStack:
     def shape(self) -> Tuple[int, int]:
         first = next(iter(self.bands.values()))
         return first.shape
+
+
+def nan_weighted_mean(values: np.ndarray, weights: Optional[np.ndarray] = None) -> float:
+    """
+    Area-weighted mean that ignores cloud-masked (NaN) observations.
+
+    Real satellite data contains no-data: clouds, cloud shadow, cirrus and
+    sensor saturation are masked to NaN by the ingestion adapter.  A plain
+    ``np.average`` would then propagate NaN into every headline indicator, so
+    every statistic in the engine routes through this helper.  Returns NaN only
+    when *no* finite observation remains - which is the honest answer.
+    """
+    values = np.asarray(values, dtype="float64").ravel()
+    if weights is None:
+        ok = np.isfinite(values)
+        if not ok.any():
+            return float("nan")
+        return float(values[ok].mean())
+    weights = np.broadcast_to(np.asarray(weights, dtype="float64"), values.shape).ravel()
+    ok = np.isfinite(values) & np.isfinite(weights)
+    if not ok.any():
+        return float("nan")
+    return float(np.average(values[ok], weights=weights[ok]))
 
 
 def normalised_difference(a: np.ndarray, b: np.ndarray) -> np.ndarray:
@@ -233,8 +263,8 @@ class RasterProcessor:
             veg = (stack.ndvi > VEG_NDVI_THRESHOLD).astype("float32")
             dense = (stack.ndvi > DENSE_VEG_NDVI_THRESHOLD).astype("float32")
             stats.update({
-                f"ndvi_mean_{name}": round(float(np.average(stack.ndvi, weights=None)), 4),
-                f"ndwi_mean_{name}": round(float(np.average(stack.ndwi, weights=None)), 4),
+                f"ndvi_mean_{name}": round(nan_weighted_mean(stack.ndvi), 4),
+                f"ndwi_mean_{name}": round(nan_weighted_mean(stack.ndwi), 4),
                 f"water_area_ha_{name}": round(float(np.sum(water * area)), 2),
                 f"veg_area_ha_{name}": round(float(np.sum(veg * area)), 2),
                 f"dense_veg_area_ha_{name}": round(float(np.sum(dense * area)), 2),
@@ -272,7 +302,7 @@ class RasterProcessor:
         return {
             **describe(values),
             "area_ha": round(float(weights.sum()), 3),
-            "weighted_mean": round(float(np.average(values, weights=weights)), 4),
+            "weighted_mean": round(nan_weighted_mean(values, weights), 4),
         }
 
     def class_area_ha(self, class_array: np.ndarray, mask: Optional[np.ndarray] = None) -> Dict[int, float]:
@@ -310,10 +340,10 @@ class RasterProcessor:
         dense_a = float(area[mask & (a.ndvi > DENSE_VEG_NDVI_THRESHOLD)].sum())
         dense_b = float(area[mask & (b.ndvi > DENSE_VEG_NDVI_THRESHOLD)].sum())
 
-        ndvi_a = float(np.average(a.ndvi[mask], weights=area[mask]))
-        ndvi_b = float(np.average(b.ndvi[mask], weights=area[mask]))
-        ndwi_a = float(np.average(a.ndwi[mask], weights=area[mask]))
-        ndwi_b = float(np.average(b.ndwi[mask], weights=area[mask]))
+        ndvi_a = nan_weighted_mean(a.ndvi[mask], area[mask])
+        ndvi_b = nan_weighted_mean(b.ndvi[mask], area[mask])
+        ndwi_a = nan_weighted_mean(a.ndwi[mask], area[mask])
+        ndwi_b = nan_weighted_mean(b.ndwi[mask], area[mask])
 
         ndvi_delta = round(ndvi_b - ndvi_a, 4)
         water_delta = round(water_b - water_a, 3)
@@ -326,19 +356,59 @@ class RasterProcessor:
         # neither water before nor after - this is the defensible comparison.
         land_mask = mask & (a.ndwi <= WATER_NDWI_THRESHOLD) & (b.ndwi <= WATER_NDWI_THRESHOLD)
         if np.any(land_mask):
-            ndvi_land_a = float(np.average(a.ndvi[land_mask], weights=area[land_mask]))
-            ndvi_land_b = float(np.average(b.ndvi[land_mask], weights=area[land_mask]))
+            ndvi_land_a = nan_weighted_mean(a.ndvi[land_mask], area[land_mask])
+            ndvi_land_b = nan_weighted_mean(b.ndvi[land_mask], area[land_mask])
             land_delta = round(ndvi_land_b - ndvi_land_a, 4)
         else:
             ndvi_land_a, ndvi_land_b, land_delta = ndvi_a, ndvi_b, ndvi_delta
         newly_inundated_ha = round(float(area[mask & (a.ndwi <= WATER_NDWI_THRESHOLD) &
                                               (b.ndwi > WATER_NDWI_THRESHOLD)].sum()), 3)
 
+        # --- background (difference-in-differences) ------------------------ #
+        # Anything measured inside the buffer also happened, to some degree,
+        # everywhere else in the watershed under the same rainfall.  Reporting
+        # the change *net of* that background is what separates an intervention
+        # effect from a good monsoon.
+        bg_a = nan_weighted_mean(a.ndvi)
+        bg_b = nan_weighted_mean(b.ndvi)
+        bg_water_a = float(np.nansum((a.ndwi > WATER_NDWI_THRESHOLD) * area))
+        bg_water_b = float(np.nansum((b.ndwi > WATER_NDWI_THRESHOLD) * area))
+        background = {
+            "ndvi_before": round(bg_a, 4),
+            "ndvi_after": round(bg_b, 4),
+            "ndvi_change": round(bg_b - bg_a, 4),
+            "water_area_before_ha": round(bg_water_a, 3),
+            "water_area_after_ha": round(bg_water_b, 3),
+            "water_area_change_ha": round(bg_water_b - bg_water_a, 3),
+        }
+        net_ndvi_change_land = round(land_delta - (bg_b - bg_a), 4)
+
         degraded = float(area[mask & ((b.ndvi - a.ndvi) < -0.10)].sum())
         improved = float(area[mask & ((b.ndvi - a.ndvi) > 0.10)].sum())
         stable = float(area[mask & (np.abs(b.ndvi - a.ndvi) <= 0.10)].sum())
 
-        interpretation, confidence, score = self._synthesise(
+        # --- confidence: how much the impact score can be trusted ----------- #
+        # Every factor is measured, not asserted.  The *worse* of the two epochs
+        # governs completeness: one cloudy observation caps the confidence of a
+        # two-epoch comparison no matter how good the other is.
+        valid_a = float(np.isfinite(a.ndvi[mask]).mean()) if mask.any() else 0.0
+        valid_b = float(np.isfinite(b.ndvi[mask]).mean()) if mask.any() else 0.0
+        usable_epochs = sum(
+            1 for e in self.epochs
+            if np.isfinite(self.stacks[e.key].ndvi[mask]).mean() > 0.5)
+        confidence = compute_confidence({
+            "observation_completeness": min(valid_a, valid_b),
+            "temporal_replication": min(1.0, usable_epochs / 4.0),
+            "seasonal_matching": seasonal_matching(a.date, b.date),
+            "photo_corroboration": 0.0,     # filled in by the store (needs the photo index)
+            "spatial_coverage": min(valid_a, valid_b),
+            "baseline_control": 0.4,        # raised to 1.0 by the store if a baseline exists
+        })
+        confidence["note"] = (
+            "photo_corroboration and baseline_control are completed by the data "
+            "layer, which owns the photo index and the commissioning dates.")
+
+        interpretation, evidence_strength, score, components, score_components = self._synthesise(
             ndvi_delta=ndvi_delta, ndvi_land_delta=land_delta, water_delta=water_delta,
             veg_delta=veg_delta, ndvi_before=ndvi_a, buffer_area_ha=buf_area_ha,
             improved_ha=improved, degraded_ha=degraded, radius_m=radius_m,
@@ -363,6 +433,9 @@ class RasterProcessor:
             "ndvi_after_land": round(ndvi_land_b, 4),
             "ndvi_change_land": land_delta,
             "newly_inundated_ha": newly_inundated_ha,
+            "background": background,
+            "net_ndvi_change_land": net_ndvi_change_land,
+            "score_saturated": bool(score >= 99.5 or score <= 0.5),
             "water_area_before_ha": round(water_a, 3),
             "water_area_after_ha": round(water_b, 3),
             "water_area_change_ha": water_delta,
@@ -379,7 +452,10 @@ class RasterProcessor:
             "improved_pct": round(safe_div(improved, buf_area_ha) * 100, 1),
             "degraded_pct": round(safe_div(degraded, buf_area_ha) * 100, 1),
             "impact_score": score,
+            "impact_components": components,
+            "impact_points": score_components,
             "interpretation": interpretation,
+            "evidence_strength": evidence_strength,
             "confidence": confidence,
         }
 
@@ -390,7 +466,7 @@ class RasterProcessor:
     def _synthesise(ndvi_delta: float, ndvi_land_delta: float, water_delta: float,
                     veg_delta: float, ndvi_before: float, buffer_area_ha: float,
                     improved_ha: float, degraded_ha: float, radius_m: float,
-                    newly_inundated_ha: float = 0.0) -> Tuple[str, str, float]:
+                    newly_inundated_ha: float = 0.0) -> Tuple[str, str, float, dict, dict]:
         """Turn raw deltas into an auditable narrative + 0-100 impact score.
 
         Scoring components (documented in the evidence pack):
@@ -404,10 +480,11 @@ class RasterProcessor:
         water_gain_pct = safe_div(water_delta, buffer_area_ha) * 100
         ndvi_rel = pct_change(ndvi_before, ndvi_before + ndvi_land_delta)
 
-        veg_component = float(np.clip(ndvi_land_delta * 170.0, -20.0, 40.0))
-        water_component = float(np.clip(water_gain_pct * 1.5, -20.0, 45.0))
-        extent_component = float(np.clip(safe_div(improved_ha, buffer_area_ha) * 45.0, -10.0, 20.0))
-        score = float(np.clip(round(veg_component + water_component + extent_component, 1), 0, 100))
+        components = impact_components(
+            ndvi_land_delta=ndvi_land_delta, water_delta_ha=water_delta,
+            improved_ha=improved_ha, buffer_area_ha=buffer_area_ha)
+        score = composite_impact(components)
+        score_components = impact_points(components)
 
         inundation_note = (
             f" {newly_inundated_ha:.2f} ha of the buffer was converted to open water, "
@@ -451,7 +528,7 @@ class RasterProcessor:
                 f"a zone of influence smaller than the {int(radius_m)} m analysis buffer. Flag for field "
                 f"verification."
             )
-        return interpretation, confidence, score
+        return interpretation, confidence, score, components, score_components
 
     # ------------------------------------------------------------------ #
     # Time series
@@ -467,21 +544,24 @@ class RasterProcessor:
         for epoch in self.epochs:
             stack = self.stacks[epoch.key]
             if mask is None:
-                ndvi = float(stack.ndvi.mean())
-                ndwi = float(stack.ndwi.mean())
+                ndvi = nan_weighted_mean(stack.ndvi)
+                ndwi = nan_weighted_mean(stack.ndwi)
                 water = float(area[stack.ndwi > WATER_NDWI_THRESHOLD].sum())
                 veg = float(area[stack.ndvi > VEG_NDVI_THRESHOLD].sum())
             else:
-                ndvi = float(np.average(stack.ndvi[mask], weights=area[mask]))
-                ndwi = float(np.average(stack.ndwi[mask], weights=area[mask]))
+                ndvi = nan_weighted_mean(stack.ndvi[mask], area[mask])
+                ndwi = nan_weighted_mean(stack.ndwi[mask], area[mask])
                 water = float(area[mask & (stack.ndwi > WATER_NDWI_THRESHOLD)].sum())
                 veg = float(area[mask & (stack.ndvi > VEG_NDVI_THRESHOLD)].sum())
+            observed = (stack.ndvi[mask] if mask is not None else stack.ndvi)
+            valid = np.isfinite(observed)
             series.append({
                 "key": epoch.key,
                 "date": epoch.date,
                 "label": epoch.label,
                 "season": epoch.season,
                 "role": epoch.role,
+                "observed_fraction": round(float(valid.mean()), 4),
                 "ndvi": round(ndvi, 4),
                 "ndwi": round(ndwi, 4),
                 "water_area_ha": round(water, 3),
@@ -526,12 +606,12 @@ class RasterProcessor:
             "index": index_name,
             "epoch_a": {"key": key_a, "date": self.get_epoch(key_a).date},
             "epoch_b": {"key": key_b, "date": self.get_epoch(key_b).date},
-            "mean_before": round(float(a.mean()), 4),
-            "mean_after": round(float(b.mean()), 4),
-            "mean_delta": round(float(delta.mean()), 4),
-            "std_delta": round(float(delta.std()), 4),
-            "min_delta": round(float(delta.min()), 4),
-            "max_delta": round(float(delta.max()), 4),
+            "mean_before": round(nan_weighted_mean(a), 4),
+            "mean_after": round(nan_weighted_mean(b), 4),
+            "mean_delta": round(nan_weighted_mean(delta), 4),
+            "std_delta": round(float(np.nanstd(delta)), 4),
+            "min_delta": round(float(np.nanmin(delta)), 4),
+            "max_delta": round(float(np.nanmax(delta)), 4),
             "pct_improved_area": classes["improvement"]["pct_of_area"] + classes["large_improvement"]["pct_of_area"],
             "pct_degraded_area": classes["decline"]["pct_of_area"] + classes["large_decline"]["pct_of_area"],
             "change_classes": classes,

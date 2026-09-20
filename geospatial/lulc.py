@@ -18,6 +18,8 @@ watershed monitoring, and the module then produces the *transition matrix*
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+import json
+import os
 from typing import Dict, List, Optional, Tuple
 
 import numpy as np
@@ -39,13 +41,63 @@ CLASS_CODES = {
 
 CODE_BY_NAME = {v[0]: k for k, v in CLASS_CODES.items()}
 
-# Thresholds - exposed so they can be tuned / documented in the evidence pack.
-WATER_NDWI = 0.20
-WATER_FALLBACK_NDWI = 0.05
-NDVI_DENSE = 0.50
-NDVI_CROP = 0.30
-NDVI_SCRUB = 0.15
-NDBI_BUILTUP = 0.02
+# --------------------------------------------------------------------------- #
+# Thresholds
+# --------------------------------------------------------------------------- #
+# These are *data*, not code.  A dataset may override any of them with a
+# ``calibration.json`` next to its catalog (see ``load_calibration``), because
+# the correct cut-off depends on the sensor, the season and the terrain.
+#
+# The defaults below were recalibrated after the first real Sentinel-2 AOI
+# (Ralegaon Siddhi, Deccan basalt, pre-monsoon): dry fallow basalt sits at
+# NDBI ~ +0.10..+0.18 with NDVI < 0.15, so the textbook "NDBI > 0.02 = built-up"
+# rule labelled 65 % of a rural watershed as settlement.  Built-up / hardpan is
+# now taken from the > 0.20 NDBI tail, and the remaining low-NDVI pixels fall
+# through to bare / fallow.  See docs/CALIBRATION.md for the measured
+# distributions that justify each number.
+DEFAULT_THRESHOLDS: Dict[str, float] = {
+    "water_ndwi": 0.20,        # McFeeters NDWI > 0.20 -> surface water
+    "water_fallback_ndwi": 0.05,  # ... or NDWI > 0.05 on non-vegetated pixels
+    "ndvi_dense": 0.50,        # dense canopy / plantation
+    "ndvi_crop": 0.30,         # cropland / moderate vegetation
+    "ndvi_scrub": 0.15,        # scrub / degraded land
+    "ndbi_builtup": 0.20,      # built-up / hardpan tail (see calibration note)
+}
+
+# Backwards-compatible module constants (imported elsewhere).
+WATER_NDWI = DEFAULT_THRESHOLDS["water_ndwi"]
+WATER_FALLBACK_NDWI = DEFAULT_THRESHOLDS["water_fallback_ndwi"]
+NDVI_DENSE = DEFAULT_THRESHOLDS["ndvi_dense"]
+NDVI_CROP = DEFAULT_THRESHOLDS["ndvi_crop"]
+NDVI_SCRUB = DEFAULT_THRESHOLDS["ndvi_scrub"]
+NDBI_BUILTUP = DEFAULT_THRESHOLDS["ndbi_builtup"]
+
+
+def resolve_thresholds(thresholds: Optional[Dict[str, float]] = None) -> Dict[str, float]:
+    """Merge a dataset override onto the defaults (unknown keys ignored)."""
+    merged = dict(DEFAULT_THRESHOLDS)
+    if thresholds:
+        merged.update({k: float(v) for k, v in thresholds.items()
+                       if k in DEFAULT_THRESHOLDS})
+    return merged
+
+
+def load_calibration(data_dir: str) -> Dict[str, float]:
+    """
+    Read ``<data_dir>/calibration.json`` if present.
+
+    Real deployments should calibrate thresholds against their own terrain
+    rather than trusting defaults derived from another landscape.
+    """
+    path = os.path.join(data_dir, "calibration.json")
+    if not os.path.exists(path):
+        return dict(DEFAULT_THRESHOLDS)
+    try:
+        with open(path, "r", encoding="utf-8") as fh:
+            raw = json.load(fh)
+    except (OSError, ValueError):
+        return dict(DEFAULT_THRESHOLDS)
+    return resolve_thresholds(raw.get("thresholds", {}))
 
 
 @dataclass
@@ -83,19 +135,24 @@ class LulcResult:
 
 
 def classify(ndvi: np.ndarray, ndwi: np.ndarray, ndbi: Optional[np.ndarray] = None,
-             grid: Optional[RasterGrid] = None, epoch_key: str = "") -> LulcResult:
+             grid: Optional[RasterGrid] = None, epoch_key: str = "",
+             thresholds: Optional[Dict[str, float]] = None) -> LulcResult:
     """Apply the Level-2 decision tree and return an integer class raster."""
+    t = resolve_thresholds(thresholds)
     ndvi = np.asarray(ndvi, dtype="float32")
     ndwi = np.asarray(ndwi, dtype="float32")
     ndbi = np.asarray(ndbi, dtype="float32") if ndbi is not None else np.zeros_like(ndvi)
 
     out = np.full(ndvi.shape, 6, dtype="uint8")          # default: built-up/hardpan
-    out = np.where(ndvi >= NDVI_SCRUB, 4, out)           # scrub / degraded
-    out = np.where(ndvi >= NDVI_CROP, 3, out)            # cropland
-    out = np.where(ndvi >= NDVI_DENSE, 2, out)           # dense vegetation
-    out = np.where((ndvi < NDVI_SCRUB) & (ndbi < NDBI_BUILTUP), 5, out)  # bare / fallow
-    out = np.where(ndwi > WATER_NDWI, 1, out)            # water
-    out = np.where((ndwi > WATER_FALLBACK_NDWI) & (ndvi < NDVI_SCRUB), 1, out)
+    out = np.where(ndvi >= t["ndvi_scrub"], 4, out)      # scrub / degraded
+    out = np.where(ndvi >= t["ndvi_crop"], 3, out)       # cropland
+    out = np.where(ndvi >= t["ndvi_dense"], 2, out)      # dense vegetation
+    # Low-NDVI pixels: bright exposed soil stays "bare"; only the strongly
+    # positive NDBI tail (hardpan / settlement) becomes "built-up".
+    out = np.where((ndvi < t["ndvi_scrub"]) & (ndbi < t["ndbi_builtup"]), 5, out)
+    out = np.where(ndwi > t["water_ndwi"], 1, out)       # water
+    out = np.where((ndwi > t["water_fallback_ndwi"])
+                   & (ndvi < t["ndvi_scrub"]), 1, out)
     out = np.where(np.isnan(ndvi) | np.isnan(ndwi), 0, out)
     return LulcResult(classes=out.astype("uint8"), grid=grid, epoch_key=epoch_key)
 
