@@ -67,8 +67,15 @@ slow down.
 > output contracts** — we can swap in a fine-tuned classifier without touching
 > the evidence chain."
 
-**The one-word fix:** never say "AI-powered". Say
-**"AI-assisted geospatial decision-support"** and then define it as above.
+**The wording discipline (applied repo-wide as of the latest commit):**
+
+* Do **not** lead with "AI-powered", "AI-assisted", or "AI-driven" — not in the
+  title, the abstract, or the first slide. Lead with
+  **"geospatial decision-support platform"**.
+* Say "AI" only when *asked*, and answer with the table above.
+* Reason: the title is the first thing anyone reads. If it claims AI and the
+  substance is deterministic, a reviewer spends the rest of the session looking
+  for the gap instead of listening to the contribution.
 
 ---
 
@@ -129,7 +136,7 @@ their exports and never writes back to the systems of record.
 **Q. How would DoLR actually deploy this?**
 A. Docker Compose, two containers, no GPU, no paid API. Point `WS_DATA_DIR` at a
 nightly SRISHTI mirror and drop DRISHTI exports into the upload endpoint. The
-engine is NumPy-only, so it runs on a ₹ 500/month VM.
+engine is NumPy-only — no GPU, no paid inference API, one small VM. That is a **design target, not a benchmarked figure**; say "designed for low-cost deployment" rather than quoting a rupee amount.
 
 **Q. What does it cost per watershed?**
 A. Marginal cost is essentially zero: public Sentinel-2, no licences, no
@@ -141,6 +148,15 @@ month), the **district officer** (which projects to replicate), and the **audit
 team** (signed PDF evidence per structure).
 
 ### Honesty questions (expect these)
+
+**Q. You use "difference-in-differences" — are you claiming causation?**
+A. No, and the phrasing matters. Say **"difference-in-differences estimate of
+the structure's own contribution"**, never "the causal effect" or "the impact
+caused by". Our estimates control for watershed-wide change under the same
+rainfall, which is stronger than a raw before/after comparison, but rainfall
+variability, cropping decisions and groundwater extraction remain unobserved
+confounders. The repo's own limitation #4 says it: *spatial association, not
+causation*. Use that sentence verbatim if challenged.
 
 **Q. What is the biggest weakness of your project?**
 A. Impact attribution is unvalidated on real data. We have a correct *negative*
@@ -173,7 +189,9 @@ existing contract.
 5. **Evidence** — *Generate PDF*: 4-page pack, including the confidence
    decomposition and the background comparison.
 6. **Close** — "Now the same pipeline on real Sentinel-2": restart with
-   `WS_DATA_DIR=data/real`.
+   `WS_DATA_DIR=data/real`. Say explicitly: *"the satellite half is validated on
+   real imagery; the photo-evidence half is validated on our synthetic surrogate
+   because no field photographs exist for that AOI yet."*
 
 ---
 

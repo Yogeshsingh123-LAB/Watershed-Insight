@@ -2,7 +2,7 @@
 
 # 🛰️ Watershed Insight
 
-**An AI-Assisted Geospatial Decision-Support Platform for Micro-Watershed Monitoring,
+**A Geospatial Decision-Support Platform for Micro-Watershed Monitoring,
 Geo-Coded Image Interpretation and Impact Assessment**
 
 [![SIH 2026](https://img.shields.io/badge/SIH-2026-orange?style=for-the-square)](https://www.sih.gov.in/)
@@ -16,7 +16,7 @@ Geo-Coded Image Interpretation and Impact Assessment**
 *Smart India Hackathon 2026 · Problem Statement **PS26015** ·
 Department of Land Resources (DoLR), Ministry of Rural Development*
 
-> **What "AI-assisted" means here — stated up front, not buried.**
+> **On the word "AI" — stated up front, not buried.**
 > Today the platform is **deterministic and auditable**: spectral indices, a
 > calibratable rule-based classifier, colour-index computer vision on field
 > photographs, and composite scoring with published weights. Every figure in a
@@ -107,9 +107,12 @@ Full component-level design: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** ·
 ### Why NumPy only — no GDAL / rasterio / geopandas
 
 The engine implements its own geodetic maths, D8 hydrology, rasterisation and
-point-in-polygon tests. That keeps the platform deployable on a ₹ 500/month VM,
-removes a notorious installation barrier for district teams, and keeps every formula
-visible and auditable in ~2,000 lines of readable Python.
+point-in-polygon tests. Removing GDAL is a **deployment-cost design target** — no
+GPU, no paid inference API, one small VM — but it is a target, not a benchmark:
+we have not yet published CPU, RAM or latency measurements. What it does
+demonstrably buy you is the removal of a notorious installation barrier for
+district teams, and every formula stays visible and auditable in ~2,000 lines of
+readable Python.
 
 ---
 
@@ -250,6 +253,18 @@ Real data **found and fixed three defects that synthetic data hid** — NaN
 propagating through statistics, NDBI mislabelling 65 % of a rural watershed as
 built-up, and cloud-masked epochs. Full details, including the correct *negative*
 result at control sites, in **[docs/VALIDATION.md](docs/VALIDATION.md)**.
+
+> **What "validated on real data" covers — and what it does not.**
+> Verified end-to-end on real imagery: ingestion → cloud masking → spectral
+> indices → LULC → DEM hydrology → change detection → time series → impact and
+> confidence scoring → PDF evidence generation.
+> **Not** validated on real data: the **DRISHTI photo-evidence half** (EXIF
+> binding, validation flags, automated photo interpretation, photo↔satellite
+> cross-checks). No field photographs exist for this AOI, so that half is
+> validated only against the synthetic surrogate, which was built to exercise it.
+> The six candidate sites in the real AOI are **DEM-sited locations, not surveyed
+> structures** — no intervention inventory was available, so impact *attribution*
+> remains unproven (§6 of the validation report).
 
 ## 📊 What the bundled dataset shows
 

@@ -219,7 +219,7 @@ prove the ones that exist.** This round implements that.
 | ---: | :--- | :--- |
 | 1 | Run it on real satellite data | **Done.** `scripts/ingest_sentinel.py` pulls public Sentinel-2 L2A via STAC and a terrain-tile DEM, and the full pipeline was run over **Ralegaon Siddhi, Ahmednagar** (726 ha, 6 acquisitions). See `docs/VALIDATION.md`. |
 | 2 | Split Impact from Confidence | **Done.** New `geospatial/scoring.py`: impact (0-100) and a six-factor confidence (0-100) computed from measurable evidence quality. Exposed through the API, the dashboard and both PDFs. |
-| 3 | Pre-empt "where's the AI?" | **Done.** README states the deterministic-vs-ML split up front; `docs/SIH_PREP.md` §2 gives the table and the exact wording. |
+| 3 | Pre-empt "where's the AI?" | **Done.** The title no longer claims AI at all; the README states the deterministic-vs-ML split up front and `docs/SIH_PREP.md` §2 gives the table, the wording, and the discipline ("lead with geospatial decision-support; say AI only when asked"). |
 | 4 | Defend the 40/40/20 weights | **Done.** `scripts/sensitivity.py` recomputes the ranking under 8 weightings and 4 radii; ρ ≥ 0.87 across plausible reweightings. Published in the docs. |
 | 5 | Give the repo a real commit history | **Done.** Work is committed in logical layers (engine → API → frontend → reports → data → scripts → tests → docs) rather than as one blob. |
 
@@ -267,6 +267,32 @@ positive result would have.
 4. **"No water detected" was a finding, not a bug** — pre-monsoon SWIR never
    falls below 0.124 and MNDWI peaks at −0.058, i.e. there is genuinely no open
    water in that window in May. A ~0.16 ha body appears post-monsoon.
+
+## Round 3 — making the words match the code
+
+A third pass checked the claims against the code and found three places where
+the prose claimed a hair more than the evidence supported. All three fixed:
+
+1. **The title said "AI-Assisted."** The H1 now reads *"A Geospatial
+   Decision-Support Platform"*. The deterministic-vs-ML explanation is still
+   there — it just no longer advertises a claim the prototype does not make.
+   `docs/SIH_PREP.md` now instructs the team: lead with "geospatial
+   decision-support", say "AI" only when asked.
+2. **"₹ 500/month VM" was asserted, never benchmarked.** Now described as a
+   *design target* (no GPU, no paid inference API, one small VM) with an
+   explicit statement that no CPU/RAM/latency benchmark has been published.
+3. **"Full pipeline on real data" was too broad.** The README now separates what
+   was verified on real imagery (ingestion → masking → indices → LULC →
+   hydrology → change detection → impact/confidence → PDF) from what was not:
+   the **DRISHTI photo-evidence half**, which has no field photographs for that
+   AOI and is validated only on the synthetic surrogate, and impact
+   *attribution*, since the real-AOI sites are DEM-sited candidates rather than
+   surveyed structures.
+
+One more phrasing discipline was added for the pitch: the
+difference-in-differences figure is an **estimate of the structure's own
+contribution**, never "the causal effect" — the repo's own limitation #4
+(*spatial association, not causation*) is the fallback sentence.
 
 ## Current state
 
