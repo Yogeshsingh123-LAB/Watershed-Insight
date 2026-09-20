@@ -204,3 +204,90 @@ Or `make dev` / `docker compose up --build` (API :8000, dashboard :3000).
 4. Batch-precompute overlays per epoch and back `DataStore` with Redis for state-wide scale.
 5. Replace the colour-index photo interpreter with a fine-tuned classifier while keeping
    the same output contract (`composition_pct`, `label`, `confidence`).
+
+---
+
+# Round 2 — from "it runs" to "it is defensible"
+
+After the first completion the project was reviewed against the SIH rubric.
+Three assessments converged on the same conclusion: **stop adding features —
+prove the ones that exist.** This round implements that.
+
+## What the reviews asked for, and what was done
+
+| # | Ask | Delivered |
+| ---: | :--- | :--- |
+| 1 | Run it on real satellite data | **Done.** `scripts/ingest_sentinel.py` pulls public Sentinel-2 L2A via STAC and a terrain-tile DEM, and the full pipeline was run over **Ralegaon Siddhi, Ahmednagar** (726 ha, 6 acquisitions). See `docs/VALIDATION.md`. |
+| 2 | Split Impact from Confidence | **Done.** New `geospatial/scoring.py`: impact (0-100) and a six-factor confidence (0-100) computed from measurable evidence quality. Exposed through the API, the dashboard and both PDFs. |
+| 3 | Pre-empt "where's the AI?" | **Done.** README states the deterministic-vs-ML split up front; `docs/SIH_PREP.md` §2 gives the table and the exact wording. |
+| 4 | Defend the 40/40/20 weights | **Done.** `scripts/sensitivity.py` recomputes the ranking under 8 weightings and 4 radii; ρ ≥ 0.87 across plausible reweightings. Published in the docs. |
+| 5 | Give the repo a real commit history | **Done.** Work is committed in logical layers (engine → API → frontend → reports → data → scripts → tests → docs) rather than as one blob. |
+
+## Beyond the three reviews
+
+Two things none of the reviews proposed, both prompted by running on real data:
+
+**1 · Calibration (known-answer) tests.** "49 tests pass" only proves the code
+agrees with itself. `tests/test_calibration.py` (15 tests) proves the
+*measurements* are right: a planted water body of known area is recovered within
+5 %; a 250 m buffer encloses πr² ha within 1 %; doubling the radius quadruples
+the area; area-weighting changes the mean with latitude; cloud-masked pixels do
+not bias a statistic; the score is monotonic in each component; the control
+sample is reproducible.
+
+**2 · Background (control) comparison.** A score of 65 sounds mediocre in the
+abstract. The platform now runs the identical scoring chain at **200 seeded
+random control points** inside the boundary and reports each structure's
+percentile against that background, plus a **difference-in-differences** figure
+net of watershed-wide change.
+
+```
+synthetic AOI background : 27.9 ± 18.0   → top structure 65 = p97
+real AOI background      :  2.37 ± 2.17  → candidates 1.4-3.6 = p32-p85
+```
+
+The real-AOI result is a **correct negative**: those six sites are DEM-sited
+candidates where nothing was built, and the platform finds no signal
+distinguishable from background. That validates the machinery better than a
+positive result would have.
+
+## What real data broke (and fixed)
+
+1. **NaN propagation** — `np.average` carried masked pixels into every headline
+   statistic, so a cloudy epoch returned `null`. All statistics now route
+   through `nan_weighted_mean()`.
+2. **NDBI is not a built-up detector over dry basalt** — measured NDBI spans
+   +0.013 (p1) to +0.236 (p99) with median +0.136, so `NDBI > 0.02` labelled
+   **65 % of a rural watershed as settlement**. Threshold recalibrated to 0.20
+   (7.84 ha, ~1 %), justified by the measured distribution in
+   `data/real/calibration.json`.
+3. **Thresholds are now data, not code** — any dataset can override them with a
+   `calibration.json` beside its catalog, so the next terrain can be calibrated
+   the same way instead of by guesswork.
+4. **"No water detected" was a finding, not a bug** — pre-monsoon SWIR never
+   falls below 0.124 and MNDWI peaks at −0.058, i.e. there is genuinely no open
+   water in that window in May. A ~0.16 ha body appears post-monsoon.
+
+## Current state
+
+```
+$ python -m pytest tests/ -q
+64 passed in ~13 s
+
+$ python scripts/verify_pipeline.py --pdf --api http://127.0.0.1:8000
+24 passed, 0 failed
+
+$ python scripts/sensitivity.py --data-dir data/real
+ROBUST within the plausible range (rho >= 0.986)
+```
+
+Two API instances are provided: `:8000` on the synthetic demo dataset
+(full photo/EXIF features) and `:8001` on the real Sentinel-2 AOI.
+
+## The remaining gap, stated plainly
+
+**Impact attribution is not yet validated on real data (T4).** The measurement
+chain is; the detection of real, dated structures is not, because no public
+inventory of that kind exists for the AOI. Closing it requires one district
+PMKSY-WDC inventory (structure type, GPS, commissioning date) — a **data**
+substitution, not a code change. Plan in `docs/VALIDATION.md` §6.

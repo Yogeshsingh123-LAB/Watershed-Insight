@@ -55,3 +55,10 @@ htmlcov/
 
 # Generated raster overlays (rebuild with: python scripts/generate_sample_data.py)
 data/sample/overlays/
+
+# Generated overlays for the real-data AOI
+data/real/overlays/
+
+# Runtime upload / thumbnail directories populated by tests and the API
+data/*/photos/uploads/
+data/*/photos/thumbnails/

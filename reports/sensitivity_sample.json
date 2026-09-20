@@ -1,0 +1,222 @@
+{
+  "watershed_id": "watershed_001",
+  "default_weights": "40/40/20",
+  "n_interventions": 10,
+  "weight_sensitivity": [
+    {
+      "weights": "40/40/20",
+      "vegetation": 40.0,
+      "water": 40.0,
+      "extent": 20.0,
+      "spearman_rho": 1.0,
+      "top3_jaccard": 1.0,
+      "top3": [
+        "INT-PT-003",
+        "INT-FP-005",
+        "INT-PL-008"
+      ],
+      "top1_changed": false,
+      "max_rank_displacement": 0,
+      "score_range": [
+        32.9,
+        64.7
+      ]
+    },
+    {
+      "weights": "50/30/20",
+      "vegetation": 50.0,
+      "water": 30.0,
+      "extent": 20.0,
+      "spearman_rho": 0.8667,
+      "top3_jaccard": 0.5,
+      "top3": [
+        "INT-PL-008",
+        "INT-PL-002",
+        "INT-PT-003"
+      ],
+      "top1_changed": true,
+      "max_rank_displacement": 2,
+      "score_range": [
+        35.0,
+        63.7
+      ]
+    },
+    {
+      "weights": "30/50/20",
+      "vegetation": 30.0,
+      "water": 50.0,
+      "extent": 20.0,
+      "spearman_rho": 1.0,
+      "top3_jaccard": 1.0,
+      "top3": [
+        "INT-PT-003",
+        "INT-FP-005",
+        "INT-PL-008"
+      ],
+      "top1_changed": false,
+      "max_rank_displacement": 0,
+      "score_range": [
+        30.8,
+        71.6
+      ]
+    },
+    {
+      "weights": "40/30/30",
+      "vegetation": 40.0,
+      "water": 30.0,
+      "extent": 30.0,
+      "spearman_rho": 0.8667,
+      "top3_jaccard": 0.5,
+      "top3": [
+        "INT-PL-008",
+        "INT-PL-002",
+        "INT-PT-003"
+      ],
+      "top1_changed": true,
+      "max_rank_displacement": 2,
+      "score_range": [
+        39.1,
+        64.9
+      ]
+    },
+    {
+      "weights": "33/33/33",
+      "vegetation": 33.3,
+      "water": 33.3,
+      "extent": 33.4,
+      "spearman_rho": 0.9515,
+      "top3_jaccard": 0.5,
+      "top3": [
+        "INT-PT-003",
+        "INT-PL-008",
+        "INT-PL-002"
+      ],
+      "top1_changed": false,
+      "max_rank_displacement": 2,
+      "score_range": [
+        39.8,
+        64.2
+      ]
+    },
+    {
+      "weights": "60/20/20",
+      "vegetation": 60.0,
+      "water": 20.0,
+      "extent": 20.0,
+      "spearman_rho": 0.5394,
+      "top3_jaccard": 0.2,
+      "top3": [
+        "INT-PL-008",
+        "INT-PL-002",
+        "INT-CB-004"
+      ],
+      "top1_changed": true,
+      "max_rank_displacement": 5,
+      "score_range": [
+        37.1,
+        72.4
+      ]
+    },
+    {
+      "weights": "20/60/20",
+      "vegetation": 20.0,
+      "water": 60.0,
+      "extent": 20.0,
+      "spearman_rho": 0.903,
+      "top3_jaccard": 0.5,
+      "top3": [
+        "INT-PT-003",
+        "INT-FP-005",
+        "INT-CD-007"
+      ],
+      "top1_changed": false,
+      "max_rank_displacement": 2,
+      "score_range": [
+        28.7,
+        78.5
+      ]
+    },
+    {
+      "weights": "25/25/50",
+      "vegetation": 25.0,
+      "water": 25.0,
+      "extent": 50.0,
+      "spearman_rho": 0.4303,
+      "top3_jaccard": 0.2,
+      "top3": [
+        "INT-PL-008",
+        "INT-PL-002",
+        "INT-CD-001"
+      ],
+      "top1_changed": true,
+      "max_rank_displacement": 7,
+      "score_range": [
+        48.4,
+        71.8
+      ]
+    }
+  ],
+  "radius_sensitivity": [
+    {
+      "radius_m": 150.0,
+      "spearman_rho": 0.766,
+      "top3_jaccard": 0.5,
+      "top1_changed": true,
+      "score_range": [
+        43.6,
+        67.3
+      ]
+    },
+    {
+      "radius_m": 350.0,
+      "spearman_rho": 0.9636,
+      "top3_jaccard": 0.5,
+      "top1_changed": false,
+      "score_range": [
+        27.5,
+        64.6
+      ]
+    },
+    {
+      "radius_m": 500.0,
+      "spearman_rho": 0.9636,
+      "top3_jaccard": 1.0,
+      "top1_changed": false,
+      "score_range": [
+        18.2,
+        45.4
+      ]
+    }
+  ],
+  "summary": {
+    "min_spearman_rho": 0.43,
+    "min_top3_jaccard": 0.2,
+    "plausible_range": {
+      "schemes": [
+        "50/30/20",
+        "30/50/20",
+        "40/30/30"
+      ],
+      "min_spearman_rho": 0.867,
+      "mean_spearman_rho": 0.911,
+      "top1_never_changes": false
+    },
+    "extreme_range": {
+      "schemes": [
+        "33/33/33",
+        "60/20/20",
+        "20/60/20",
+        "25/25/50"
+      ],
+      "min_spearman_rho": 0.43,
+      "mean_spearman_rho": 0.706,
+      "top1_never_changes": false
+    },
+    "top1_never_changes": false,
+    "verdict": "MODERATELY ROBUST within the plausible range - the broad order holds but adjacent pairs can swap. Report results as tiers (top / middle / bottom) rather than as a precise 1..N order, and publish this table alongside the ranking. Note: deliberately extreme weightings (33/33/33, 60/20/20, 20/60/20, 25/25/50) do reorder the list (rho down to 0.43), which is expected - they overweight one axis by 2-3x."
+  },
+  "formulas": {
+    "impact": "clip(170 x land-only dNDVI, -20, 40) x Wv/40 + clip(1.5 x % buffer newly water, -20, 40) x Ww/40 + clip(45 x fraction improved, -10, 20) x We/20",
+    "note": "Weights are normalised to sum to 100 points, so every scheme is a like-for-like rescaling of the same measurement - only the emphasis changes."
+  }
+}

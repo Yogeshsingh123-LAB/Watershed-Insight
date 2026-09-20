@@ -16,6 +16,15 @@ Geo-Coded Image Interpretation and Impact Assessment**
 *Smart India Hackathon 2026 · Problem Statement **PS26015** ·
 Department of Land Resources (DoLR), Ministry of Rural Development*
 
+> **What "AI-assisted" means here — stated up front, not buried.**
+> Today the platform is **deterministic and auditable**: spectral indices, a
+> calibratable rule-based classifier, colour-index computer vision on field
+> photographs, and composite scoring with published weights. Every figure in a
+> generated report can be re-derived from the constants printed beside it.
+> Machine-learning components (learned LULC, a fine-tuned photo classifier,
+> predicted impact) are designed as **replaceable modules behind fixed output
+> contracts** — see [docs/SIH_PREP.md §2](docs/SIH_PREP.md).
+
 ---
 
 </div>
@@ -93,7 +102,7 @@ For **every** IWMP structure the platform answers one auditable question:
  └───────────────────────────────────────────────────────────────────────────────┘
 ```
 
-Full component-level design: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · API reference: **[docs/API.md](docs/API.md)** · build log: **[walkthrough.md](walkthrough.md)**.
+Full component-level design: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · API reference: **[docs/API.md](docs/API.md)** · **[validation report](docs/VALIDATION.md)** · **[judge prep](docs/SIH_PREP.md)** · build log: **[walkthrough.md](walkthrough.md)**.
 
 ### Why NumPy only — no GDAL / rasterio / geopandas
 
@@ -119,6 +128,11 @@ python scripts/generate_sample_data.py
 
 # 3 — backend  (http://localhost:8000/docs)
 python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000
+
+# 3b — or run it on REAL Sentinel-2 imagery (see docs/VALIDATION.md)
+pip install -r requirements-optional.txt
+python scripts/ingest_sentinel.py --out data/real --site-candidates 6
+WS_DATA_DIR=data/real python -m uvicorn backend.app.main:app --port 8001
 
 # 4 — frontend  (http://localhost:3000)  — in a second terminal
 cd frontend && npm run dev
@@ -219,6 +233,24 @@ platform can say **"201.99 ha of scrub became cropland"** rather than just "NDVI
 
 ---
 
+## 🛰️ Validated on real Sentinel-2
+
+Not just a claim of compatibility — the full pipeline has been run on **real
+Earth-observation data** with no account, token or API key:
+
+| | |
+| :--- | :--- |
+| AOI | **Ralegaon Siddhi**, Parner taluka, Ahmednagar, Maharashtra — 726.42 ha |
+| Imagery | 6 Sentinel-2 L2A acquisitions (2024-05-03 → 2026-09-15), tile MGRS 43QDB |
+| DEM | AWS Terrain Tiles, 44.33 m relief, 29.94 km of channels, Strahler order 4 |
+| Cloud masking | verified working — the one cloudy scene reports **62.7 % of pixels observed** |
+| Reproduce | `python scripts/ingest_sentinel.py --out data/real --site-candidates 6` |
+
+Real data **found and fixed three defects that synthetic data hid** — NaN
+propagating through statistics, NDBI mislabelling 65 % of a rural watershed as
+built-up, and cloud-masked epochs. Full details, including the correct *negative*
+result at control sites, in **[docs/VALIDATION.md](docs/VALIDATION.md)**.
+
 ## 📊 What the bundled dataset shows
 
 | Indicator | Baseline (2024-05-28) | Latest (2026-05-26) | Change |
@@ -233,13 +265,58 @@ Both epochs are **pre-monsoon**, so the comparison is season-neutral: the gain i
 
 Structure ranking (250 m buffer) for `MWS-MH-2025-014`:
 
-| Rank | Structure | Score | ΔNDVI (land) | ΔWater | Verdict |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| 1 | Percolation Tank #003 | **70** | +0.072 | +9.52 ha | High — replicate the design |
-| 2 | Farm Pond (lined) #005 | **68** | +0.068 | +9.14 ha | High — replicate the design |
-| 3 | Horti-Afforestation #008 | 55 | +0.205 | 0.00 ha | Moderate — maintain & re-observe |
-| … | … | … | … | … | … |
-| 10 | Farm Pond (lined) #009 | 33 | +0.078 | +0.64 ha | Low-Moderate — field inspection |
+| Rank | Structure | Impact | Confidence | vs control | ΔNDVI (land) | ΔWater | Verdict |
+| ---: | :--- | ---: | ---: | ---: | ---: | ---: | :--- |
+| 1 | Percolation Tank #003 | **65** | 100 (High) | **p97** | +0.072 | +9.52 ha | Replicate the design |
+| 2 | Farm Pond (lined) #005 | **63** | 100 (High) | p97 | +0.068 | +9.14 ha | Replicate the design |
+| 3 | Horti-Afforestation #008 | 55 | 100 (High) | p95 | +0.205 | 0.00 ha | Maintain & re-observe |
+| … | … | … | … | … | … | … | … |
+| 10 | Farm Pond (lined) #009 | 33 | 93 (High) | p58 | +0.078 | +0.64 ha | Field inspection |
+
+### Impact is not confidence
+
+Two questions, two numbers — collapsing them is the mistake a dashboard makes by
+default:
+
+* **Impact (0-100)** — *how much* change was measured: land-only ΔNDVI (40),
+  water gain as a share of buffer (40), share of buffer improved (20).
+* **Confidence (0-100)** — *how much that number can be trusted*, from six
+  measured factors: cloud-free coverage (0.25), usable epochs (0.20), seasonal
+  matching (0.15), verified photos in buffer (0.20), buffer coverage (0.10),
+  pre-works baseline (0.10).
+
+They move independently. A structure can score high impact on one cloudy epoch
+with no photographs, and low impact with excellent evidence. Every PDF prints
+the full decomposition.
+
+### Is 65 actually high?
+
+Every score is compared against **200 seeded random control points** in the same
+watershed, scored by the identical chain. Background here: **27.9 ± 18.0**,
+median 27.6 — so 65 is the **97th percentile**, not an average. Each assessment
+also reports the **difference-in-differences**:
+
+```
+net = buffer ΔNDVI(land) − watershed-wide ΔNDVI(land)     # +0.072 − 0.047 = +0.025
+```
+
+About a third of the apparent improvement would have happened anyway.
+
+### Why 40/40/20?
+
+Measured, not asserted — `python scripts/sensitivity.py`:
+
+| Reweighting | Spearman ρ vs default |
+| :--- | ---: |
+| 30/50/20 (water-first) | **1.000** |
+| 50/30/20 (vegetation-first) | 0.867 |
+| 40/30/30 | 0.867 |
+| 33/33/33 (equal) | 0.952 |
+| 25/25/50 (extreme) | 0.430 |
+
+Plausible reweightings preserve the order (ρ ≥ 0.87); only weightings that
+overweight one axis by 2–3× reorder it. **The split is a presentation
+convention, not a determinant**, and the ranking should be read as tiers.
 
 Photo-evidence audit: **37 photographs · 91.9 % machine-verified · 2 missing GPS ·
 1 outside the buffer · 11 pre-works baselines.**
@@ -313,9 +390,9 @@ Watershed-Insight/
 ├── scripts/
 │   ├── generate_sample_data.py # the reproducible synthetic dataset
 │   └── verify_pipeline.py      # 24-step end-to-end verification
-├── tests/                      # 49 tests (engine + API + PDF validity)
+├── tests/                      # 64 tests (engine + API + calibration)
 ├── frontend/src/               # React dashboard
-├── docs/                       # ARCHITECTURE.md · API.md · walkthrough
+├── docs/                       # ARCHITECTURE · API · VALIDATION · SIH_PREP
 ├── data/sample/                # generated dataset (boundaries, DEM, 6 epochs, photos)
 ├── Dockerfile · docker-compose.yml · requirements.txt · Makefile
 ├── README.md · walkthrough.md · LICENSE
@@ -327,11 +404,12 @@ Watershed-Insight/
 ## 🧪 Testing
 
 ```bash
-python -m pytest tests/ -v        # 49 tests, ~8 s
+python -m pytest tests/ -v        # 64 tests, ~13 s
 ```
 
 | Suite | Covers |
 | :--- | :--- |
+| **`tests/test_calibration.py`** | **Known-answer / calibration tests — do the *measurements* come out right?** A planted water body of known area is recovered within 5 %; a 250 m buffer encloses πr² ha within 1 %; area-weighting changes the mean with latitude; cloud-masked pixels do not bias a statistic; the impact score is monotonic in each component; confidence moves with evidence quality and is independent of impact; the control sample is reproducible |
 | `tests/test_geospatial.py` | Geodesy (haversine against known distances), raster grid ↔ world, buffer area vs πr², index maths, LULC rules, transition conservation, D8 routing on a plane, sink filling, Strahler ordering, EXIF DMS round-trip, photo interpretation |
 | `tests/test_api.py` | Every REST endpoint, payload consistency (areas add up, 100 % partitions), ranking monotonicity, upload → binding → validation, PDF validity (`%PDF` magic bytes) |
 
@@ -381,8 +459,9 @@ Every generated report carries a **Methodology & Limitations** section:
    gainer/loser hotspots.
 3. **Photos** — open a photograph: EXIF GPS, "23.6 m from structure", automated read
    ("water impoundment visible — water 15.9 %"), and the satellite cross-check.
-4. **Impact** — click *Percolation Tank #003*: score **70/100 (High)**, +9.52 ha of water,
-   land-only ΔNDVI +0.072, LULC transition, catchment delineated from the DEM.
+4. **Impact** — click *Percolation Tank #003*: **impact 65/100**, **confidence 100/100**, **p97 vs control**,
+   net-of-background +0.025, LULC transition, catchment delineated from the DEM.
+   Then: *"and here is the same pipeline on real Sentinel-2"* → `WS_DATA_DIR=data/real`.
 5. **Evidence** — *Generate PDF*: a 4-page, signed, audit-ready evidence pack with maps,
    indicator tables, photographs and the limitations section.
 
