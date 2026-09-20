@@ -167,7 +167,18 @@ def test_intervention_analysis_bundle(client):
     a = body["analysis"]
     assert a["buffer_area_ha"] > 0
     assert 0 <= a["impact_score"] <= 100
-    assert a["confidence"] in ("High", "Moderate", "Low-Moderate", "Inconclusive")
+    # Impact and confidence are separate quantities (see docs/ARCHITECTURE.md).
+    assert a["evidence_strength"] in ("High", "Moderate", "Low-Moderate", "Inconclusive")
+    conf = body["confidence"]
+    assert 0 <= conf["score"] <= 100
+    assert conf["band"] in ("High", "Moderate", "Low", "Very low")
+    assert abs(sum(conf["weights"].values()) - 1.0) < 1e-6
+    assert set(conf["factors"]) == {
+        "observation_completeness", "temporal_replication",
+        "seasonal_matching", "photo_corroboration",
+        "spatial_coverage", "baseline_control"}
+    # net-of-background (difference-in-differences) reporting
+    assert "background" in a and "net_ndvi_change_land" in a
     assert body["timeseries"]
     assert body["lulc"]["classes"]
     # Every matched photo must actually belong to this intervention.
