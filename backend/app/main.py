@@ -29,7 +29,7 @@ if BASE_DIR not in sys.path:
     sys.path.insert(0, BASE_DIR)
 
 from .config import settings  # noqa: E402
-from .routers import analytics, interventions, photos, reports, watersheds  # noqa: E402
+from .routers import analytics, interventions, photos, reports, watersheds, data_sources, field_inspections, audit, ai, auth  # noqa: E402
 from .services.store import WatershedNotFound, get_store  # noqa: E402
 
 APP_START = time.time()
@@ -94,6 +94,12 @@ app.include_router(interventions.router, prefix=settings.api_prefix)
 app.include_router(photos.router, prefix=settings.api_prefix)
 app.include_router(analytics.router, prefix=settings.api_prefix)
 app.include_router(reports.router, prefix=settings.api_prefix)
+app.include_router(data_sources.router, prefix=settings.api_prefix)
+app.include_router(field_inspections.router, prefix=settings.api_prefix)
+app.include_router(audit.router, prefix=settings.api_prefix)
+app.include_router(ai.router, prefix=settings.api_prefix)
+app.include_router(auth.router, prefix=settings.api_prefix)
+
 
 
 # --------------------------------------------------------------------------- #

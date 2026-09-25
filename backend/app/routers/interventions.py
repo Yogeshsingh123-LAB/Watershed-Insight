@@ -117,3 +117,68 @@ def intervention_catchment(intervention_id: str):
         }
     except InterventionNotFound as exc:
         raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.get("/{intervention_id}/timeline")
+def intervention_timeline(intervention_id: str):
+    """Chronological event history for an intervention (satellite, work, photos)."""
+    store = get_store()
+    try:
+        return store.intervention_timeline(intervention_id)
+    except InterventionNotFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.get("/{intervention_id}/before-after")
+def intervention_before_after(intervention_id: str,
+                               radius_m: float = Query(settings.default_buffer_m,
+                                                       ge=settings.min_buffer_m,
+                                                       le=settings.max_buffer_m)):
+    """Synchronized before/after comparison metrics and map raster URLs."""
+    store = get_store()
+    try:
+        return store.intervention_before_after(intervention_id, radius_m)
+    except InterventionNotFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.get("/{intervention_id}/evidence-health")
+def intervention_evidence_health(intervention_id: str):
+    """Evidence health checklist and validation quality metrics."""
+    store = get_store()
+    try:
+        return store.intervention_evidence_health(intervention_id)
+    except InterventionNotFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.get("/{intervention_id}/decision")
+def intervention_decision(intervention_id: str):
+    """Decision support payload with recommendation and action justification."""
+    store = get_store()
+    try:
+        analysis = store.intervention_analysis(intervention_id)
+        health = store.intervention_evidence_health(intervention_id)
+        impact = analysis.get("impact", {})
+        return {
+            "intervention_id": intervention_id,
+            "impact_score": impact.get("score", 0.0),
+            "confidence": impact.get("confidence", "Moderate"),
+            "health_score": health.get("health_score", 0.0),
+            "recommendation": impact.get("recommendation", "Monitor"),
+            "action_required": impact.get("score", 100) < 45,
+            "why": f"Score of {impact.get('score', 0):.1f}/100 calculated from 40/40/20 vegetation/water/extent decomposition."
+        }
+    except InterventionNotFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.patch("/{intervention_id}/status")
+def update_intervention_status(intervention_id: str, status: str = Query(..., description="New lifecycle status")):
+    """Update intervention lifecycle status."""
+    store = get_store()
+    try:
+        return store.update_intervention_status(intervention_id, status)
+    except InterventionNotFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+

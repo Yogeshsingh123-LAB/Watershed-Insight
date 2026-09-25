@@ -170,3 +170,24 @@ def get_overlay(watershed_id: str, name: str, epoch: Optional[str] = None,
         raise HTTPException(status_code=404, detail=str(exc))
     return {"watershed_id": watershed_id, "layer": name, "epoch": epoch,
             "bounds": store.overlay_bounds(watershed_id), "url": url}
+
+
+@router.get("/{watershed_id}/environment")
+def get_environment(watershed_id: str):
+    """Environmental context: season matching, rainfall status, cloud cover."""
+    store = get_store()
+    try:
+        return store.watershed_environment(watershed_id)
+    except WatershedNotFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+
+
+@router.get("/{watershed_id}/decision-summary")
+def get_decision_summary(watershed_id: str):
+    """Decision Center summary payload with Action Queue for officers."""
+    store = get_store()
+    try:
+        return store.watershed_decision_summary(watershed_id)
+    except WatershedNotFound as exc:
+        raise HTTPException(status_code=404, detail=str(exc))
+

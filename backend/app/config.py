@@ -63,6 +63,8 @@ class Settings:
     # --- behaviour --------------------------------------------------------- #
     cache_terrain: bool = _env_bool("WS_CACHE_TERRAIN", True)
     overlay_alpha: float = float(os.getenv("WS_OVERLAY_ALPHA", "0.8"))
+    srishti_connected: bool = _env_bool("WS_SRISHTI_CONNECTED", False)
+    drishti_connected: bool = _env_bool("WS_DRISHTI_CONNECTED", False)
 
     @property
     def photos_dir(self) -> str:
@@ -75,6 +77,14 @@ class Settings:
     @property
     def uploads_dir(self) -> str:
         return os.path.join(self.data_dir, "photos", "uploads")
+
+    @property
+    def audit_log_path(self) -> str:
+        return os.path.join(self.data_dir, "metadata", "audit_log.json")
+
+    @property
+    def field_inspections_path(self) -> str:
+        return os.path.join(self.data_dir, "metadata", "field_inspections.json")
 
 
 settings = Settings()
