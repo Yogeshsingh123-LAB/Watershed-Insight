@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import {
   ArrowRight,
-  Check,
   ChevronRight,
   Compass,
   Eye,
@@ -12,10 +11,8 @@ import {
   MapPin,
   Shield,
   ShieldCheck,
-  User,
   Users,
   Waves,
-  Zap,
 } from 'lucide-react'
 
 const DEMO_ACCOUNTS = [
@@ -128,8 +125,8 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
   }
 
   return (
-    <div className="min-h-screen w-full bg-white text-slate-900 flex flex-col justify-between font-sans selection:bg-emerald-500 selection:text-white">
-      {/* 1. TOP NAVBAR HEADER */}
+    <div className="min-h-screen w-full bg-white text-slate-900 flex flex-col font-sans selection:bg-emerald-500 selection:text-white">
+      {/* 1. TOP NAVBAR HEADER (EXACT MATCH) */}
       <header className="w-full bg-white border-b border-slate-200/80 px-6 lg:px-10 py-3.5 flex items-center justify-between z-30 sticky top-0">
         {/* Brand Logo & Title */}
         <div
@@ -198,22 +195,22 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
         </button>
       </header>
 
-      {/* 2. MAIN SPLIT BODY */}
-      <main className="flex-1 w-full bg-[#f8fafc] flex flex-col lg:flex-row relative overflow-hidden">
-        {/* LEFT HERO PANEL (MATCHES ref_image.png 100%) */}
-        <div className="lg:w-[60%] relative min-h-[620px] lg:min-h-full p-8 lg:p-12 flex flex-col justify-between overflow-hidden">
+      {/* 2. MAIN PAGE BODY SPLIT (LEFT HERO + RIGHT FLOATING CARD) */}
+      <main className="flex-1 w-full flex flex-col lg:flex-row relative">
+        {/* LEFT HERO SECTION (DARK TERRAIN IMAGE + 3D STACK) */}
+        <div className="lg:w-[62%] relative min-h-[640px] lg:min-h-[calc(100vh-64px)] p-8 lg:p-14 flex flex-col justify-between overflow-hidden">
           {/* Background Aerial Terrain Image & Gradient Overlay */}
           <div className="absolute inset-0 z-0">
             <img
               src="/watershed_hero_bg.jpg"
               alt="Watershed Aerial Imagery"
-              className="w-full h-full object-cover object-center filter brightness-90 contrast-110"
+              className="w-full h-full object-cover object-center filter brightness-95 contrast-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#061220]/95 via-[#08182b]/85 to-[#0a1c32]/65" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#05111f]/95 via-[#071628]/85 to-[#091b30]/65" />
           </div>
 
-          {/* Hero Content Top */}
-          <div className="relative z-10 space-y-4 max-w-2xl">
+          {/* Top Hero Headlines */}
+          <div className="relative z-10 space-y-3.5 max-w-2xl">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.12] tracking-tight">
               GEOSPATIAL INTELLIGENCE. <br />
               <span className="text-[#10b981]">POWERED BY PIXELS & PROOF.</span>
@@ -225,14 +222,14 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
             </p>
           </div>
 
-          {/* Floating 3D Layer Stack Diagram (Exact Match to ref_image.png) */}
+          {/* Center 3D Layer Stack Graphic Overlay (Identical to Image) */}
           <div className="relative z-10 my-6 py-6 px-4 sm:px-8 rounded-2xl bg-slate-900/35 border border-white/10 backdrop-blur-md max-w-2xl">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-              {/* Floating Labels Column (Left of the 3D stack) */}
+              {/* Stack Labels on Left */}
               <div className="space-y-4 w-full sm:w-auto">
-                {/* 1. Satellite Observation Label */}
-                <div className="flex items-center gap-3 bg-[#0d1c2d]/90 border border-teal-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg shadow-teal-950/40">
-                  <div className="w-6 h-6 rounded-md bg-teal-500/20 text-teal-300 flex items-center justify-center">
+                {/* 1. Satellite Observation */}
+                <div className="flex items-center gap-3 bg-[#0a1828]/95 border border-teal-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg">
+                  <div className="w-6 h-6 rounded bg-teal-500/20 text-teal-300 flex items-center justify-center">
                     <Compass size={14} />
                   </div>
                   <div className="leading-tight">
@@ -241,9 +238,9 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                   </div>
                 </div>
 
-                {/* 2. DRISHTI Field Evidence Label */}
-                <div className="flex items-center gap-3 bg-[#0d1c2d]/90 border border-emerald-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg shadow-emerald-950/40">
-                  <div className="w-6 h-6 rounded-md bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
+                {/* 2. DRISHTI Field Evidence */}
+                <div className="flex items-center gap-3 bg-[#0a1828]/95 border border-emerald-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg">
+                  <div className="w-6 h-6 rounded bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
                     <MapPin size={14} />
                   </div>
                   <div className="leading-tight">
@@ -252,9 +249,9 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                   </div>
                 </div>
 
-                {/* 3. Elevation Hydrology Label */}
-                <div className="flex items-center gap-3 bg-[#0d1c2d]/90 border border-blue-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg shadow-blue-950/40">
-                  <div className="w-6 h-6 rounded-md bg-blue-500/20 text-blue-300 flex items-center justify-center">
+                {/* 3. Elevation Hydrology */}
+                <div className="flex items-center gap-3 bg-[#0a1828]/95 border border-blue-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg">
+                  <div className="w-6 h-6 rounded bg-blue-500/20 text-blue-300 flex items-center justify-center">
                     <Waves size={14} />
                   </div>
                   <div className="leading-tight">
@@ -264,26 +261,24 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </div>
               </div>
 
-              {/* Isometric 3D Perspective Map Stack */}
+              {/* 3D Isometric Diamond Stack Graphic */}
               <div className="relative w-56 h-44 flex items-center justify-center">
-                {/* Layer 1: Green/Orange NDVI Map */}
-                <div className="absolute top-0 left-6 w-40 h-22 rounded-xl bg-gradient-to-tr from-emerald-600/90 via-amber-500/70 to-teal-400/80 border border-emerald-300/80 transform -rotate-12 skew-x-12 shadow-2xl shadow-emerald-950/50 backdrop-blur-xs flex items-center justify-center">
-                  <div className="w-full h-full rounded-xl bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-400/30 via-transparent to-transparent flex items-center justify-center">
-                    <span className="text-[10px] font-bold text-white tracking-wider font-mono drop-shadow">
-                      SENTINEL L2A
-                    </span>
-                  </div>
+                {/* Top Layer: Green/Orange NDVI Map */}
+                <div className="absolute top-0 left-6 w-40 h-22 rounded-xl bg-gradient-to-tr from-emerald-600/90 via-amber-500/70 to-teal-400/80 border border-emerald-300/80 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-white tracking-wider font-mono drop-shadow">
+                    SENTINEL L2A
+                  </span>
                 </div>
 
-                {/* Layer 2: Monochrome Field Evidence Layer */}
-                <div className="absolute top-10 left-3 w-40 h-22 rounded-xl bg-gradient-to-tr from-slate-900/90 via-slate-600/80 to-slate-400/60 border border-slate-300/60 transform -rotate-12 skew-x-12 shadow-2xl shadow-slate-950/50 backdrop-blur-xs flex items-center justify-center">
+                {/* Middle Layer: Monochrome Photo EXIF Layer */}
+                <div className="absolute top-10 left-3 w-40 h-22 rounded-xl bg-gradient-to-tr from-slate-900/90 via-slate-600/80 to-slate-400/60 border border-slate-300/60 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center">
                   <span className="text-[10px] font-bold text-white tracking-wider font-mono drop-shadow">
                     EXIF PROOF
                   </span>
                 </div>
 
-                {/* Layer 3: Blue Contour Hydrology Stream Layer */}
-                <div className="absolute top-20 left-0 w-40 h-22 rounded-xl bg-gradient-to-tr from-blue-700/90 via-cyan-500/70 to-blue-300/60 border border-cyan-300/80 transform -rotate-12 skew-x-12 shadow-2xl shadow-blue-950/50 backdrop-blur-xs flex items-center justify-center">
+                {/* Bottom Layer: Blue Elevation Flow Layer */}
+                <div className="absolute top-20 left-0 w-40 h-22 rounded-xl bg-gradient-to-tr from-blue-700/90 via-cyan-500/70 to-blue-300/60 border border-cyan-300/80 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center">
                   <span className="text-[10px] font-bold text-white tracking-wider font-mono drop-shadow">
                     DEM FLOW
                   </span>
@@ -292,7 +287,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
             </div>
           </div>
 
-          {/* Bottom 4 Feature Cards (Matches ref_image.png 100%) */}
+          {/* Bottom 4 Feature Cards */}
           <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-slate-950/60 border border-white/10 rounded-2xl p-4 backdrop-blur-md flex flex-col justify-between space-y-3">
               <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
@@ -348,10 +343,10 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
           </div>
         </div>
 
-        {/* RIGHT LOGIN FLOATING CARD AREA */}
-        <div className="lg:w-[40%] bg-[#f8fafc] p-6 lg:p-12 flex items-center justify-center relative">
+        {/* RIGHT FLOATING CARD AREA (EXACT MATCH TO RIGHT SIDE OF IMAGE) */}
+        <div className="lg:w-[38%] bg-[#f3f5f8] p-6 lg:p-12 flex items-center justify-center relative">
           <div className="w-full max-w-md bg-white rounded-3xl p-7 lg:p-8 shadow-xl border border-slate-200/80 space-y-6">
-            {/* Title Header */}
+            {/* Card Header Title */}
             <div className="text-center space-y-1">
               <p className="text-xs font-medium text-slate-500">Welcome to</p>
               <h2 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight font-mono">
@@ -362,7 +357,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               </p>
             </div>
 
-            {/* Role Segmented Pill Switcher */}
+            {/* Role Segmented Pill Toggle */}
             <div className="bg-[#f1f5f9] p-1.5 rounded-2xl flex items-center gap-1 border border-slate-200/60">
               <button
                 type="button"
@@ -446,7 +441,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </div>
               </div>
 
-              {/* Checkbox & Forgot Link */}
+              {/* Checkbox & Forgot Password Link */}
               <div className="flex items-center justify-between text-xs pt-1">
                 <label className="flex items-center gap-2 cursor-pointer select-none text-slate-700 font-medium">
                   <input
@@ -469,7 +464,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </button>
               </div>
 
-              {/* Main Submit Button */}
+              {/* Login Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -505,7 +500,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               <ChevronRight size={16} className="text-slate-400" />
             </button>
 
-            {/* Quick Demo Sign-in Selector */}
+            {/* Quick Demo Role Picker Drawer */}
             <div className="pt-1">
               <button
                 type="button"
