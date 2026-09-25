@@ -71,6 +71,23 @@ export const api = {
       responseType: 'blob',
     }),
   listReports: () => client.get('/reports').then((r) => r.data),
+
+  // --- extension modules ------------------------------------------------ //
+  dataSources: () => client.get('/data-sources').then((r) => r.data),
+  decisionSummary: (wsId) => client.get(`/watersheds/${wsId}/decision-summary`).then((r) => r.data),
+  environment: (wsId) => client.get(`/watersheds/${wsId}/environment`).then((r) => r.data),
+  timeline: (id) => client.get(`/interventions/${id}/timeline`).then((r) => r.data),
+  beforeAfter: (id, radius) => client.get(`/interventions/${id}/before-after`, { params: { radius_m: radius } }).then((r) => r.data),
+  evidenceHealth: (id) => client.get(`/interventions/${id}/evidence-health`).then((r) => r.data),
+  interventionDecision: (id) => client.get(`/interventions/${id}/decision`).then((r) => r.data),
+  updateInterventionStatus: (id, status) => client.patch(`/interventions/${id}/status`, null, { params: { status } }).then((r) => r.data),
+  fieldInspections: (params) => client.get('/field-inspections', { params }).then((r) => r.data),
+  createFieldInspection: (data) => client.post('/field-inspections', data).then((r) => r.data),
+  updateFieldInspection: (id, data) => client.patch(`/field-inspections/${id}`, data).then((r) => r.data),
+  auditLogs: (params) => client.get('/audit', { params }).then((r) => r.data),
+  aiExplain: (data) => client.post('/ai/explain', data).then((r) => r.data),
+  aiQuery: (data) => client.post('/ai/query', data).then((r) => r.data),
 }
 
 export default api
+

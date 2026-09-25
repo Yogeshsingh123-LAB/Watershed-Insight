@@ -1,9 +1,9 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { Compass, FileDown, Loader2, MapPin, ShieldCheck } from 'lucide-react'
+import { Compass, FileDown, Loader2, LogIn, LogOut, MapPin, ShieldCheck, UserCheck } from 'lucide-react'
 
 /**
  * Navbar - brand, the State > District > Block > Micro-watershed cascade that
- * mirrors the SRISHTI administrative hierarchy, and the live system status.
+ * mirrors administrative hierarchy, live system status, officer profile, and logout.
  */
 export default function Navbar({
   catalog,
@@ -12,6 +12,9 @@ export default function Navbar({
   health,
   busy,
   onGenerateReport,
+  currentUser,
+  onOpenLogin,
+  onLogout,
 }) {
   const hierarchy = catalog?.hierarchy || []
   const watersheds = catalog?.watersheds || {}
@@ -37,7 +40,7 @@ export default function Navbar({
   const [districtCode, setDistrictCode] = useState(current?.di?.code || '')
   const [blockCode, setBlockCode] = useState(current?.bl?.code || '')
 
-  // Keep the cascade in sync when the watershed changes from elsewhere (map, panel).
+  // Keep the cascade in sync when the watershed changes from elsewhere.
   useEffect(() => {
     if (!current) return
     setStateCode(current.st.code)
@@ -59,7 +62,7 @@ export default function Navbar({
           <div className="brand-icon"><Compass size={21} /></div>
           <div>
             <h1 className="brand-title">WATERSHED INSIGHT</h1>
-            <div className="tiny text-muted">Decision-Support Platform • PS26015</div>
+            <div className="tiny text-muted">Department of Land Resources • Govt. of India</div>
           </div>
         </div>
       </header>
@@ -71,19 +74,19 @@ export default function Navbar({
   }
 
   return (
-    <header className="navbar">
+    <header className="navbar" role="banner">
       <div className="navbar-brand">
         <div className="brand-icon"><Compass size={21} /></div>
         <div>
           <h1 className="brand-title">WATERSHED INSIGHT</h1>
-          <div className="tiny text-muted">Geospatial Decision Support • SIH PS26015</div>
+          <div className="tiny text-muted">National Geospatial Watershed Monitoring & Evidence Platform</div>
         </div>
-        <span className="brand-badge">DoLR • SRISHTI-DRISHTI</span>
+        <span className="brand-badge">DoLR • Govt. of India</span>
       </div>
 
       <div className="navbar-actions">
-        <div className="location-selector">
-          <MapPin size={15} color="#10b981" />
+        <div className="location-selector" role="search" aria-label="Administrative Location Hierarchy">
+          <MapPin size={15} color="#059669" aria-hidden="true" />
           <select
             className="cascade-select"
             value={state?.code || ''}
@@ -94,7 +97,8 @@ export default function Navbar({
               setBlockCode(s?.districts?.[0]?.blocks?.[0]?.code || '')
               pickFirstWatershed(s?.districts?.[0]?.blocks?.[0]?.watersheds)
             }}
-            title="State"
+            title="State Location"
+            aria-label="Select State"
           >
             {hierarchy.map((s) => <option key={s.code} value={s.code}>{s.name}</option>)}
           </select>
@@ -109,7 +113,8 @@ export default function Navbar({
               setBlockCode(d?.blocks?.[0]?.code || '')
               pickFirstWatershed(d?.blocks?.[0]?.watersheds)
             }}
-            title="District"
+            title="District Location"
+            aria-label="Select District"
           >
             {districts.map((d) => <option key={d.code} value={d.code}>{d.name}</option>)}
           </select>
@@ -123,7 +128,8 @@ export default function Navbar({
               const b = blocks.find((x) => x.code === e.target.value)
               pickFirstWatershed(b?.watersheds)
             }}
-            title="Block"
+            title="Block Location"
+            aria-label="Select Block"
           >
             {blocks.map((b) => <option key={b.code} value={b.code}>{b.name}</option>)}
           </select>
@@ -134,7 +140,8 @@ export default function Navbar({
             value={watershedId || ''}
             onChange={(e) => onSelectWatershed(e.target.value)}
             title="Micro-watershed"
-            style={{ fontWeight: 700, color: '#6ee7b7', borderColor: 'rgba(16,185,129,.4)' }}
+            aria-label="Select Micro-watershed"
+            style={{ fontWeight: 700, color: '#059669', borderColor: '#059669' }}
           >
             {wsOptions.map((w) => (
               <option key={w.id} value={w.id}>{w.code} — {w.name}</option>
@@ -144,24 +151,55 @@ export default function Navbar({
 
         <div className={`status-chip ${health?.status === 'online' ? '' : 'degraded'}`}>
           <span className="pulse-dot" />
-          <ShieldCheck size={13} />
+          <ShieldCheck size={13} aria-hidden="true" />
           <span>
-            {health?.status === 'online' ? 'Live ingestion' : health?.status || 'checking'}
+            {health?.status === 'online' ? 'SRISHTI ACTIVE' : health?.status || 'INITIALIZING'}
             {watersheds[watershedId]
-              ? ` • ${watersheds[watershedId].interventions} structures • ${watersheds[watershedId].photos} photos`
+              ? ` • ${watersheds[watershedId].interventions} Structures Monitored`
               : ''}
           </span>
         </div>
 
+        {/* Current Officer Profile Badge + Functional Logout Button */}
+        {currentUser ? (
+          <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-xl text-xs">
+              <UserCheck size={14} className="text-emerald-700" />
+              <div className="text-left leading-none">
+                <div className="text-[11px] font-bold text-slate-800">{currentUser.name}</div>
+                <div className="text-[9px] text-emerald-700 font-mono mt-0.5">{currentUser.roleTitle || currentUser.role}</div>
+              </div>
+            </div>
+            <button
+              onClick={onLogout}
+              className="flex items-center gap-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-bold px-3 py-1.5 rounded-xl text-xs transition-colors cursor-pointer shadow-xs"
+              title="Logout of Officer Portal"
+            >
+              <LogOut size={13} />
+              <span>Logout</span>
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={onLogout}
+            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 font-semibold px-3 py-1.5 rounded-xl text-xs transition-colors cursor-pointer shadow-xs"
+            title="Return to Public Front Page"
+          >
+            <LogOut size={13} />
+            <span>Logout</span>
+          </button>
+        )}
+
         <button
-          className="btn-ghost"
+          className="btn-ghost card-hover-lift"
           onClick={onGenerateReport}
           disabled={busy || !watershedId}
-          title="Generate the full micro-watershed assessment PDF"
-          style={{ padding: '7px 11px' }}
+          title="Generate Official Micro-Watershed Executive Dossier (PDF)"
+          aria-label="Download Official Watershed Report PDF"
+          style={{ padding: '7px 13px', display: 'flex', alignItems: 'center', gap: '6px' }}
         >
           {busy ? <Loader2 size={14} className="spinner" /> : <FileDown size={14} />}
-          Watershed PDF
+          <span>Export Dossier (PDF)</span>
         </button>
       </div>
     </header>
