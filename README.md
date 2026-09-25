@@ -11,7 +11,8 @@ Geo-Coded Image Interpretation and Impact Assessment**
 [![Python](https://img.shields.io/badge/Python-3.10%2B-3776AB?style=for-the-square&logo=python&logoColor=white)](#quickstart)
 [![FastAPI](https://img.shields.io/badge/FastAPI-1.0-009688?style=for-the-square&logo=fastapi&logoColor=white)](#backend-rest-api)
 [![React](https://img.shields.io/badge/React-18-61DAFB?style=for-the-square&logo=react&logoColor=black)](#frontend-modules)
-[![Tests](https://img.shields.io/badge/tests-49_passing-16a34a?style=for-the-square)](#testing)
+[![Tests](https://img.shields.io/badge/tests-70_passing-16a34a?style=for-the-square)](#testing)
+
 
 *Smart India Hackathon 2026 · Problem Statement **PS26015** ·
 Department of Land Resources (DoLR), Ministry of Rural Development*
@@ -139,6 +140,9 @@ WS_DATA_DIR=data/real python -m uvicorn backend.app.main:app --port 8001
 
 # 4 — frontend  (http://localhost:3000)  — in a second terminal
 cd frontend && npm run dev
+
+# Or on Windows, run everything with one command:
+# run.bat
 ```
 
 > **Nothing to configure.** The bundled dataset is a physically consistent synthetic
