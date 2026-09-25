@@ -125,10 +125,10 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#f4f7fc] text-slate-900 flex flex-col justify-between font-sans selection:bg-emerald-600 selection:text-white">
-      {/* 1. TOP NAVBAR HEADER (Clean Light White Navbar as shown in reference mockup) */}
-      <header className="w-full bg-white border-b border-slate-200/90 px-6 lg:px-10 py-3.5 flex items-center justify-between z-30 sticky top-0 shadow-2xs">
-        {/* Left: Brand Logo & Title */}
+    <div className="min-h-screen w-full bg-[#f4f7fc] text-slate-900 flex flex-col justify-between font-sans selection:bg-[#059669] selection:text-white">
+      {/* 1. TOP NAVBAR HEADER */}
+      <header className="w-full bg-white border-b border-slate-200/90 px-6 lg:px-10 py-3 flex items-center justify-between z-30 sticky top-0 shadow-2xs">
+        {/* Brand Logo & Title */}
         <div
           onClick={onBackToHome}
           className="flex items-center gap-3 cursor-pointer group"
@@ -151,7 +151,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
           </div>
         </div>
 
-        {/* Center: Navigation Links */}
+        {/* Center Nav Links */}
         <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-600">
           <button
             onClick={onBackToHome}
@@ -185,7 +185,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
           </button>
         </nav>
 
-        {/* Right: Explore Map Action Button */}
+        {/* Right Action Button */}
         <button
           onClick={onBackToHome}
           className="flex items-center gap-2 bg-white border border-slate-300 hover:border-slate-400 text-slate-800 text-xs font-semibold px-4 py-2 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer"
@@ -195,56 +195,56 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
         </button>
       </header>
 
-      {/* 2. MAIN BODY SPLIT SECTION */}
+      {/* 2. MAIN CONTENT SPLIT LAYOUT */}
       <main className="flex-1 w-full flex flex-col lg:flex-row relative overflow-hidden">
-        {/* LEFT COLUMN: HERO GEOSPATIAL INTELLIGENCE & 3D STACK PLATES */}
-        <div className="lg:w-[58%] relative min-h-[620px] lg:min-h-full p-8 lg:p-14 flex flex-col justify-between overflow-hidden">
-          {/* High Resolution Aerial Background Image + Gradient Overlay */}
+        {/* LEFT COLUMN: HERO GEOSPATIAL INTELLIGENCE & ISOMETRIC 3D STACK PLATES */}
+        <div className="lg:w-[58%] relative min-h-[640px] lg:min-h-full p-8 lg:p-12 flex flex-col justify-between overflow-hidden">
+          {/* Background Imagery & Gradient */}
           <div className="absolute inset-0 z-0">
             <img
               src="/watershed_hero_bg.jpg"
               alt="Watershed Aerial Imagery"
               className="w-full h-full object-cover object-center filter brightness-90 contrast-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#040e1b]/95 via-[#06182e]/85 to-[#0a2342]/70" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#040d18]/95 via-[#06182c]/85 to-[#092240]/70" />
           </div>
 
-          {/* Hero Titles */}
-          <div className="relative z-10 space-y-4 max-w-2xl">
+          {/* Hero Heading */}
+          <div className="relative z-10 space-y-3 max-w-xl">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.12] tracking-tight">
               GEOSPATIAL INTELLIGENCE. <br />
               <span className="text-[#00cb85]">POWERED BY PIXELS & PROOF.</span>
             </h2>
-            <p className="text-xs sm:text-sm text-slate-200/90 font-normal leading-relaxed max-w-xl">
+            <p className="text-xs sm:text-sm text-slate-200/90 font-normal leading-relaxed max-w-lg">
               Integrating 30m Sentinel multispectral satellite observation,
               geo-coded DRISHTI field evidence, and elevation hydrology into an
               auditable decision-support system.
             </p>
           </div>
 
-          {/* Floating 3D Geospatial Stack Plates ("Same Plate and All") */}
-          <div className="relative z-10 my-8 py-6 px-6 rounded-2xl bg-slate-900/35 border border-white/15 backdrop-blur-md max-w-xl">
+          {/* Isometric 3D GIS Stack Graphic (Matches Screenshot Exact Plates) */}
+          <div className="relative z-10 my-4 py-6 px-4 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md max-w-xl">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-              {/* Stack Plate Labels with Badges */}
+              {/* Floating Label Tags with Connector Badges */}
               <div className="space-y-4 w-full sm:w-auto z-20">
-                {/* Plate 1 Badge */}
-                <div className="flex items-center gap-3 bg-slate-900/85 border border-emerald-400/50 px-3.5 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-md shadow-lg">
+                {/* Tag 1: Satellite Observation */}
+                <div className="flex items-center gap-3 bg-slate-900/90 border border-emerald-400/60 px-3.5 py-2 rounded-xl text-white text-xs font-bold backdrop-blur-md shadow-lg shadow-emerald-950/40">
                   <div className="w-5 h-5 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
                     <Compass size={13} />
                   </div>
                   <span>Satellite Observation</span>
                 </div>
 
-                {/* Plate 2 Badge */}
-                <div className="flex items-center gap-3 bg-slate-900/85 border border-teal-400/50 px-3.5 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-md shadow-lg">
+                {/* Tag 2: DRISHTI Field Evidence */}
+                <div className="flex items-center gap-3 bg-slate-900/90 border border-teal-400/60 px-3.5 py-2 rounded-xl text-white text-xs font-bold backdrop-blur-md shadow-lg shadow-teal-950/40">
                   <div className="w-5 h-5 rounded bg-teal-500/20 text-teal-400 flex items-center justify-center">
                     <MapPin size={13} />
                   </div>
                   <span>DRISHTI Field Evidence</span>
                 </div>
 
-                {/* Plate 3 Badge */}
-                <div className="flex items-center gap-3 bg-slate-900/85 border border-cyan-400/50 px-3.5 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-md shadow-lg">
+                {/* Tag 3: Elevation Hydrology */}
+                <div className="flex items-center gap-3 bg-slate-900/90 border border-cyan-400/60 px-3.5 py-2 rounded-xl text-white text-xs font-bold backdrop-blur-md shadow-lg shadow-cyan-950/40">
                   <div className="w-5 h-5 rounded bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
                     <Layers size={13} />
                   </div>
@@ -252,28 +252,42 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </div>
               </div>
 
-              {/* 3D Stacked Plates Graphic Representation */}
-              <div className="relative w-52 h-44 flex items-center justify-center">
-                {/* Top Plate 1: Satellite Land Use (Green/Orange NDVI Grid) */}
-                <div className="absolute top-0 left-6 w-36 h-20 rounded-xl bg-gradient-to-tr from-emerald-600 via-teal-500 to-amber-400 border-2 border-emerald-300/80 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center transition-all hover:translate-y-[-2px]">
-                  <div className="w-full h-full bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:8px_8px] opacity-30 rounded-xl" />
-                  <span className="absolute text-[10px] font-black text-white tracking-wider drop-shadow font-mono">
-                    NDVI RASTER
+              {/* Real 3D Stack Plates Container */}
+              <div className="relative w-56 h-48 flex items-center justify-center">
+                {/* Plate 1 (Top): Satellite Observation - Green/Yellow Vegetation NDVI Raster Tile */}
+                <div className="absolute top-0 left-6 w-40 h-24 rounded-xl bg-gradient-to-tr from-emerald-700 via-teal-500 to-amber-300 border-2 border-emerald-300 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
+                  <svg className="w-full h-full opacity-40" viewBox="0 0 100 60">
+                    <path fill="#10b981" d="M0 0h50v30H0z"/>
+                    <path fill="#f59e0b" d="M50 0h50v30H50z"/>
+                    <path fill="#059669" d="M0 30h50v30H0z"/>
+                    <path fill="#3b82f6" d="M50 30h50v30H50z"/>
+                    <path fill="none" stroke="#fff" strokeWidth="0.5" strokeDasharray="2,2" d="M0 15h100M0 30h100M0 45h100M25 0v60M50 0v60M75 0v60"/>
+                  </svg>
+                  <span className="absolute text-[10px] font-black text-white tracking-widest drop-shadow-md font-mono bg-black/40 px-2 py-0.5 rounded">
+                    NDVI LAYER
                   </span>
                 </div>
 
-                {/* Middle Plate 2: DRISHTI Field Evidence (Grayscale Proof Grid) */}
-                <div className="absolute top-10 left-3 w-36 h-20 rounded-xl bg-gradient-to-tr from-slate-800 via-slate-600 to-slate-400 border-2 border-slate-300/70 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center transition-all hover:translate-y-[-2px]">
-                  <div className="w-full h-full bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:8px_8px] opacity-25 rounded-xl" />
-                  <span className="absolute text-[10px] font-black text-white tracking-wider drop-shadow font-mono">
-                    FIELD EXIF
+                {/* Plate 2 (Middle): DRISHTI Field Evidence - Grayscale Photo Proof Tile */}
+                <div className="absolute top-10 left-3 w-40 h-24 rounded-xl bg-gradient-to-tr from-slate-900 via-slate-700 to-slate-500 border-2 border-slate-300/80 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
+                  <svg className="w-full h-full opacity-35" viewBox="0 0 100 60">
+                    <circle cx="30" cy="20" r="12" fill="#fff"/>
+                    <circle cx="70" cy="40" r="10" fill="#cbd5e1"/>
+                    <path fill="none" stroke="#fff" strokeWidth="0.8" d="M10 50 Q 50 10 90 50"/>
+                  </svg>
+                  <span className="absolute text-[10px] font-black text-white tracking-widest drop-shadow-md font-mono bg-black/40 px-2 py-0.5 rounded">
+                    EXIF PROOF
                   </span>
                 </div>
 
-                {/* Bottom Plate 3: Elevation Hydrology (Contour Flow Lines Grid) */}
-                <div className="absolute top-20 left-0 w-36 h-20 rounded-xl bg-gradient-to-tr from-blue-800 via-cyan-600 to-teal-400 border-2 border-cyan-300/80 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center transition-all hover:translate-y-[-2px]">
-                  <div className="w-full h-full bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:8px_8px] opacity-30 rounded-xl" />
-                  <span className="absolute text-[10px] font-black text-white tracking-wider drop-shadow font-mono">
+                {/* Plate 3 (Bottom): Elevation Hydrology - Blue Contour Line Grid Tile */}
+                <div className="absolute top-20 left-0 w-40 h-24 rounded-xl bg-gradient-to-tr from-blue-900 via-cyan-700 to-teal-500 border-2 border-cyan-300 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
+                  <svg className="w-full h-full opacity-45" viewBox="0 0 100 60">
+                    <path fill="none" stroke="#38bdf8" strokeWidth="1.2" d="M 0 10 Q 25 30 50 20 T 100 40"/>
+                    <path fill="none" stroke="#38bdf8" strokeWidth="1" d="M 0 30 Q 35 50 70 30 T 100 60"/>
+                    <path fill="none" stroke="#67e8f9" strokeWidth="0.8" d="M 0 50 Q 45 10 90 20"/>
+                  </svg>
+                  <span className="absolute text-[10px] font-black text-white tracking-widest drop-shadow-md font-mono bg-black/40 px-2 py-0.5 rounded">
                     DEM FLOW
                   </span>
                 </div>
@@ -281,7 +295,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
             </div>
           </div>
 
-          {/* Bottom 4 Feature Glassmorphism Cards */}
+          {/* Bottom 4 Feature Cards */}
           <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3">
             <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
               <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
@@ -337,11 +351,11 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
           </div>
         </div>
 
-        {/* RIGHT COLUMN: FLOATING WHITE LOGIN CARD ON LIGHT GRAY BACKGROUND */}
+        {/* RIGHT COLUMN: FLOATING WHITE LOGIN CARD AREA */}
         <div className="lg:w-[42%] bg-[#f4f7fc] p-6 lg:p-12 flex items-center justify-center relative">
-          {/* Main Floating Login Card */}
-          <div className="w-full max-w-md bg-white rounded-3xl p-7 lg:p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.07)] border border-slate-200/90 space-y-6">
-            {/* Card Title Header */}
+          {/* Main Floating White Card */}
+          <div className="w-full max-w-md bg-white rounded-3xl p-7 lg:p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-slate-200/90 space-y-6">
+            {/* Title Header */}
             <div className="text-center space-y-1">
               <p className="text-xs font-medium text-slate-500">Welcome to</p>
               <h2 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight font-mono">
@@ -352,8 +366,8 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               </p>
             </div>
 
-            {/* Segmented Control Pill Toggle (Officer Login / User Login) */}
-            <div className="bg-[#f1f5f9] p-1.5 rounded-2xl flex items-center gap-1 border border-slate-200/80">
+            {/* Segmented Control Role Switcher */}
+            <div className="bg-[#f1f5f9] p-1.5 rounded-2xl flex items-center gap-1 border border-slate-200/60">
               <button
                 type="button"
                 onClick={() => setRoleType('officer')}
@@ -381,7 +395,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               </button>
             </div>
 
-            {/* Login Form */}
+            {/* Form */}
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               {error && (
                 <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs p-3 rounded-xl font-medium">
@@ -389,7 +403,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </div>
               )}
 
-              {/* Email Input Field */}
+              {/* Email Field */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold text-slate-700">
                   Email ID
@@ -409,7 +423,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </div>
               </div>
 
-              {/* Password Input Field */}
+              {/* Password Field */}
               <div className="space-y-1.5">
                 <label className="block text-xs font-bold text-slate-700">
                   Password
@@ -436,7 +450,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </div>
               </div>
 
-              {/* Remember Me Checkbox & Forgot Password Link */}
+              {/* Checkbox & Forgot Link */}
               <div className="flex items-center justify-between text-xs pt-1">
                 <label className="flex items-center gap-2 cursor-pointer select-none text-slate-700 font-medium">
                   <input
@@ -459,7 +473,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 </button>
               </div>
 
-              {/* Submit Login Button */}
+              {/* Main Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
