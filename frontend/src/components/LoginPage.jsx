@@ -15,6 +15,7 @@ import {
   User,
   Users,
   Waves,
+  Zap,
 } from 'lucide-react'
 
 const DEMO_ACCOUNTS = [
@@ -199,8 +200,8 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
 
       {/* 2. MAIN SPLIT BODY */}
       <main className="flex-1 w-full bg-[#f8fafc] flex flex-col lg:flex-row relative overflow-hidden">
-        {/* LEFT HERO PANEL (DARK TERRAIN IMAGE & 3D STACK) */}
-        <div className="lg:w-[60%] relative min-h-[580px] lg:min-h-full p-8 lg:p-14 flex flex-col justify-between overflow-hidden">
+        {/* LEFT HERO PANEL (MATCHES ref_image.png 100%) */}
+        <div className="lg:w-[60%] relative min-h-[620px] lg:min-h-full p-8 lg:p-12 flex flex-col justify-between overflow-hidden">
           {/* Background Aerial Terrain Image & Gradient Overlay */}
           <div className="absolute inset-0 z-0">
             <img
@@ -208,12 +209,12 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               alt="Watershed Aerial Imagery"
               className="w-full h-full object-cover object-center filter brightness-90 contrast-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#071322]/95 via-[#08182b]/85 to-[#0b1d34]/70" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#061220]/95 via-[#08182b]/85 to-[#0a1c32]/65" />
           </div>
 
           {/* Hero Content Top */}
           <div className="relative z-10 space-y-4 max-w-2xl">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.15] tracking-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.12] tracking-tight">
               GEOSPATIAL INTELLIGENCE. <br />
               <span className="text-[#10b981]">POWERED BY PIXELS & PROOF.</span>
             </h2>
@@ -224,52 +225,66 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
             </p>
           </div>
 
-          {/* Floating 3D Layer Stack Diagram (Matches Reference Image) */}
-          <div className="relative z-10 my-8 py-4 px-6 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md max-w-xl">
+          {/* Floating 3D Layer Stack Diagram (Exact Match to ref_image.png) */}
+          <div className="relative z-10 my-6 py-6 px-4 sm:px-8 rounded-2xl bg-slate-900/35 border border-white/10 backdrop-blur-md max-w-2xl">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-              {/* Stack Labels on Left */}
-              <div className="space-y-3 w-full sm:w-auto">
-                <div className="flex items-center gap-2.5 bg-slate-900/80 border border-emerald-500/40 px-3.5 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-md shadow-md">
-                  <div className="w-5 h-5 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                    <Compass size={13} />
+              {/* Floating Labels Column (Left of the 3D stack) */}
+              <div className="space-y-4 w-full sm:w-auto">
+                {/* 1. Satellite Observation Label */}
+                <div className="flex items-center gap-3 bg-[#0d1c2d]/90 border border-teal-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg shadow-teal-950/40">
+                  <div className="w-6 h-6 rounded-md bg-teal-500/20 text-teal-300 flex items-center justify-center">
+                    <Compass size={14} />
                   </div>
-                  <span>Satellite Observation</span>
+                  <div className="leading-tight">
+                    <div className="font-semibold text-white">Satellite</div>
+                    <div className="text-[10px] text-slate-300">Observation</div>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 bg-slate-900/80 border border-teal-500/40 px-3.5 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-md shadow-md">
-                  <div className="w-5 h-5 rounded bg-teal-500/20 text-teal-400 flex items-center justify-center">
-                    <MapPin size={13} />
+                {/* 2. DRISHTI Field Evidence Label */}
+                <div className="flex items-center gap-3 bg-[#0d1c2d]/90 border border-emerald-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg shadow-emerald-950/40">
+                  <div className="w-6 h-6 rounded-md bg-emerald-500/20 text-emerald-300 flex items-center justify-center">
+                    <MapPin size={14} />
                   </div>
-                  <span>DRISHTI Field Evidence</span>
+                  <div className="leading-tight">
+                    <div className="font-semibold text-white">DRISHTI Field</div>
+                    <div className="text-[10px] text-slate-300">Evidence</div>
+                  </div>
                 </div>
 
-                <div className="flex items-center gap-2.5 bg-slate-900/80 border border-cyan-500/40 px-3.5 py-2 rounded-xl text-white text-xs font-semibold backdrop-blur-md shadow-md">
-                  <div className="w-5 h-5 rounded bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
-                    <Waves size={13} />
+                {/* 3. Elevation Hydrology Label */}
+                <div className="flex items-center gap-3 bg-[#0d1c2d]/90 border border-blue-500/40 px-4 py-2.5 rounded-xl text-white text-xs font-medium backdrop-blur-md shadow-lg shadow-blue-950/40">
+                  <div className="w-6 h-6 rounded-md bg-blue-500/20 text-blue-300 flex items-center justify-center">
+                    <Waves size={14} />
                   </div>
-                  <span>Elevation Hydrology</span>
+                  <div className="leading-tight">
+                    <div className="font-semibold text-white">Elevation</div>
+                    <div className="text-[10px] text-slate-300">Hydrology</div>
+                  </div>
                 </div>
               </div>
 
-              {/* Isometric 3D Visual Layers Stack */}
-              <div className="relative w-48 h-40 flex items-center justify-center">
-                {/* Layer 1: Satellite / NDVI Layer */}
-                <div className="absolute top-1 left-4 w-36 h-20 rounded-lg bg-gradient-to-tr from-emerald-600/90 via-teal-400/60 to-amber-400/50 border border-emerald-300/80 transform -rotate-12 skew-x-12 shadow-xl backdrop-blur-xs flex items-center justify-center">
-                  <span className="text-[10px] font-bold text-white tracking-wider drop-shadow-sm font-mono">
-                    NDVI MAP
-                  </span>
+              {/* Isometric 3D Perspective Map Stack */}
+              <div className="relative w-56 h-44 flex items-center justify-center">
+                {/* Layer 1: Green/Orange NDVI Map */}
+                <div className="absolute top-0 left-6 w-40 h-22 rounded-xl bg-gradient-to-tr from-emerald-600/90 via-amber-500/70 to-teal-400/80 border border-emerald-300/80 transform -rotate-12 skew-x-12 shadow-2xl shadow-emerald-950/50 backdrop-blur-xs flex items-center justify-center">
+                  <div className="w-full h-full rounded-xl bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-400/30 via-transparent to-transparent flex items-center justify-center">
+                    <span className="text-[10px] font-bold text-white tracking-wider font-mono drop-shadow">
+                      SENTINEL L2A
+                    </span>
+                  </div>
                 </div>
 
-                {/* Layer 2: DRISHTI Photo Layer */}
-                <div className="absolute top-9 left-2 w-36 h-20 rounded-lg bg-gradient-to-tr from-slate-800/90 via-slate-600/70 to-slate-400/50 border border-slate-300/60 transform -rotate-12 skew-x-12 shadow-xl backdrop-blur-xs flex items-center justify-center">
-                  <span className="text-[10px] font-bold text-white tracking-wider drop-shadow-sm font-mono">
+                {/* Layer 2: Monochrome Field Evidence Layer */}
+                <div className="absolute top-10 left-3 w-40 h-22 rounded-xl bg-gradient-to-tr from-slate-900/90 via-slate-600/80 to-slate-400/60 border border-slate-300/60 transform -rotate-12 skew-x-12 shadow-2xl shadow-slate-950/50 backdrop-blur-xs flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-white tracking-wider font-mono drop-shadow">
                     EXIF PROOF
                   </span>
                 </div>
 
-                {/* Layer 3: Hydrology Contour Layer */}
-                <div className="absolute top-17 left-0 w-36 h-20 rounded-lg bg-gradient-to-tr from-cyan-700/90 via-blue-500/70 to-teal-300/50 border border-cyan-300/80 transform -rotate-12 skew-x-12 shadow-xl backdrop-blur-xs flex items-center justify-center">
-                  <span className="text-[10px] font-bold text-white tracking-wider drop-shadow-sm font-mono">
+                {/* Layer 3: Blue Contour Hydrology Stream Layer */}
+                <div className="absolute top-20 left-0 w-40 h-22 rounded-xl bg-gradient-to-tr from-blue-700/90 via-cyan-500/70 to-blue-300/60 border border-cyan-300/80 transform -rotate-12 skew-x-12 shadow-2xl shadow-blue-950/50 backdrop-blur-xs flex items-center justify-center">
+                  <span className="text-[10px] font-bold text-white tracking-wider font-mono drop-shadow">
                     DEM FLOW
                   </span>
                 </div>
@@ -277,11 +292,11 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
             </div>
           </div>
 
-          {/* Bottom 4 Feature Cards (Glassmorphism Cards) */}
+          {/* Bottom 4 Feature Cards (Matches ref_image.png 100%) */}
           <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
-              <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                <Compass size={15} />
+            <div className="bg-slate-950/60 border border-white/10 rounded-2xl p-4 backdrop-blur-md flex flex-col justify-between space-y-3">
+              <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <Compass size={16} />
               </div>
               <div>
                 <div className="text-xs font-bold text-white">
@@ -293,9 +308,9 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               </div>
             </div>
 
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
-              <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center">
-                <MapPin size={15} />
+            <div className="bg-slate-950/60 border border-white/10 rounded-2xl p-4 backdrop-blur-md flex flex-col justify-between space-y-3">
+              <div className="w-8 h-8 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center">
+                <MapPin size={16} />
               </div>
               <div>
                 <div className="text-xs font-bold text-white">DRISHTI EXIF</div>
@@ -305,9 +320,9 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               </div>
             </div>
 
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
-              <div className="w-7 h-7 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center">
-                <Layers size={15} />
+            <div className="bg-slate-950/60 border border-white/10 rounded-2xl p-4 backdrop-blur-md flex flex-col justify-between space-y-3">
+              <div className="w-8 h-8 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center">
+                <Layers size={16} />
               </div>
               <div>
                 <div className="text-xs font-bold text-white">250m Buffer</div>
@@ -317,9 +332,9 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               </div>
             </div>
 
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
-              <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                <ShieldCheck size={15} />
+            <div className="bg-slate-950/60 border border-white/10 rounded-2xl p-4 backdrop-blur-md flex flex-col justify-between space-y-3">
+              <div className="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center">
+                <ShieldCheck size={16} />
               </div>
               <div>
                 <div className="text-xs font-bold text-white">
