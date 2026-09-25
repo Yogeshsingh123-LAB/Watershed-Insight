@@ -1,0 +1,508 @@
+[
+  {
+    "id": "INSP-28F3D4",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-25T08:23:26Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-25T08:23:26Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-A6F649",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T11:08:42Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T11:08:42Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-FEDD2D",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T10:48:00Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T10:48:00Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-58E006",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T10:45:09Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T10:45:09Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-FEDEFA",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T10:39:40Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T10:39:40Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-B82889",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T10:29:55Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T10:29:55Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-9F85EC",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T09:24:13Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T09:24:13Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-356D8D",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T08:59:35Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T08:59:35Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-BD9969",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T08:47:28Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T08:47:28Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-B4D9E8",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T08:46:15Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T08:46:15Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-D21521",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T08:38:24Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T08:38:24Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-985A92",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T08:34:34Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T08:34:34Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-2D9D80",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:58:20Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:58:20Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-007317",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:46:02Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:46:02Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-3954C5",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:19:31Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:19:31Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-872038",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:18:26Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:18:26Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-ECFCF2",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:14:07Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:14:07Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-3F4D02",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:11:28Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:11:28Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-9C6A3D",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:10:04Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:10:04Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-7C0F70",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:07:40Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:07:40Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-8BF83E",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:05:34Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:05:34Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-8C1398",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Test inspection request",
+    "priority": "HIGH",
+    "assigned_officer": "Test_Officer",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-12-01",
+    "required_evidence": [
+      "Geo-coded photo",
+      "Field observations"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:03:36Z",
+    "created_by": "District_Officer",
+    "submitted_at": "2026-09-23T07:03:36Z",
+    "submitted_photos": [],
+    "field_notes": "All checks verified",
+    "gps_verified": true
+  },
+  {
+    "id": "INSP-001",
+    "intervention_id": "INT-CD-001",
+    "watershed_id": "watershed_001",
+    "reason": "NDVI response below expected threshold; verify siltation & structural integrity.",
+    "priority": "HIGH",
+    "assigned_officer": "Field_Officer_Parner",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-10-15",
+    "required_evidence": [
+      "Upstream ponding photo",
+      "Check dam spillway photo",
+      "GPS coordinate verification"
+    ],
+    "status": "REQUESTED",
+    "created_at": "2026-09-23T07:03:36Z",
+    "created_by": "officer_district_01",
+    "submitted_at": null,
+    "submitted_photos": [],
+    "field_notes": null,
+    "gps_verified": false
+  },
+  {
+    "id": "INSP-002",
+    "intervention_id": "INT-PT-003",
+    "watershed_id": "watershed_001",
+    "reason": "Routine post-monsoon verification of water impoundment area.",
+    "priority": "MEDIUM",
+    "assigned_officer": "Field_Officer_North",
+    "assigned_role": "FIELD_OFFICER",
+    "due_date": "2026-11-01",
+    "required_evidence": [
+      "Percolation tank basin photo"
+    ],
+    "status": "SUBMITTED",
+    "created_at": "2026-09-23T07:03:36Z",
+    "created_by": "officer_district_01",
+    "submitted_at": "2026-09-23T07:03:36Z",
+    "submitted_photos": [
+      "IMG_0042.jpg"
+    ],
+    "field_notes": "Structure intact with active percolation and 15% basin water coverage.",
+    "gps_verified": true
+  }
+]
