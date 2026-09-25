@@ -59,6 +59,10 @@ data/sample/overlays/
 # Generated overlays for the real-data AOI
 data/real/overlays/
 
+# SQLite local databases
+*.db
+data/*.db
+
 # Runtime upload / thumbnail directories populated by tests and the API
 data/*/photos/uploads/
 data/*/photos/thumbnails/

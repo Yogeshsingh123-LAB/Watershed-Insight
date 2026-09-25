@@ -48,6 +48,9 @@ class Settings:
     version: str = "1.0.0"
     cors_origins: List[str] = field(default_factory=lambda: _env_list("WS_CORS_ORIGINS", "*"))
     debug: bool = field(default_factory=lambda: _env_bool("WS_DEBUG", False))
+    database_url: str = field(default_factory=lambda: os.getenv(
+        "DATABASE_URL", f"sqlite:///{os.path.join(BASE_DIR, 'data', 'watershed.db')}"))
+    use_db_store: bool = field(default_factory=lambda: _env_bool("WS_USE_DB_STORE", False))
 
     # --- analytical defaults ---------------------------------------------- #
     default_buffer_m: int = int(os.getenv("WS_BUFFER_M", "250"))

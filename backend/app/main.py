@@ -117,6 +117,17 @@ def root() -> Dict[str, Any]:
     }
 
 
+@app.get(f"{settings.api_prefix}/health/db", tags=["Meta"])
+def db_health() -> Dict[str, Any]:
+    from .database import test_db_connection
+    return {
+        "status": "online",
+        "database": test_db_connection(),
+        "database_url_configured": bool(settings.database_url),
+        "use_db_store": settings.use_db_store,
+    }
+
+
 @app.get(f"{settings.api_prefix}/health", tags=["Meta"])
 def health() -> Dict[str, Any]:
     store = get_store()
