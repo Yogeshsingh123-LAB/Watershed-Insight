@@ -1,7 +1,7 @@
 .DEFAULT_GOAL := help
 PYTHON ?= python
-PORT   ?= 8000
-HOST   ?= 0.0.0.0
+PORT   ?= 8001
+HOST   ?= 127.0.0.1
 
 .PHONY: help install data test lint backend frontend dev docker clean
 
