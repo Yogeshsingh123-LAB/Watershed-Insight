@@ -122,13 +122,13 @@ export default function LandingPage({ onLoginClick, onExploreClick }) {
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-emerald-600 selection:text-white flex flex-col overflow-x-hidden">
       {/* ------------------- 1. CLEAN RESPONSIVE TOP NAVIGATION ------------------- */}
       <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-xl border-b border-slate-200/80 px-4 sm:px-6 lg:px-12 py-3 flex items-center justify-between shadow-xs transition-all">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-2xl bg-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-600/20 shrink-0">
-            <Compass size={22} />
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-white p-0.5 shadow-sm border border-slate-200/80 flex items-center justify-center shrink-0">
+            <img src="/dharascan_logo.png" alt="DharaScan Logo" className="h-full w-full object-contain rounded-lg" />
           </div>
           <div className="min-w-0">
-            <h1 className="text-xs sm:text-sm font-extrabold tracking-tight text-slate-900 flex items-center gap-1.5 truncate">
-              <span className="truncate">WATERSHED INSIGHT</span>
+            <h1 className="text-xs sm:text-base font-extrabold tracking-tight text-slate-900 flex items-center gap-1.5 truncate">
+              <span className="truncate">DharaScan</span>
               <span className="hidden sm:inline-block text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200 font-mono font-bold px-2 py-0.5 rounded-full shrink-0">
                 DoLR • Govt. of India
               </span>
@@ -489,7 +489,7 @@ export default function LandingPage({ onLoginClick, onExploreClick }) {
           </div>
 
           <footer className="pt-12 sm:pt-16 border-t border-slate-200/80 text-[11px] sm:text-xs font-mono text-slate-500 flex flex-col sm:flex-row items-center justify-between gap-3 sm:gap-4 text-center sm:text-left">
-            <div>© 2026 Watershed Insight • All Rights Reserved</div>
+            <div>© 2026 DharaScan • All Rights Reserved</div>
             <div>Department of Land Resources (DoLR) • Ministry of Rural Development</div>
           </footer>
         </ScrollReveal>

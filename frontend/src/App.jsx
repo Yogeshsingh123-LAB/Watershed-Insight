@@ -27,6 +27,7 @@ import ForbiddenPage from './components/ForbiddenPage'
 import AdminPortal from './components/AdminPortal'
 import VerificationPortal from './components/VerificationPortal'
 import AuditorPortal from './components/AuditorPortal'
+import OfficerPortal from './components/OfficerPortal'
 
 const TABS = [
   { id: 'dashboard', label: 'Dashboard' },
@@ -123,7 +124,7 @@ export default function App() {
         else setLoading(false)
       } catch (err) {
         if (!cancelled) {
-          setError(err.message || 'Unable to reach the Watershed Insight API.')
+          setError(err.message || 'Unable to reach the DharaScan API.')
           setLoading(false)
         }
       }
@@ -398,163 +399,35 @@ export default function App() {
       </div>
     )
   }
-
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
-      <Navbar
+    <>
+      <OfficerPortal
         catalog={catalog}
         watershedId={watershedId}
         onSelectWatershed={setWatershedId}
         summary={summary}
+        overlays={overlays}
+        layers={layers}
+        setLayers={setLayers}
+        basemap={basemap}
+        setBasemap={setBasemap}
+        interventions={interventions}
+        photos={summary?.photos}
+        selectedId={selectedId}
+        selectIntervention={selectIntervention}
+        focus={focus}
+        radius={radius}
+        opacity={opacity}
+        catchment={layers.catchment ? catchment : null}
+        hotspots={summary?.hotspots}
+        loading={loading}
         health={healthRef.current}
-        busy={busy || loading}
-        onGenerateReport={() => downloadReport('watershed', watershedId)}
+        busy={busy}
+        downloadReport={downloadReport}
         currentUser={currentUser}
-        onOpenLogin={() => setRouteView('login')}
         onLogout={handleLogout}
+        analysis={analysis}
       />
-
-      <div className="dashboard-grid">
-        <Sidebar
-          summary={summary}
-          layers={layers}
-          setLayers={setLayers}
-          basemap={basemap}
-          setBasemap={setBasemap}
-          epochs={epochs}
-          epochKey={epochKey}
-          setEpochKey={setEpochKey}
-          radius={radius}
-          setRadius={setRadius}
-          opacity={opacity}
-          setOpacity={setOpacity}
-          types={types}
-          setTypes={setTypes}
-          onToggleCatchment={toggleCatchment}
-        />
-
-        <MapView
-          summary={summary}
-          overlays={overlays}
-          layers={layers}
-          basemap={basemap}
-          interventions={interventions}
-          photos={summary?.photos}
-          selectedId={selectedId}
-          onSelect={selectIntervention}
-          focus={focus}
-          radius={radius}
-          opacity={opacity}
-          catchment={layers.catchment ? catchment : null}
-          hotspots={summary?.hotspots}
-          loading={loading}
-        />
-
-        <div className="analytics-panel">
-          <div className="tab-bar">
-            {TABS.map((t) => (
-              <button
-                key={t.id}
-                className={`tab-btn ${tab === t.id ? 'active' : ''}`}
-                onClick={() => setTab(t.id)}
-              >
-                {t.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="tab-content overflow-y-auto">
-            {(tab === 'dashboard' || tab === 'overview') && (
-              <OverviewPanel
-                summary={summary}
-                analysis={analysis}
-                onSelect={(id) => selectIntervention(id, { open: true })}
-                onFly={(item) => setFocus({ lat: item.latitude, lon: item.longitude, zoom: 16, key: Date.now() })}
-                onReport={() => downloadReport('intervention', selectedId)}
-                busy={busy}
-                radius={radius}
-              />
-            )}
-            {(tab === 'explorer' || tab === 'thematic') && (
-              <ThematicPanel
-                summary={summary}
-                layers={layers}
-                setLayers={setLayers}
-                onToggleCatchment={toggleCatchment}
-                catchment={catchment}
-                selectedId={selectedId}
-              />
-            )}
-            {tab === 'interventions' && (
-              <OverviewPanel
-                summary={summary}
-                analysis={analysis}
-                onSelect={(id) => selectIntervention(id, { open: true })}
-                onFly={(item) => setFocus({ lat: item.latitude, lon: item.longitude, zoom: 16, key: Date.now() })}
-                onReport={() => downloadReport('intervention', selectedId)}
-                busy={busy}
-                radius={radius}
-              />
-            )}
-            {(tab === 'change' || tab === 'beforeafter') && (
-              <div className="space-y-6">
-                <BeforeAfterPanel
-                  watershedId={watershedId}
-                  interventions={interventions}
-                />
-                <ChangePanel
-                  summary={summary}
-                  watershedId={watershedId}
-                  epochKey={epochKey}
-                  setEpochKey={setEpochKey}
-                  epochs={epochs}
-                />
-              </div>
-            )}
-            {(tab === 'fieldevidence' || tab === 'inspections' || tab === 'photos') && (
-              <div className="space-y-6">
-                <FieldInspectionPanel
-                  watershedId={watershedId}
-                />
-                <PhotosPanel
-                  watershedId={watershedId}
-                  summary={summary}
-                  selectedId={selectedId}
-                  onSelect={(id) => selectIntervention(id, { open: true })}
-                  onFly={(p) => setFocus({ lat: Number(p.latitude), lon: Number(p.longitude), zoom: 17, key: Date.now() })}
-                  notify={notify}
-                />
-              </div>
-            )}
-            {(tab === 'impact' || tab === 'evidence') && (
-              <EvidenceHealthPanel
-                watershedId={watershedId}
-                interventions={interventions}
-              />
-            )}
-            {tab === 'decision' && (
-              <DecisionCenterPanel
-                watershedId={watershedId}
-                onSelectIntervention={(id) => selectIntervention(id, { open: true })}
-                onOpenAi={() => setAiModalOpen(true)}
-              />
-            )}
-            {tab === 'reports' && (
-              <ReportsPanel
-                watershedId={watershedId}
-                summary={summary}
-                selectedId={selectedId}
-                radius={radius}
-                onDownload={downloadReport}
-                busy={busy}
-              />
-            )}
-            {tab === 'audit' && (
-              <AuditTrailPanel />
-            )}
-          </div>
-        </div>
-      </div>
 
       <AiAssistantModal
         watershedId={watershedId}
@@ -574,7 +447,6 @@ export default function App() {
         }}
       />
 
-
       {modalOpen && analysis && (
         <InterventionModal
           data={analysis}
@@ -591,23 +463,6 @@ export default function App() {
           {toast.message}
         </div>
       )}
-
-      {/* Official Government System Footer Status Bar */}
-      <footer className="h-7 min-h-[28px] bg-[#070d19] border-t border-slate-800/80 px-4 flex items-center justify-between text-[11px] text-slate-400 z-[1200]">
-        <div className="flex items-center gap-3">
-          <span className="flex items-center gap-1.5 text-emerald-400 font-semibold">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            SRISHTI-DRISHTI ENGINE: ACTIVE
-          </span>
-          <span className="text-slate-700">•</span>
-          <span className="text-slate-300 font-medium">Department of Land Resources • Ministry of Rural Development • Govt. of India</span>
-        </div>
-        <div className="hidden sm:flex items-center gap-3 text-slate-400">
-          <span className="bg-slate-800/90 text-slate-300 px-2 py-0.5 rounded text-[10px] font-semibold tracking-wider">OFFICIAL USE ONLY</span>
-          <span className="text-slate-700">•</span>
-          <span className="font-mono text-[10px]">EPSG:4326 (WGS 84)</span>
-        </div>
-      </footer>
-    </div>
+    </>
   )
 }

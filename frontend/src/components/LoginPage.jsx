@@ -133,13 +133,13 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
           onClick={onBackToHome}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-9 h-9 rounded-full bg-[#059669] flex items-center justify-center text-white shadow-md shadow-emerald-600/20 group-hover:scale-105 transition-all">
-            <Compass size={20} className="stroke-[2.5]" />
+          <div className="h-10 w-10 rounded-xl bg-white p-0.5 shadow-sm border border-slate-200/80 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
+            <img src="/dharascan_logo.png" alt="DharaScan Logo" className="h-full w-full object-contain rounded-lg" />
           </div>
           <div>
             <div className="flex items-center gap-2.5">
-              <h1 className="text-base font-black text-slate-900 tracking-tight font-mono">
-                WATERSHED INSIGHT
+              <h1 className="text-base font-extrabold text-slate-900 tracking-tight font-mono">
+                DharaScan
               </h1>
               <span className="text-[11px] font-bold bg-[#e6f4ea] text-[#047857] border border-emerald-300/80 px-2.5 py-0.5 rounded-full">
                 DoLR • Govt. of India
@@ -356,10 +356,11 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
           {/* Main Floating White Card */}
           <div className="w-full max-w-md bg-white rounded-3xl p-7 lg:p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-slate-200/90 space-y-6">
             {/* Title Header */}
-            <div className="text-center space-y-1">
+            <div className="text-center space-y-1.5 flex flex-col items-center">
+              <img src="/dharascan_logo.png" alt="DharaScan Logo" className="h-14 w-auto object-contain mb-1" />
               <p className="text-xs font-medium text-slate-500">Welcome to</p>
-              <h2 className="text-2xl lg:text-3xl font-black text-slate-900 tracking-tight font-mono">
-                WATERSHED INSIGHT
+              <h2 className="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight font-mono">
+                DharaScan
               </h2>
               <p className="text-xs font-medium text-slate-500">
                 Geospatial Evidence Platform

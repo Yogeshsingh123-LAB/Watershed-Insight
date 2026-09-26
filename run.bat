@@ -1,7 +1,7 @@
 @echo off
 setlocal enabledelayedexpansion
 
-title Watershed Insight - Launcher
+title DharaScan - Launcher
 
 :: Default host and port configuration
 if "%HOST%"=="" set HOST=127.0.0.1
@@ -76,7 +76,7 @@ goto :end
 
 :dev
 echo ========================================================
-echo   Watershed Insight - Development Mode
+echo   DharaScan - Development Mode
 echo ========================================================
 echo.
 echo [1/3] Ensuring sample data is available...
@@ -89,11 +89,11 @@ if not exist "data\sample" (
 
 echo.
 echo [2/3] Launching FastAPI backend server (http://%HOST%:%PORT%)...
-start "Watershed Insight Backend (FastAPI)" cmd /k "title Watershed Backend && python -m uvicorn backend.app.main:app --host %HOST% --port %PORT% --reload"
+start "DharaScan Backend (FastAPI)" cmd /k "title DharaScan Backend && python -m uvicorn backend.app.main:app --host %HOST% --port %PORT% --reload"
 
 echo.
 echo [3/3] Launching React frontend server (Port 3000)...
-start "Watershed Insight Frontend (Vite)" cmd /k "title Watershed Frontend && cd frontend && npm run dev"
+start "DharaScan Frontend (Vite)" cmd /k "title DharaScan Frontend && cd frontend && npm run dev"
 
 echo.
 echo ========================================================

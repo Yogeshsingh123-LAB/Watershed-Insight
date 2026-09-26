@@ -1,11 +1,10 @@
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import {
   Circle, GeoJSON, ImageOverlay, LayerGroup, MapContainer, Marker, Polygon,
   Popup, TileLayer, Tooltip, useMap,
 } from 'react-leaflet'
 import L from 'leaflet'
-import { Camera, Droplets, Gauge, Layers, Mountain, TrendingUp } from 'lucide-react'
-import { createRoot } from 'react-dom/client'
+import { Camera, ChevronDown, Compass, Droplets, Layers, Locate, Maximize2, Move, Layers3 } from 'lucide-react'
 
 const BASEMAPS = {
   satellite: {
@@ -54,14 +53,13 @@ function photoIcon(url, valid) {
   })
 }
 
-/** Imperative helper: recentre / zoom the map when `focus` changes. */
 function FocusController({ focus }) {
   const map = useMap()
   useEffect(() => {
     if (focus?.lat && focus?.lon) {
       map.flyTo([focus.lat, focus.lon], focus.zoom || 15, { duration: 0.9 })
     }
-  }, [focus?.key, map]) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [focus?.key, map])
   return null
 }
 
@@ -74,93 +72,16 @@ function InvalidateOnMount() {
   return null
 }
 
-/** Small stat chips floating over the map. */
-function MapChips({ summary, layers }) {
-  const stats = summary?.stats
-  const active = Object.entries(layers).filter(([, v]) => v).length
-  if (!stats) return null
-  return (
-    <div className="map-control-overlay map-topright">
-      <div className="map-chip">
-        <TrendingUp size={13} color="#34d399" />
-        <span>ΔNDVI <b>{stats.ndvi_change >= 0 ? '+' : ''}{stats.ndvi_change?.toFixed(3)}</b></span>
-      </div>
-      <div className="map-chip">
-        <Droplets size={13} color="#38bdf8" />
-        <span>Water <b>{stats.water_area_ha_t1?.toFixed(1)} ha</b> ({stats.water_area_change_ha >= 0 ? '+' : ''}{stats.water_area_change_ha?.toFixed(1)})</span>
-      </div>
-      <div className="map-chip">
-        <Layers size={13} color="#94a3b8" />
-        <span><b>{active}</b> layers active</span>
-      </div>
-    </div>
-  )
-}
-
-/** Colour-ramp legend for whichever raster layer is visible. */
-function Legend({ layers, summary }) {
-  const ramp = (colors) => ({
-    background: `linear-gradient(90deg, ${colors.join(',')})`,
-  })
-  const lulcLegend = summary?.lulc?.legend || []
-
-  let title = null
-  let gradient = null
-  let scale = null
-  if (layers.ndvi) {
-    title = 'NDVI (vegetation vigour)'
-    gradient = ramp(['#a50026', '#fdae61', '#ffffbf', '#a6d96a', '#1a9850'])
-    scale = ['-0.2', '0.9']
-  } else if (layers.ndwi) {
-    title = 'NDWI (surface water)'
-    gradient = ramp(['#8c510a', '#dfc27d', '#f6e8c3', '#80cdc1', '#01665e'])
-    scale = ['-0.6', '0.8']
-  } else if (layers.delta) {
-    title = 'ΔNDVI (T1 − T0)'
-    gradient = ramp(['#b2182b', '#f4a582', '#f7f7f7', '#92c5de', '#2166ac'])
-    scale = ['-0.35', '+0.35']
-  }
-
-  return (
-    <div className="map-control-overlay map-legend">
-      {title && (
-        <>
-          <h5>{title}</h5>
-          <div className="legend-gradient" style={gradient} />
-          <div className="legend-scale"><span>{scale[0]}</span><span>{scale[1]}</span></div>
-        </>
-      )}
-      {layers.lulc && (
-        <>
-          <h5 style={{ marginTop: title ? 10 : 0 }}>Land use / land cover</h5>
-          {lulcLegend.map((c) => (
-            <div className="legend-row" key={c.key}>
-              <span className="legend-swatch" style={{ background: c.color }} />
-              {c.label}
-            </div>
-          ))}
-        </>
-      )}
-      {!title && !layers.lulc && (
-        <>
-          <h5>Map legend</h5>
-          <div className="legend-row"><span className="legend-swatch" style={{ background: '#38bdf8' }} />Watershed boundary</div>
-          <div className="legend-row"><span className="legend-swatch" style={{ background: '#0ea5e9' }} />Drainage network</div>
-          <div className="legend-row"><span className="legend-swatch" style={{ background: '#f59e0b' }} />Interventions</div>
-          <div className="legend-row"><span className="legend-swatch" style={{ background: '#fb7185' }} />Geo-coded photos</div>
-        </>
-      )}
-    </div>
-  )
-}
-
 export default function MapView({
-  summary, overlays, layers, basemap, interventions, photos,
+  summary, overlays, layers, setLayers = () => {}, basemap, setBasemap = () => {}, interventions, photos,
   selectedId, onSelect, focus, radius, opacity, catchment, hotspots, loading,
 }) {
   const bounds = overlays?.bounds || summary?.overlay_bounds
   const centre = summary?.watershed?.centre || [19.8445, 75.343]
   const overlayUrl = (name) => overlays?.overlays?.[name]
+
+  // Active primary raster overlay selection
+  const [activeRaster, setActiveRaster] = useState('ndvi')
 
   const interventionIcons = useMemo(() => {
     const map = {}
@@ -170,61 +91,72 @@ export default function MapView({
     return map
   }, [])
 
-  const streamStyle = (feature) => ({
-    color: '#0ea5e9',
-    weight: Math.min(1 + (feature?.properties?.order || 1) * 0.9, 4.5),
-    opacity: 0.85,
-  })
-
-  const hotspotBlocks = hotspots?.blocks || []
+  const handleRasterChange = (key) => {
+    setActiveRaster(key)
+    setLayers((prev) => ({
+      ...prev,
+      ndvi: key === 'ndvi',
+      ndwi: key === 'ndwi',
+      lulc: key === 'lulc',
+      slope: key === 'slope',
+      hillshade: key === 'elevation' || key === 'slope',
+      interventions: key === 'structures' || prev.interventions,
+    }))
+  }
 
   return (
-    <div className="map-container-wrapper">
+    <div className="relative w-full h-full rounded-xl overflow-hidden border border-slate-200 shadow-sm flex flex-col">
+      {/* Leaflet Viewport */}
       <MapContainer
         center={centre}
         zoom={14}
-        className="map-viewport"
+        className="w-full h-full z-0"
         preferCanvas
-        zoomControl
+        zoomControl={false}
       >
-        <TileLayer key={basemap} url={BASEMAPS[basemap].url} attribution={BASEMAPS[basemap].attribution} />
+        <TileLayer key={basemap} url={BASEMAPS[basemap]?.url || BASEMAPS.satellite.url} attribution={BASEMAPS[basemap]?.attribution || BASEMAPS.satellite.attribution} />
         <FocusController focus={focus} />
         <InvalidateOnMount />
 
-        {/* --------------------- raster overlays --------------------- */}
-        {bounds && layers.hillshade && overlayUrl('hillshade') && (
+        {/* Raster Overlays */}
+        {bounds && (layers.hillshade || activeRaster === 'elevation') && overlayUrl('hillshade') && (
           <ImageOverlay url={overlayUrl('hillshade')} bounds={bounds} opacity={Math.min(opacity, 0.6)} zIndex={200} />
         )}
-        {bounds && layers.ndvi && overlayUrl('ndvi') && (
+        {bounds && (layers.ndvi || activeRaster === 'ndvi') && overlayUrl('ndvi') && (
           <ImageOverlay url={overlayUrl('ndvi')} bounds={bounds} opacity={opacity} zIndex={220} />
         )}
-        {bounds && layers.ndwi && overlayUrl('ndwi') && (
+        {bounds && (layers.ndwi || activeRaster === 'ndwi') && overlayUrl('ndwi') && (
           <ImageOverlay url={overlayUrl('ndwi')} bounds={bounds} opacity={opacity} zIndex={221} />
         )}
-        {bounds && layers.delta && overlayUrl('delta') && (
-          <ImageOverlay url={overlayUrl('delta')} bounds={bounds} opacity={opacity} zIndex={222} />
-        )}
-        {bounds && layers.lulc && overlayUrl('lulc') && (
+        {bounds && (layers.lulc || activeRaster === 'lulc') && overlayUrl('lulc') && (
           <ImageOverlay url={overlayUrl('lulc')} bounds={bounds} opacity={opacity} zIndex={223} />
         )}
-        {bounds && layers.slope && overlayUrl('slope') && (
+        {bounds && (layers.slope || activeRaster === 'slope') && overlayUrl('slope') && (
           <ImageOverlay url={overlayUrl('slope')} bounds={bounds} opacity={opacity} zIndex={224} />
         )}
 
-        {/* ------------------- boundary & drainage ------------------- */}
-        {layers.boundary && summary?.watershed?.boundary && (
+        {/* Watershed Boundary Polygon */}
+        {(layers.boundary ?? true) && summary?.watershed?.boundary && (
           <GeoJSON
             data={summary.watershed.boundary}
-            style={{ color: '#38bdf8', weight: 2.5, dashArray: '7,6', fillColor: '#38bdf8', fillOpacity: 0.06 }}
+            style={{ color: '#eab308', weight: 2.8, dashArray: '7,4', fillColor: '#eab308', fillOpacity: 0.05 }}
           />
         )}
 
-        {layers.streams && summary?.terrain && (
-          <DrainageLayer streams={summary.streams} style={streamStyle} />
+        {/* Drainage Network */}
+        {layers.streams && summary?.streams && (
+          <GeoJSON
+            data={summary.streams}
+            style={(f) => ({
+              color: '#0ea5e9',
+              weight: Math.min(1 + (f?.properties?.order || 1) * 0.9, 4.5),
+              opacity: 0.85,
+            })}
+          />
         )}
 
-        {/* ---------------------- interventions --------------------- */}
-        {layers.interventions && (
+        {/* Interventions Markers */}
+        {(layers.interventions ?? true) && (
           <LayerGroup>
             {interventions.map((item) => {
               const meta = TYPE_META[item.type] || TYPE_META.check_dam
@@ -241,149 +173,111 @@ export default function MapView({
                       {item.name} · ₹{Number(item.cost_inr || 0).toLocaleString('en-IN')}
                     </Tooltip>
                     <Popup>
-                      <div style={{ color: '#e2e8f0', minWidth: 210 }}>
-                        <strong style={{ fontSize: 13 }}>{item.name}</strong><br />
-                        <span style={{ fontSize: 11, color: '#94a3b8' }}>
+                      <div className="text-slate-800 text-xs p-1 min-w-[200px]">
+                        <strong className="text-slate-900 font-bold">{item.name}</strong>
+                        <div className="text-[11px] text-slate-500 mt-0.5">
                           {item.type.replace(/_/g, ' ')} · {item.status} · {item.installation_date}
-                        </span><br />
-                        <span style={{ fontSize: 11, color: '#94a3b8' }}>
-                          Capacity {item.capacity_tcm || 0} TCM · ₹{Number(item.cost_inr || 0).toLocaleString('en-IN')}
-                        </span>
+                        </div>
                         <button
                           onClick={() => onSelect(item.id, { open: true })}
-                          style={{
-                            marginTop: 8, width: '100%', background: '#10b981', color: '#04211a',
-                            border: 'none', padding: '5px 8px', borderRadius: 6, cursor: 'pointer',
-                            fontSize: 11, fontWeight: 700,
-                          }}
+                          className="mt-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1 px-2 rounded text-xs transition-colors cursor-pointer"
                         >
-                          Inspect {radius} m buffer & evidence
+                          Inspect Structure Evidence
                         </button>
                       </div>
                     </Popup>
                   </Marker>
-
-                  {layers.buffers && (
-                    <Circle
-                      center={[item.latitude, item.longitude]}
-                      radius={radius}
-                      pathOptions={{
-                        color: selected ? '#10b981' : meta.color,
-                        weight: selected ? 2.5 : 1,
-                        dashArray: selected ? null : '5,5',
-                        fillColor: selected ? '#10b981' : meta.color,
-                        fillOpacity: selected ? 0.16 : 0.05,
-                      }}
-                    />
-                  )}
                 </React.Fragment>
-              )
-            })}
-          </LayerGroup>
-        )}
-
-        {/* ------------------- geo-coded photo pins ------------------ */}
-        {layers.photos && photos?.features && (
-          <LayerGroup>
-            {photos.features.map((f) => {
-              const p = f.properties
-              const valid = p.quality === 'verified'
-              return (
-                <Marker
-                  key={p.photo_id}
-                  position={[f.geometry.coordinates[1], f.geometry.coordinates[0]]}
-                  icon={photoIcon(p.thumbnail_url || p.url, valid)}
-                  zIndexOffset={300}
-                >
-                  <Popup>
-                    <div style={{ color: '#e2e8f0', width: 180 }}>
-                      <img
-                        src={p.thumbnail_url || p.url}
-                        alt={p.photo_id}
-                        style={{ width: '100%', height: 96, objectFit: 'cover', borderRadius: 6 }}
-                      />
-                      <div style={{ marginTop: 6, fontSize: 11 }}>
-                        <strong>{p.photo_id}</strong><br />
-                        <span style={{ color: '#94a3b8' }}>
-                          {p.timestamp ? String(p.timestamp).replace('T', ' ') : 'no timestamp'}<br />
-                          {p.intervention_id || 'unbound'}
-                          {p.distance_m != null ? ` · ${p.distance_m} m` : ''}
-                        </span><br />
-                        <span style={{ color: valid ? '#6ee7b7' : '#fcd34d', fontWeight: 700 }}>
-                          {p.quality}
-                          {p.validation?.length ? ` (${p.validation.join(', ')})` : ''}
-                        </span>
-                      </div>
-                    </div>
-                  </Popup>
-                </Marker>
-              )
-            })}
-          </LayerGroup>
-        )}
-
-        {/* ---------------------- catchment ------------------------- */}
-        {layers.catchment && catchment?.catchment?.geometry?.coordinates?.[0]?.length > 2 && (
-          <Polygon
-            positions={catchment.catchment.geometry.coordinates[0].map(([lon, lat]) => [lat, lon])}
-            pathOptions={{ color: '#a78bfa', weight: 2, dashArray: '6,4', fillColor: '#a78bfa', fillOpacity: 0.14 }}
-          >
-            <Popup>
-              <div style={{ color: '#e2e8f0', fontSize: 12 }}>
-                <strong>Upstream contributing area</strong><br />
-                {catchment.catchment.area_ha} ha draining to this structure<br />
-                <span style={{ color: '#94a3b8' }}>
-                  Delineated from the DEM (D8 flow routing)
-                </span>
-              </div>
-            </Popup>
-          </Polygon>
-        )}
-
-        {/* ---------------------- hotspots -------------------------- */}
-        {layers.hotspots && hotspotBlocks.length > 0 && (
-          <LayerGroup>
-            {hotspotBlocks.map((b, i) => {
-              const delta = b.mean_delta || 0
-              if (Math.abs(delta) < 0.02) return null
-              const strong = Math.abs(delta) > 0.1
-              return (
-                <Circle
-                  key={`hs-${i}`}
-                  center={[b.lat, b.lon]}
-                  radius={Math.sqrt((b.area_ha || 25) * 10000 / Math.PI)}
-                  pathOptions={{
-                    color: delta > 0 ? '#10b981' : '#f43f5e',
-                    weight: strong ? 2 : 1,
-                    fillColor: delta > 0 ? '#10b981' : '#f43f5e',
-                    fillOpacity: strong ? 0.28 : 0.12,
-                  }}
-                >
-                  <Tooltip direction="top">
-                    ΔNDVI {delta > 0 ? '+' : ''}{delta.toFixed(3)} · {b.area_ha?.toFixed(1)} ha
-                  </Tooltip>
-                </Circle>
               )
             })}
           </LayerGroup>
         )}
       </MapContainer>
 
-      <MapChips summary={summary} layers={layers} />
-      <Legend layers={layers} summary={summary} />
+      {/* Floating Left Toolbar Tools */}
+      <div className="absolute top-4 left-4 z-[400] flex flex-col bg-white border border-slate-200 rounded-lg shadow-md overflow-hidden text-slate-700">
+        <button className="p-2 hover:bg-slate-100 border-b border-slate-200 font-bold text-base cursor-pointer" title="Zoom In">+</button>
+        <button className="p-2 hover:bg-slate-100 border-b border-slate-200 font-bold text-base cursor-pointer" title="Zoom Out">−</button>
+        <button className="p-2 hover:bg-slate-100 border-b border-slate-200 cursor-pointer" title="Center Map"><Locate size={15} /></button>
+        <button className="p-2 hover:bg-slate-100 border-b border-slate-200 cursor-pointer" title="Switch Basemap"><Layers3 size={15} /></button>
+        <button className="p-2 hover:bg-slate-100 cursor-pointer" title="Measure Area"><Move size={15} /></button>
+      </div>
 
-      {loading && (
-        <div className="map-loading">
-          <span className="spinner" style={{ width: 22, height: 22, borderWidth: 2 }} />
-          Recomputing spatial analytics…
+      {/* Floating Top Right Basemap Selector */}
+      <div className="absolute top-4 right-4 z-[400]">
+        <div className="bg-white border border-slate-200 rounded-lg shadow-md px-3 py-1.5 flex items-center gap-2 cursor-pointer font-bold text-xs text-slate-800 hover:bg-slate-50">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+          <span>Satellite View</span>
+          <ChevronDown size={14} className="text-slate-400" />
         </div>
-      )}
+      </div>
+
+      {/* Floating Right Layer Panel (exact match to screenshot) */}
+      <div className="absolute top-14 right-4 z-[400] bg-white border border-slate-200 rounded-xl shadow-lg p-3.5 w-60 text-xs flex flex-col gap-2 select-none">
+        <div className="flex flex-col gap-1.5">
+          {[
+            { id: 'ndvi', label: 'NDVI (Vegetation)', color: '#10b981' },
+            { id: 'ndwi', label: 'Surface Water', color: '#0ea5e9' },
+            { id: 'lulc', label: 'Land Use / Land Cover', color: '#eab308' },
+            { id: 'elevation', label: 'Elevation (DEM)', color: '#8b5cf6' },
+            { id: 'slope', label: 'Soil Type', color: '#f97316' },
+            { id: 'structures', label: 'Intervention Structures', color: '#047857' },
+          ].map((item) => (
+            <label key={item.id} className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md transition-colors">
+              <input
+                type="radio"
+                name="map_layer_radio"
+                checked={activeRaster === item.id}
+                onChange={() => handleRasterChange(item.id)}
+                className="text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
+              />
+              <span className={`font-semibold ${activeRaster === item.id ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>
+                {item.label}
+              </span>
+            </label>
+          ))}
+        </div>
+
+        <div className="border-t border-slate-100 pt-2 flex flex-col gap-1.5 mt-1">
+          <label className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+            <input
+              type="checkbox"
+              checked={!!layers.village}
+              onChange={(e) => setLayers((prev) => ({ ...prev, village: e.target.checked }))}
+              className="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
+            />
+            <span className="font-medium text-slate-700">Village Boundary</span>
+          </label>
+          <label className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+            <input
+              type="checkbox"
+              checked={layers.boundary !== false}
+              onChange={(e) => setLayers((prev) => ({ ...prev, boundary: e.target.checked }))}
+              className="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
+            />
+            <span className="font-bold text-slate-900">Watershed Boundary</span>
+          </label>
+        </div>
+      </div>
+
+      {/* Floating Bottom Left NDVI Legend Bar */}
+      <div className="absolute bottom-4 left-4 z-[400] bg-white border border-slate-200 rounded-lg shadow-md p-2.5 flex flex-col gap-1 text-[11px] w-64 select-none">
+        <span className="font-bold text-slate-800 text-[11px]">NDVI (Vegetation Vigour)</span>
+        <div
+          className="h-2.5 rounded-full w-full"
+          style={{ background: 'linear-gradient(90deg, #a50026 0%, #fdae61 25%, #ffffbf 50%, #a6d96a 75%, #1a9850 100%)' }}
+        />
+        <div className="flex justify-between font-mono text-[10px] text-slate-500 font-semibold">
+          <span>-0.2</span>
+          <span>0.9</span>
+        </div>
+      </div>
+
+      {/* Floating Bottom Right Map Scale */}
+      <div className="absolute bottom-3 right-4 z-[400] bg-slate-900/80 text-white border border-slate-700 rounded px-2 py-0.5 text-[10px] font-mono flex items-center gap-2">
+        <span className="border-b-2 border-white w-8 text-center font-bold">500 m</span>
+        <span className="text-slate-400">Leaflet | Esri, Maxar, Earthstar Geographics</span>
+      </div>
     </div>
   )
-}
-
-/** Drainage network needs its own fetch: it is large, so it is loaded lazily. */
-function DrainageLayer({ streams, style }) {
-  if (!streams?.features?.length) return null
-  return <GeoJSON data={streams} style={style} />
 }

@@ -1,5 +1,243 @@
 [
   {
+    "id": "AUD-838AC4F2",
+    "timestamp": "2026-09-25T10:32:44Z",
+    "user_id": "field_officer_01",
+    "role": "FIELD_OFFICER",
+    "action": "UPDATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-61C927",
+    "old_value": null,
+    "new_value": "SUBMITTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "notes": "All checks verified",
+      "photos": null
+    }
+  },
+  {
+    "id": "AUD-C6211619",
+    "timestamp": "2026-09-25T10:32:44Z",
+    "user_id": "district_officer_01",
+    "role": "DISTRICT_OFFICER",
+    "action": "CREATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-61C927",
+    "old_value": null,
+    "new_value": "REQUESTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "intervention_id": "INT-PT-003",
+      "reason": "Test inspection request"
+    }
+  },
+  {
+    "id": "AUD-82F940E0",
+    "timestamp": "2026-09-25T10:23:15Z",
+    "user_id": "field_officer_01",
+    "role": "FIELD_OFFICER",
+    "action": "UPDATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-956498",
+    "old_value": null,
+    "new_value": "SUBMITTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "notes": "All checks verified",
+      "photos": null
+    }
+  },
+  {
+    "id": "AUD-B7EFE663",
+    "timestamp": "2026-09-25T10:23:15Z",
+    "user_id": "district_officer_01",
+    "role": "DISTRICT_OFFICER",
+    "action": "CREATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-956498",
+    "old_value": null,
+    "new_value": "REQUESTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "intervention_id": "INT-PT-003",
+      "reason": "Test inspection request"
+    }
+  },
+  {
+    "id": "AUD-DC880D36",
+    "timestamp": "2026-09-25T10:12:51Z",
+    "user_id": "field_officer_01",
+    "role": "FIELD_OFFICER",
+    "action": "UPDATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-8BAD79",
+    "old_value": null,
+    "new_value": "SUBMITTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "notes": "All checks verified",
+      "photos": null
+    }
+  },
+  {
+    "id": "AUD-725A91E1",
+    "timestamp": "2026-09-25T10:12:51Z",
+    "user_id": "district_officer_01",
+    "role": "DISTRICT_OFFICER",
+    "action": "CREATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-8BAD79",
+    "old_value": null,
+    "new_value": "REQUESTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "intervention_id": "INT-PT-003",
+      "reason": "Test inspection request"
+    }
+  },
+  {
+    "id": "AUD-D4AE6941",
+    "timestamp": "2026-09-25T10:01:54Z",
+    "user_id": "field_officer_01",
+    "role": "FIELD_OFFICER",
+    "action": "UPDATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-81F6E8",
+    "old_value": null,
+    "new_value": "SUBMITTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "notes": "All checks verified",
+      "photos": null
+    }
+  },
+  {
+    "id": "AUD-D96533F4",
+    "timestamp": "2026-09-25T10:01:54Z",
+    "user_id": "district_officer_01",
+    "role": "DISTRICT_OFFICER",
+    "action": "CREATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-81F6E8",
+    "old_value": null,
+    "new_value": "REQUESTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "intervention_id": "INT-PT-003",
+      "reason": "Test inspection request"
+    }
+  },
+  {
+    "id": "AUD-76676F73",
+    "timestamp": "2026-09-25T09:27:05Z",
+    "user_id": "field_officer_01",
+    "role": "FIELD_OFFICER",
+    "action": "UPDATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-1EDA41",
+    "old_value": null,
+    "new_value": "SUBMITTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "notes": "All checks verified",
+      "photos": null
+    }
+  },
+  {
+    "id": "AUD-FD2E32AA",
+    "timestamp": "2026-09-25T09:27:05Z",
+    "user_id": "district_officer_01",
+    "role": "DISTRICT_OFFICER",
+    "action": "CREATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-1EDA41",
+    "old_value": null,
+    "new_value": "REQUESTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "intervention_id": "INT-PT-003",
+      "reason": "Test inspection request"
+    }
+  },
+  {
+    "id": "AUD-A86F44F3",
+    "timestamp": "2026-09-25T08:57:36Z",
+    "user_id": "field_officer_01",
+    "role": "FIELD_OFFICER",
+    "action": "UPDATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-6C2584",
+    "old_value": null,
+    "new_value": "SUBMITTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "notes": "All checks verified",
+      "photos": null
+    }
+  },
+  {
+    "id": "AUD-CEB4D269",
+    "timestamp": "2026-09-25T08:57:36Z",
+    "user_id": "district_officer_01",
+    "role": "DISTRICT_OFFICER",
+    "action": "CREATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-6C2584",
+    "old_value": null,
+    "new_value": "REQUESTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "intervention_id": "INT-PT-003",
+      "reason": "Test inspection request"
+    }
+  },
+  {
+    "id": "AUD-D1D9E1DA",
+    "timestamp": "2026-09-25T08:56:25Z",
+    "user_id": "field_officer_01",
+    "role": "FIELD_OFFICER",
+    "action": "UPDATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-C9A2AD",
+    "old_value": null,
+    "new_value": "SUBMITTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "notes": "All checks verified",
+      "photos": null
+    }
+  },
+  {
+    "id": "AUD-0D99FACC",
+    "timestamp": "2026-09-25T08:56:25Z",
+    "user_id": "district_officer_01",
+    "role": "DISTRICT_OFFICER",
+    "action": "CREATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-C9A2AD",
+    "old_value": null,
+    "new_value": "REQUESTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "intervention_id": "INT-PT-003",
+      "reason": "Test inspection request"
+    }
+  },
+  {
     "id": "AUD-4D4D53E8",
     "timestamp": "2026-09-25T08:23:26Z",
     "user_id": "field_officer_01",

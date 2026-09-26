@@ -28,12 +28,15 @@ export default function AiAssistantModal({ watershedId, isOpen, onClose }) {
       <div className="bg-white w-full max-w-lg h-full shadow-2xl flex flex-col justify-between border-l border-slate-200">
         {/* Header */}
         <div className="p-4 border-b border-slate-200 bg-slate-50 flex justify-between items-center">
-          <div>
-            <div className="flex items-center gap-2">
-              <span className="text-xs font-bold uppercase bg-[#0f3a61] text-white px-2 py-0.5 rounded">AI Explanation Layer</span>
-              <span className="text-xs text-slate-500 font-mono">Evidence-Bounded</span>
+          <div className="flex items-center gap-3">
+            <img src="/dharascan_logo.png" alt="DharaScan" className="h-9 w-auto object-contain" />
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-bold uppercase bg-[#0f3a61] text-white px-2 py-0.5 rounded">AI Explanation Layer</span>
+                <span className="text-xs text-slate-500 font-mono">Evidence-Bounded</span>
+              </div>
+              <h2 className="text-base font-bold text-slate-900 mt-0.5">Ask DharaScan AI</h2>
             </div>
-            <h2 className="text-lg font-bold text-slate-900 mt-1">Ask Watershed Insight</h2>
           </div>
           <button onClick={onClose} className="text-slate-400 hover:text-slate-600 text-xl font-bold p-1">×</button>
         </div>

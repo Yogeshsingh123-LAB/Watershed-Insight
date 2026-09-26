@@ -126,11 +126,9 @@ export default function LoginModal({ isOpen, onClose, onLoginSuccess }) {
         </button>
 
         {/* Header */}
-        <div className="bg-slate-50 px-6 py-6 border-b border-slate-200 text-center space-y-1.5">
-          <div className="w-10 h-10 mx-auto rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-md shadow-emerald-600/20">
-            <Shield size={22} />
-          </div>
-          <h2 className="text-lg font-black text-slate-900 tracking-tight">Officer Portal Access</h2>
+        <div className="bg-slate-50 px-6 py-6 border-b border-slate-200 text-center space-y-1.5 flex flex-col items-center">
+          <img src="/dharascan_logo.png" alt="DharaScan Logo" className="h-12 w-auto object-contain mb-1" />
+          <h2 className="text-lg font-black text-slate-900 tracking-tight">DharaScan Officer Portal Access</h2>
           <p className="text-xs text-slate-500 font-medium">Department of Land Resources • Govt. of India</p>
         </div>
 
