@@ -1,6 +1,6 @@
-# BRAIN.md — WATERSHED INSIGHT System Intelligence & Architecture Master Document
+# BRAIN.md — DharaScan System Intelligence & Architecture Master Document
 
-**Platform Name**: WATERSHED INSIGHT  
+**Platform Name**: DharaScan  
 **Target Organization**: Department of Land Resources (DoLR), Ministry of Rural Development, Government of India  
 **Problem Statement ID**: 26015  
 **Core Purpose**: National Geospatial Watershed Monitoring, Geo-Coded Evidence Intelligence & Decision Support Platform  
@@ -9,7 +9,7 @@
 
 ## 🏛️ 1. Executive System Overview
 
-`BRAIN.md` documents the internal reasoning, architectural mechanics, scientific algorithms, and operational workflows of **WATERSHED INSIGHT**. The platform bridges the critical gap between field-level geo-tagged ground photographs (**DRISHTI**) and 30 m spatial resolution multispectral satellite data (**SRISHTI**), transforming manual documentation into an audit-ready, evidence-based decision-support system.
+`BRAIN.md` documents the internal reasoning, architectural mechanics, scientific algorithms, and operational workflows of **DharaScan**. The platform bridges the critical gap between field-level geo-tagged ground photographs (**DRISHTI**) and 30 m spatial resolution multispectral satellite data (**SRISHTI**), transforming manual documentation into an audit-ready, evidence-based decision-support system.
 
 ---
 
@@ -30,7 +30,7 @@
 |   - Decision & Reasoning Engine (Officer Action Queue + Evidentiary "WHY")        |
 |   - Data Sources Integrator (SRISHTI 30m Satellite + DRISHTI Mobile Sync)         |
 |   - Lifecycle Manager (7 Intervention States + Status Change Auditor)            |
-|   - Evidence-Bounded AI Explainer ("Ask Watershed Insight")                       |
+|   - Evidence-Bounded AI Explainer ("Ask DharaScan AI")                           |
 +----------------------------------------+------------------------------------------+
                                          | Raster & Vector Data Pipeline
 +----------------------------------------v------------------------------------------+
@@ -384,4 +384,4 @@ SIH016/
 
 ---
 
-*WATERSHED INSIGHT — Official Technical Intelligence Document for Problem Statement 26015, Department of Land Resources, Ministry of Rural Development, Government of India.*
+*DharaScan — Official Technical Intelligence Document for Problem Statement 26015, Department of Land Resources, Ministry of Rural Development, Government of India.*

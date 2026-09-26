@@ -1,6 +1,8 @@
 <div align="center">
 
-# 🛰️ Watershed Insight
+<img src="frontend/public/dharascan_logo.png" alt="DharaScan Logo" width="180" style="margin-bottom: 12px;" />
+
+# 🛰️ DharaScan
 
 **A Geospatial Decision-Support Platform for Micro-Watershed Monitoring,
 Geo-Coded Image Interpretation and Impact Assessment**
@@ -46,9 +48,9 @@ Two rich data streams already exist:
 The result: **data without decisions.** Photographs are filed, not interpreted; satellite
 imagery is displayed, not differenced against the structures it is supposed to evaluate.
 
-## 💡 What Watershed Insight Does
+## 💡 What DharaScan Does
 
-Watershed Insight is the **analytical layer that sits on top of SRISHTI and DRISHTI** —
+DharaScan is the **analytical layer that sits on top of SRISHTI and DRISHTI** —
 it does not replace them. It closes the loop:
 
 ```
@@ -484,7 +486,7 @@ Every generated report carries a **Methodology & Limitations** section:
 5. **Evidence** — *Generate PDF*: a 4-page, signed, audit-ready evidence pack with maps,
    indicator tables, photographs and the limitations section.
 
-> **"Watershed Insight turns satellite pixels and geo-tagged photographs into spatially
+> **"DharaScan turns satellite pixels and geo-tagged photographs into spatially
 > validated, decision-ready evidence."**
 
 ---
