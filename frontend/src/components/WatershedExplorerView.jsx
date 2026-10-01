@@ -7,6 +7,12 @@ import {
   Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis
 } from 'recharts'
 import MapView from './MapView'
+import BeforeAfterPanel from './BeforeAfterPanel'
+import ThematicPanel from './ThematicPanel'
+import InterventionsView from './InterventionsView'
+import ChangePanel from './ChangePanel'
+import PhotosPanel from './PhotosPanel'
+import ReportsPanel from './ReportsPanel'
 
 const RAINFALL_DATA = [
   { month: 'Jun', actual: 120, normal: 140 },
@@ -43,6 +49,8 @@ export default function WatershedExplorerView({
   catchment,
   hotspots,
   loading,
+  downloadReport,
+  busy,
 }) {
   const hierarchy = catalog?.hierarchy || []
   const current = summary?.watershed || {}
@@ -235,26 +243,93 @@ export default function WatershedExplorerView({
           ))}
         </div>
 
-        {/* GEOSPATIAL MAP VIEWPORT */}
-        <div className="flex-1 w-full h-full rounded-b-xl overflow-hidden relative border border-slate-200 shadow-xs">
-          <MapView
-            summary={summary}
-            overlays={overlays}
-            layers={layers}
-            setLayers={setLayers}
-            basemap={basemap}
-            setBasemap={setBasemap}
-            interventions={interventions}
-            photos={photos}
-            selectedId={selectedId}
-            onSelect={selectIntervention}
-            focus={focus}
-            radius={radius}
-            opacity={opacity}
-            catchment={catchment}
-            hotspots={hotspots}
-            loading={loading}
-          />
+        {/* DYNAMIC SUB-TAB VIEWPORT */}
+        <div className="flex-1 w-full h-full rounded-b-xl overflow-hidden relative border border-slate-200 shadow-xs bg-white">
+          {mapTab === 'map' && (
+            <MapView
+              summary={summary}
+              overlays={overlays}
+              layers={layers}
+              setLayers={setLayers}
+              basemap={basemap}
+              setBasemap={setBasemap}
+              interventions={interventions}
+              photos={photos}
+              selectedId={selectedId}
+              onSelect={selectIntervention}
+              focus={focus}
+              radius={radius}
+              opacity={opacity}
+              catchment={catchment}
+              hotspots={hotspots}
+              loading={loading}
+            />
+          )}
+
+          {mapTab === 'satellite' && (
+            <div className="h-full overflow-y-auto p-4 space-y-6 bg-white">
+              <BeforeAfterPanel watershedId={watershedId} interventions={interventions} />
+              <ThematicPanel
+                summary={summary}
+                layers={layers}
+                setLayers={setLayers}
+                onToggleCatchment={(on) => setLayers((prev) => ({ ...prev, catchment: on }))}
+                catchment={catchment}
+                selectedId={selectedId}
+              />
+            </div>
+          )}
+
+          {mapTab === 'interventions' && (
+            <div className="h-full overflow-y-auto bg-white">
+              <InterventionsView
+                summary={summary}
+                interventions={interventions}
+                selectedId={selectedId}
+                onSelect={(id) => selectIntervention(id, { open: true })}
+                onDownload={downloadReport}
+                busy={busy}
+              />
+            </div>
+          )}
+
+          {mapTab === 'change' && (
+            <div className="h-full overflow-y-auto p-4 bg-white">
+              <ChangePanel
+                summary={summary}
+                watershedId={watershedId}
+                epochKey={null}
+                setEpochKey={() => {}}
+                epochs={summary?.epochs || []}
+              />
+            </div>
+          )}
+
+          {mapTab === 'evidence' && (
+            <div className="h-full overflow-y-auto p-4 bg-white">
+              <PhotosPanel
+                watershedId={watershedId}
+                summary={summary}
+                selectedId={selectedId}
+                onSelect={selectIntervention}
+                onFly={() => {}}
+                notify={() => {}}
+              />
+            </div>
+          )}
+
+          {mapTab === 'reports' && (
+            <div className="h-full overflow-y-auto p-4 bg-white">
+              <ReportsPanel
+                watershedId={watershedId}
+                summary={summary}
+                selectedId={selectedId}
+                radius={radius}
+                onDownload={downloadReport}
+                busy={busy}
+              />
+            </div>
+          )}
         </div>
       </div>
 

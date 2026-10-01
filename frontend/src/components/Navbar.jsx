@@ -22,6 +22,7 @@ export default function Navbar({
   onLogout,
   activeNavTab = 'explorer',
   onSelectNavTab = () => {},
+  isPublic = false,
 }) {
   const hierarchy = catalog?.hierarchy || []
   const watersheds = catalog?.watersheds || {}
@@ -115,8 +116,8 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* Right Officer Profile & Accessibility Tools */}
-        <div className="flex items-center gap-5">
+        {/* Right Officer Profile / Public Access & Accessibility Tools */}
+        <div className="flex items-center gap-4">
           {/* Utility accessibility links */}
           <div className="hidden lg:flex items-center gap-3 text-[11px] text-slate-600 font-medium border-r border-slate-200 pr-4">
             <span className="hover:text-slate-900 cursor-pointer">Skip to main content</span>
@@ -134,48 +135,86 @@ export default function Navbar({
             </div>
           </div>
 
-          {/* User Profile Badge */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-slate-200 border border-slate-300 flex items-center justify-center font-bold text-slate-700 text-xs shadow-xs">
-              RK
-            </div>
-            <div className="flex flex-col text-left leading-tight">
-              <span className="text-xs font-bold text-slate-900">Dr. Rajesh Kumar Sharma</span>
-              <span className="text-[10px] text-slate-500 font-medium">District Collector, Aurangabad</span>
-            </div>
-          </div>
+          {isPublic ? (
+            <div className="flex items-center gap-3">
+              {/* Public Badge */}
+              <div className="bg-emerald-50 border border-emerald-300 text-emerald-800 text-[11px] font-extrabold px-3 py-1 rounded-full flex items-center gap-1.5 shadow-2xs">
+                <Eye size={13} className="text-emerald-600" />
+                <span>PUBLIC ACCESS</span>
+              </div>
 
-          {/* Notifications */}
-          <div className="relative cursor-pointer p-1.5 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
-            <Bell size={18} />
-            <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white">
-              1
-            </span>
-          </div>
+              {/* Officer Login Button */}
+              <button
+                onClick={onOpenLogin}
+                className="flex items-center gap-1.5 bg-[#0f172a] hover:bg-[#1e293b] text-white px-3.5 py-1.5 rounded-lg text-xs font-extrabold shadow-xs transition-all cursor-pointer"
+              >
+                <UserCheck size={14} className="text-emerald-400" />
+                <span>Officer Login</span>
+              </button>
+            </div>
+          ) : (
+            <>
+              {/* User Profile Badge */}
+              {(() => {
+                const displayName = currentUser?.name || 'Dr. Rajesh Kumar Sharma'
+                const displayTitle = currentUser?.roleTitle || currentUser?.department || 'District Collector / Nodal Officer'
+                const initials = displayName.split(' ').filter(Boolean).map((n) => n[0]).join('').substring(0, 2).toUpperCase() || 'RK'
+                return (
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-full bg-emerald-700 border border-emerald-600 flex items-center justify-center font-bold text-white text-xs shadow-xs">
+                      {initials}
+                    </div>
+                    <div className="flex flex-col text-left leading-tight">
+                      <span className="text-xs font-bold text-slate-900">{displayName}</span>
+                      <span className="text-[10px] text-slate-500 font-medium">{displayTitle}</span>
+                    </div>
+                  </div>
+                )
+              })()}
 
-          {/* Logout Button */}
-          <button
-            onClick={onLogout}
-            className="flex items-center gap-1.5 bg-[#047857] hover:bg-[#065f46] text-white px-3.5 py-1.5 rounded-md text-xs font-bold transition-all shadow-xs cursor-pointer"
-          >
-            <span>Logout</span>
-            <LogOut size={13} />
-          </button>
+              {/* Notifications */}
+              <div className="relative cursor-pointer p-1.5 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
+                <Bell size={18} />
+                <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white">
+                  1
+                </span>
+              </div>
+
+              {/* Logout Button */}
+              <button
+                onClick={onLogout}
+                className="flex items-center gap-1.5 bg-[#047857] hover:bg-[#065f46] text-white px-3.5 py-1.5 rounded-md text-xs font-bold transition-all shadow-xs cursor-pointer"
+              >
+                <span>Logout</span>
+                <LogOut size={13} />
+              </button>
+            </>
+          )}
         </div>
       </div>
 
       {/* ----------------- TIER 2: DARK NAVY MAIN NAVIGATION BAR ----------------- */}
       <nav className="h-[44px] bg-[#0f172a] text-white px-4 flex items-center justify-between text-xs font-semibold select-none">
         <div className="flex items-center gap-1">
-          {[
-            { id: 'home', label: 'Home', icon: '🏠' },
-            { id: 'explorer', label: 'Watershed Explorer', icon: '🌐' },
-            { id: 'interventions', label: 'Interventions', icon: '⚙️' },
-            { id: 'analytics', label: 'Analytics & Reports', icon: '📊' },
-            { id: 'downloads', label: 'Data & Downloads', icon: '📥' },
-            { id: 'resources', label: 'Resources', icon: '📁' },
-            { id: 'support', label: 'Help & Support', icon: '❓' },
-          ].map((item) => {
+          {(isPublic
+            ? [
+                { id: 'home', label: 'Home', icon: '🏠' },
+                { id: 'explorer', label: 'Watershed Explorer', icon: '🌐' },
+                { id: 'interventions', label: 'Interventions', icon: '⚙️' },
+                { id: 'change', label: 'Change Analysis', icon: '📈' },
+                { id: 'resources', label: 'Resources', icon: '📁' },
+                { id: 'support', label: 'Help & Support', icon: '❓' },
+              ]
+            : [
+                { id: 'home', label: 'Home', icon: '🏠' },
+                { id: 'explorer', label: 'Watershed Explorer', icon: '🌐' },
+                { id: 'interventions', label: 'Interventions', icon: '⚙️' },
+                { id: 'analytics', label: 'Analytics & Reports', icon: '📊' },
+                { id: 'downloads', label: 'Data & Downloads', icon: '📥' },
+                { id: 'resources', label: 'Resources', icon: '📁' },
+                { id: 'support', label: 'Help & Support', icon: '❓' },
+              ]
+          ).map((item) => {
             const isActive = activeNavTab === item.id || (activeNavTab === 'dashboard' && item.id === 'home')
             return (
               <button
@@ -196,7 +235,9 @@ export default function Navbar({
 
         <div className="flex items-center gap-2 text-[11px] text-slate-300">
           <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="font-mono text-emerald-400 font-bold">LIVE SYSTEM ACTIVE</span>
+          <span className="font-mono text-emerald-400 font-bold">
+            {isPublic ? 'PUBLIC WATERSHED EXPLORER' : 'LIVE SYSTEM ACTIVE'}
+          </span>
         </div>
       </nav>
 

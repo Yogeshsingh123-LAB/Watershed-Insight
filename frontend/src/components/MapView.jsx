@@ -4,7 +4,7 @@ import {
   Popup, TileLayer, Tooltip, useMap,
 } from 'react-leaflet'
 import L from 'leaflet'
-import { Camera, ChevronDown, Compass, Droplets, Layers, Locate, Maximize2, Move, Layers3 } from 'lucide-react'
+import { Camera, ChevronDown, Compass, Droplets, Layers, Locate, Maximize2, Move, Layers3, MoreVertical, X } from 'lucide-react'
 
 const BASEMAPS = {
   satellite: {
@@ -104,6 +104,14 @@ export default function MapView({
     }))
   }
 
+  const [basemapDropdownOpen, setBasemapDropdownOpen] = useState(false)
+  const [panelCollapsed, setPanelCollapsed] = useState(false)
+
+  const handleSelectBasemap = (key) => {
+    setBasemap(key)
+    setBasemapDropdownOpen(false)
+  }
+
   return (
     <div className="relative w-full h-full rounded-xl overflow-hidden border border-slate-200 shadow-sm flex flex-col">
       {/* Leaflet Viewport */}
@@ -199,65 +207,160 @@ export default function MapView({
         <button className="p-2 hover:bg-slate-100 border-b border-slate-200 font-bold text-base cursor-pointer" title="Zoom In">+</button>
         <button className="p-2 hover:bg-slate-100 border-b border-slate-200 font-bold text-base cursor-pointer" title="Zoom Out">−</button>
         <button className="p-2 hover:bg-slate-100 border-b border-slate-200 cursor-pointer" title="Center Map"><Locate size={15} /></button>
-        <button className="p-2 hover:bg-slate-100 border-b border-slate-200 cursor-pointer" title="Switch Basemap"><Layers3 size={15} /></button>
+        <button
+          onClick={() => setBasemapDropdownOpen(!basemapDropdownOpen)}
+          className="p-2 hover:bg-slate-100 border-b border-slate-200 cursor-pointer"
+          title="Switch Basemap"
+        >
+          <Layers3 size={15} />
+        </button>
         <button className="p-2 hover:bg-slate-100 cursor-pointer" title="Measure Area"><Move size={15} /></button>
       </div>
 
-      {/* Floating Top Right Basemap Selector */}
+      {/* Floating Top-Right Unified GIS Map Control Panel with 3-Dot Hide/Show Toggle */}
       <div className="absolute top-4 right-4 z-[400]">
-        <div className="bg-white border border-slate-200 rounded-lg shadow-md px-3 py-1.5 flex items-center gap-2 cursor-pointer font-bold text-xs text-slate-800 hover:bg-slate-50">
-          <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
-          <span>Satellite View</span>
-          <ChevronDown size={14} className="text-slate-400" />
-        </div>
-      </div>
+        {panelCollapsed ? (
+          <button
+            type="button"
+            onClick={() => setPanelCollapsed(false)}
+            className="bg-white border border-slate-200 rounded-lg shadow-md px-3 py-1.5 flex items-center gap-2 cursor-pointer font-bold text-xs text-slate-800 hover:bg-slate-50 transition-colors"
+            title="Expand GIS Control Panel"
+          >
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500"></span>
+            <span>
+              {basemap === 'street'
+                ? 'Street Map'
+                : basemap === 'dark'
+                ? 'Dark Topo'
+                : 'Satellite View'}
+            </span>
+            <MoreVertical size={15} className="text-slate-400 hover:text-slate-700 ml-1" />
+          </button>
+        ) : (
+          <div className="bg-white border border-slate-200 rounded-xl shadow-xl p-3.5 w-64 text-xs flex flex-col gap-3 select-none animate-in fade-in zoom-in-95 duration-150">
+            {/* Header Row with 3-Dot Collapse Button */}
+            <div className="flex items-center justify-between text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+              <span>Basemap</span>
+              <button
+                type="button"
+                onClick={() => setPanelCollapsed(true)}
+                className="p-1 hover:bg-slate-100 rounded text-slate-400 hover:text-slate-700 transition-colors cursor-pointer"
+                title="Hide / Collapse GIS Panel"
+              >
+                <MoreVertical size={16} />
+              </button>
+            </div>
 
-      {/* Floating Right Layer Panel (exact match to screenshot) */}
-      <div className="absolute top-14 right-4 z-[400] bg-white border border-slate-200 rounded-xl shadow-lg p-3.5 w-60 text-xs flex flex-col gap-2 select-none">
-        <div className="flex flex-col gap-1.5">
-          {[
-            { id: 'ndvi', label: 'NDVI (Vegetation)', color: '#10b981' },
-            { id: 'ndwi', label: 'Surface Water', color: '#0ea5e9' },
-            { id: 'lulc', label: 'Land Use / Land Cover', color: '#eab308' },
-            { id: 'elevation', label: 'Elevation (DEM)', color: '#8b5cf6' },
-            { id: 'slope', label: 'Soil Type', color: '#f97316' },
-            { id: 'structures', label: 'Intervention Structures', color: '#047857' },
-          ].map((item) => (
-            <label key={item.id} className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md transition-colors">
-              <input
-                type="radio"
-                name="map_layer_radio"
-                checked={activeRaster === item.id}
-                onChange={() => handleRasterChange(item.id)}
-                className="text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
-              />
-              <span className={`font-semibold ${activeRaster === item.id ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>
-                {item.label}
-              </span>
-            </label>
-          ))}
-        </div>
+            {/* Basemap Selector Dropdown */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setBasemapDropdownOpen(!basemapDropdownOpen)}
+                className="w-full bg-slate-50 border border-slate-200 rounded-lg px-3 py-2 flex items-center justify-between cursor-pointer font-bold text-xs text-slate-800 hover:bg-slate-100 transition-colors"
+              >
+                <div className="flex items-center gap-2">
+                  <span className={`w-2.5 h-2.5 rounded-full ${basemap === 'street' ? 'bg-blue-500' : basemap === 'dark' ? 'bg-slate-800' : 'bg-emerald-500'}`}></span>
+                  <span>
+                    {basemap === 'street'
+                      ? 'Street Map'
+                      : basemap === 'dark'
+                      ? 'Dark Topo'
+                      : 'Satellite View'}
+                  </span>
+                </div>
+                <ChevronDown size={14} className={`text-slate-400 transition-transform ${basemapDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
 
-        <div className="border-t border-slate-100 pt-2 flex flex-col gap-1.5 mt-1">
-          <label className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
-            <input
-              type="checkbox"
-              checked={!!layers.village}
-              onChange={(e) => setLayers((prev) => ({ ...prev, village: e.target.checked }))}
-              className="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
-            />
-            <span className="font-medium text-slate-700">Village Boundary</span>
-          </label>
-          <label className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
-            <input
-              type="checkbox"
-              checked={layers.boundary !== false}
-              onChange={(e) => setLayers((prev) => ({ ...prev, boundary: e.target.checked }))}
-              className="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
-            />
-            <span className="font-bold text-slate-900">Watershed Boundary</span>
-          </label>
-        </div>
+              {basemapDropdownOpen && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-slate-200 rounded-lg shadow-xl py-1 text-xs z-[500] animate-in fade-in slide-in-from-top-1">
+                  <button
+                    type="button"
+                    onClick={() => handleSelectBasemap('satellite')}
+                    className={`w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-slate-50 cursor-pointer ${
+                      basemap === 'satellite' ? 'font-bold text-emerald-700 bg-emerald-50/60' : 'text-slate-700'
+                    }`}
+                  >
+                    <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                    <span>Satellite View</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectBasemap('street')}
+                    className={`w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-slate-50 cursor-pointer ${
+                      basemap === 'street' ? 'font-bold text-emerald-700 bg-emerald-50/60' : 'text-slate-700'
+                    }`}
+                  >
+                    <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                    <span>Street Map</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => handleSelectBasemap('dark')}
+                    className={`w-full text-left px-3 py-2 flex items-center gap-2 hover:bg-slate-50 cursor-pointer ${
+                      basemap === 'dark' ? 'font-bold text-emerald-700 bg-emerald-50/60' : 'text-slate-700'
+                    }`}
+                  >
+                    <span className="w-2 h-2 rounded-full bg-slate-800"></span>
+                    <span>Dark Topo</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="border-t border-slate-100" />
+
+            {/* Map Layers Section */}
+            <div className="flex flex-col gap-1.5">
+              <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                <span>Map Layers</span>
+              </div>
+              <div className="flex flex-col gap-1.5">
+                {[
+                  { id: 'ndvi', label: 'NDVI (Vegetation)', color: '#10b981' },
+                  { id: 'ndwi', label: 'Surface Water', color: '#0ea5e9' },
+                  { id: 'lulc', label: 'Land Use / Land Cover', color: '#eab308' },
+                  { id: 'elevation', label: 'Elevation (DEM)', color: '#8b5cf6' },
+                  { id: 'slope', label: 'Soil Type', color: '#f97316' },
+                  { id: 'structures', label: 'Intervention Structures', color: '#047857' },
+                ].map((item) => (
+                  <label key={item.id} className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md transition-colors">
+                    <input
+                      type="radio"
+                      name="map_layer_radio"
+                      checked={activeRaster === item.id}
+                      onChange={() => handleRasterChange(item.id)}
+                      className="text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
+                    />
+                    <span className={`font-semibold ${activeRaster === item.id ? 'text-slate-900 font-bold' : 'text-slate-600'}`}>
+                      {item.label}
+                    </span>
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            <div className="border-t border-slate-100 pt-1 flex flex-col gap-1.5">
+              <label className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                <input
+                  type="checkbox"
+                  checked={!!layers.village}
+                  onChange={(e) => setLayers((prev) => ({ ...prev, village: e.target.checked }))}
+                  className="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
+                />
+                <span className="font-medium text-slate-700">Village Boundary</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md">
+                <input
+                  type="checkbox"
+                  checked={layers.boundary !== false}
+                  onChange={(e) => setLayers((prev) => ({ ...prev, boundary: e.target.checked }))}
+                  className="rounded text-emerald-600 focus:ring-emerald-500 h-3.5 w-3.5 cursor-pointer"
+                />
+                <span className="font-bold text-slate-900">Watershed Boundary</span>
+              </label>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Floating Bottom Left NDVI Legend Bar */}

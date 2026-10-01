@@ -1,16 +1,12 @@
 import React, { useState } from 'react'
 import {
   ArrowRight,
-  Check,
   ChevronRight,
   Compass,
   Eye,
   EyeOff,
-  Layers,
   Lock,
   Mail,
-  MapPin,
-  Shield,
   ShieldCheck,
   User,
   Users,
@@ -60,7 +56,6 @@ const DEMO_ACCOUNTS = [
 ]
 
 export default function LoginPage({ onLoginSuccess, onBackToHome }) {
-  const [roleType, setRoleType] = useState('officer') // 'officer' | 'user'
   const [email, setEmail] = useState('district.officer@dolr.gov.in')
   const [password, setPassword] = useState('Govt@2026#DoLR')
   const [showPassword, setShowPassword] = useState(false)
@@ -94,9 +89,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
           : email.split('@')[0].replace('.', ' ').toUpperCase(),
         email: email,
         role: userRole,
-        roleTitle: match
-          ? match.roleTitle
-          : userRole.replace('_', ' ').toUpperCase(),
+        roleTitle: match ? match.roleTitle : 'Government Officer',
         department: 'Department of Land Resources',
         district: 'Pune',
         state: 'Maharashtra',
@@ -125,278 +118,121 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
   }
 
   return (
-    <div className="min-h-screen w-full bg-[#f4f7fc] text-slate-900 flex flex-col justify-between font-sans selection:bg-[#059669] selection:text-white">
-      {/* 1. TOP NAVBAR HEADER */}
-      <header className="w-full bg-white border-b border-slate-200/90 px-6 lg:px-10 py-3 flex items-center justify-between z-30 sticky top-0 shadow-2xs">
-        {/* Brand Logo & Title */}
+    <div className="h-screen w-full bg-[#F7F9FC] text-[#101B35] flex flex-col justify-between font-sans overflow-hidden selection:bg-[#009F73] selection:text-white">
+      {/* ========================================================================= */}
+      {/* TOP NAVIGATION BAR (Fixed height: 64px)                                   */}
+      {/* ========================================================================= */}
+      <header className="h-[64px] shrink-0 w-full bg-white border-b border-slate-200/90 px-6 lg:px-10 flex items-center justify-between z-40 shadow-2xs">
+        {/* Left: Brand Logo & Title & Government Badge */}
         <div
           onClick={onBackToHome}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="h-10 w-10 rounded-xl bg-white p-0.5 shadow-sm border border-slate-200/80 flex items-center justify-center shrink-0 group-hover:scale-105 transition-all">
-            <img src="/dharascan_logo.png" alt="DharaScan Logo" className="h-full w-full object-contain rounded-lg" />
+          <div className="w-9 h-9 rounded-full bg-[#009F73] text-white flex items-center justify-center shrink-0 shadow-sm group-hover:scale-105 transition-transform">
+            <svg className="w-5 h-5 fill-current" viewBox="0 0 24 24">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+            </svg>
           </div>
-          <div>
+          <div className="flex flex-col">
             <div className="flex items-center gap-2.5">
-              <h1 className="text-base font-extrabold text-slate-900 tracking-tight font-mono">
-                DharaScan
+              <h1 className="text-base sm:text-lg font-black text-[#101B35] tracking-tight font-sans uppercase">
+                WATERSHED INSIGHT
               </h1>
-              <span className="text-[11px] font-bold bg-[#e6f4ea] text-[#047857] border border-emerald-300/80 px-2.5 py-0.5 rounded-full">
+              <span className="text-xs font-semibold bg-[#E6F4EA] text-[#009F73] border border-[#a7f3d0] px-3 py-0.5 rounded-full flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#009F73]" />
                 DoLR • Govt. of India
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 font-medium">
+            <p className="text-xs text-slate-500 font-medium -mt-0.5">
               Geospatial Evidence Platform
             </p>
           </div>
         </div>
 
-        {/* Center Nav Links */}
-        <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-slate-600">
+        {/* Center: Navigation Links */}
+        <nav className="hidden md:flex items-center gap-8 text-xs font-semibold text-[#101B35]">
           <button
             onClick={onBackToHome}
-            className="text-slate-900 font-bold hover:text-[#059669] transition-colors cursor-pointer"
+            className="text-[#101B35] font-bold hover:text-[#009F73] transition-colors cursor-pointer"
           >
             Home
           </button>
           <button
-            onClick={onBackToHome}
-            className="hover:text-slate-900 transition-colors cursor-pointer"
+            onClick={() => handleDemoSignIn(DEMO_ACCOUNTS[0])}
+            className="text-slate-600 hover:text-[#101B35] transition-colors cursor-pointer"
           >
             3D Geospatial
           </button>
           <button
             onClick={onBackToHome}
-            className="hover:text-slate-900 transition-colors cursor-pointer"
+            className="text-slate-600 hover:text-[#101B35] transition-colors cursor-pointer"
           >
             Capabilities
           </button>
           <button
             onClick={onBackToHome}
-            className="hover:text-slate-900 transition-colors cursor-pointer"
+            className="text-slate-600 hover:text-[#101B35] transition-colors cursor-pointer"
           >
             Multi-Temporal
           </button>
           <button
             onClick={onBackToHome}
-            className="hover:text-slate-900 transition-colors cursor-pointer"
+            className="text-slate-600 hover:text-[#101B35] transition-colors cursor-pointer"
           >
             Auditability
           </button>
         </nav>
 
-        {/* Right Action Button */}
+        {/* Right: Explore Map Button */}
         <button
-          onClick={onBackToHome}
-          className="flex items-center gap-2 bg-white border border-slate-300 hover:border-slate-400 text-slate-800 text-xs font-semibold px-4 py-2 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer"
+          onClick={() => handleDemoSignIn(DEMO_ACCOUNTS[0])}
+          className="flex items-center gap-2 bg-white border border-slate-300 hover:border-slate-400 text-[#101B35] text-xs font-semibold px-4 py-2 rounded-full shadow-2xs hover:bg-slate-50 transition-all cursor-pointer"
         >
-          <Compass size={14} className="text-[#059669] stroke-[2.5]" />
+          <Compass size={14} className="text-[#009F73] stroke-[2.5]" />
           <span>Explore Map</span>
         </button>
       </header>
 
-      {/* 2. MAIN CONTENT SPLIT LAYOUT */}
-      <main className="flex-1 w-full flex flex-col lg:flex-row relative overflow-hidden">
-        {/* LEFT COLUMN: HERO GEOSPATIAL INTELLIGENCE & ISOMETRIC 3D STACK PLATES */}
-        <div className="lg:w-[58%] relative min-h-[640px] lg:min-h-full p-8 lg:p-12 flex flex-col justify-between overflow-hidden">
-          {/* Background Imagery & Gradient */}
-          <div className="absolute inset-0 z-0">
-            <img
-              src="/watershed_hero_bg.jpg"
-              alt="Watershed Aerial Imagery"
-              className="w-full h-full object-cover object-center filter brightness-90 contrast-110"
-            />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#040d18]/95 via-[#06182c]/85 to-[#092240]/70" />
-          </div>
-
-          {/* Hero Heading */}
-          <div className="relative z-10 space-y-3 max-w-xl">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black text-white leading-[1.12] tracking-tight">
-              GEOSPATIAL INTELLIGENCE. <br />
-              <span className="text-[#00cb85]">POWERED BY PIXELS & PROOF.</span>
-            </h2>
-            <p className="text-xs sm:text-sm text-slate-200/90 font-normal leading-relaxed max-w-lg">
-              Integrating 30m Sentinel multispectral satellite observation,
-              geo-coded DRISHTI field evidence, and elevation hydrology into an
-              auditable decision-support system.
-            </p>
-          </div>
-
-          {/* Isometric 3D GIS Stack Graphic (Matches Screenshot Exact Plates) */}
-          <div className="relative z-10 my-4 py-6 px-4 rounded-2xl bg-slate-900/40 border border-white/10 backdrop-blur-md max-w-xl">
-            <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
-              {/* Floating Label Tags with Connector Badges */}
-              <div className="space-y-4 w-full sm:w-auto z-20">
-                {/* Tag 1: Satellite Observation */}
-                <div className="flex items-center gap-3 bg-slate-900/90 border border-emerald-400/60 px-3.5 py-2 rounded-xl text-white text-xs font-bold backdrop-blur-md shadow-lg shadow-emerald-950/40">
-                  <div className="w-5 h-5 rounded bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                    <Compass size={13} />
-                  </div>
-                  <span>Satellite Observation</span>
-                </div>
-
-                {/* Tag 2: DRISHTI Field Evidence */}
-                <div className="flex items-center gap-3 bg-slate-900/90 border border-teal-400/60 px-3.5 py-2 rounded-xl text-white text-xs font-bold backdrop-blur-md shadow-lg shadow-teal-950/40">
-                  <div className="w-5 h-5 rounded bg-teal-500/20 text-teal-400 flex items-center justify-center">
-                    <MapPin size={13} />
-                  </div>
-                  <span>DRISHTI Field Evidence</span>
-                </div>
-
-                {/* Tag 3: Elevation Hydrology */}
-                <div className="flex items-center gap-3 bg-slate-900/90 border border-cyan-400/60 px-3.5 py-2 rounded-xl text-white text-xs font-bold backdrop-blur-md shadow-lg shadow-cyan-950/40">
-                  <div className="w-5 h-5 rounded bg-cyan-500/20 text-cyan-400 flex items-center justify-center">
-                    <Layers size={13} />
-                  </div>
-                  <span>Elevation Hydrology</span>
-                </div>
-              </div>
-
-              {/* Real 3D Stack Plates Container */}
-              <div className="relative w-56 h-48 flex items-center justify-center">
-                {/* Plate 1 (Top): Satellite Observation - Green/Yellow Vegetation NDVI Raster Tile */}
-                <div className="absolute top-0 left-6 w-40 h-24 rounded-xl bg-gradient-to-tr from-emerald-700 via-teal-500 to-amber-300 border-2 border-emerald-300 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
-                  <svg className="w-full h-full opacity-40" viewBox="0 0 100 60">
-                    <path fill="#10b981" d="M0 0h50v30H0z"/>
-                    <path fill="#f59e0b" d="M50 0h50v30H50z"/>
-                    <path fill="#059669" d="M0 30h50v30H0z"/>
-                    <path fill="#3b82f6" d="M50 30h50v30H50z"/>
-                    <path fill="none" stroke="#fff" strokeWidth="0.5" strokeDasharray="2,2" d="M0 15h100M0 30h100M0 45h100M25 0v60M50 0v60M75 0v60"/>
-                  </svg>
-                  <span className="absolute text-[10px] font-black text-white tracking-widest drop-shadow-md font-mono bg-black/40 px-2 py-0.5 rounded">
-                    NDVI LAYER
-                  </span>
-                </div>
-
-                {/* Plate 2 (Middle): DRISHTI Field Evidence - Grayscale Photo Proof Tile */}
-                <div className="absolute top-10 left-3 w-40 h-24 rounded-xl bg-gradient-to-tr from-slate-900 via-slate-700 to-slate-500 border-2 border-slate-300/80 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
-                  <svg className="w-full h-full opacity-35" viewBox="0 0 100 60">
-                    <circle cx="30" cy="20" r="12" fill="#fff"/>
-                    <circle cx="70" cy="40" r="10" fill="#cbd5e1"/>
-                    <path fill="none" stroke="#fff" strokeWidth="0.8" d="M10 50 Q 50 10 90 50"/>
-                  </svg>
-                  <span className="absolute text-[10px] font-black text-white tracking-widest drop-shadow-md font-mono bg-black/40 px-2 py-0.5 rounded">
-                    EXIF PROOF
-                  </span>
-                </div>
-
-                {/* Plate 3 (Bottom): Elevation Hydrology - Blue Contour Line Grid Tile */}
-                <div className="absolute top-20 left-0 w-40 h-24 rounded-xl bg-gradient-to-tr from-blue-900 via-cyan-700 to-teal-500 border-2 border-cyan-300 transform -rotate-12 skew-x-12 shadow-2xl backdrop-blur-xs flex items-center justify-center overflow-hidden transition-transform hover:scale-105">
-                  <svg className="w-full h-full opacity-45" viewBox="0 0 100 60">
-                    <path fill="none" stroke="#38bdf8" strokeWidth="1.2" d="M 0 10 Q 25 30 50 20 T 100 40"/>
-                    <path fill="none" stroke="#38bdf8" strokeWidth="1" d="M 0 30 Q 35 50 70 30 T 100 60"/>
-                    <path fill="none" stroke="#67e8f9" strokeWidth="0.8" d="M 0 50 Q 45 10 90 20"/>
-                  </svg>
-                  <span className="absolute text-[10px] font-black text-white tracking-widest drop-shadow-md font-mono bg-black/40 px-2 py-0.5 rounded">
-                    DEM FLOW
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Bottom 4 Feature Cards */}
-          <div className="relative z-10 grid grid-cols-2 sm:grid-cols-4 gap-3">
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
-              <div className="w-7 h-7 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center">
-                <Compass size={15} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-white">
-                  30m Sentinel-2
-                </div>
-                <div className="text-[11px] text-slate-300/80 font-normal">
-                  Multispectral Stacks
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
-              <div className="w-7 h-7 rounded-full bg-teal-500/20 text-teal-400 flex items-center justify-center">
-                <MapPin size={15} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-white">DRISHTI EXIF</div>
-                <div className="text-[11px] text-slate-300/80 font-normal">
-                  Geo-tagged Field Photos
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
-              <div className="w-7 h-7 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center">
-                <Layers size={15} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-white">250m Buffer</div>
-                <div className="text-[11px] text-slate-300/80 font-normal">
-                  Hydrological Zonal Stats
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-slate-950/60 border border-white/10 rounded-xl p-3.5 backdrop-blur-md space-y-2">
-              <div className="w-7 h-7 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center">
-                <ShieldCheck size={15} />
-              </div>
-              <div>
-                <div className="text-xs font-bold text-white">
-                  100% Auditable
-                </div>
-                <div className="text-[11px] text-slate-300/80 font-normal">
-                  Signed ReportLab PDF
-                </div>
-              </div>
-            </div>
-          </div>
+      {/* ========================================================================= */}
+      {/* SPLIT-SCREEN MAIN AREA (Height: calc(100vh - 64px))                      */}
+      {/* ========================================================================= */}
+      <main className="h-[calc(100vh-64px)] w-full flex flex-col lg:flex-row overflow-hidden relative">
+        {/* ===================================================================== */}
+        {/* LEFT HERO SECTION (58% Width): HIGH DEFINITION GEOSPATIAL ARTWORK      */}
+        {/* ===================================================================== */}
+        <div className="lg:w-[58%] h-full relative bg-[#061525] flex items-center justify-center overflow-hidden shrink-0">
+          <img
+            src="/watershed_hero_full.jpg"
+            alt="Watershed Geospatial Intelligence Platform"
+            className="w-full h-full object-cover object-left-top filter brightness-[1.02] contrast-[1.03] transition-transform duration-700 hover:scale-[1.01]"
+          />
         </div>
 
-        {/* RIGHT COLUMN: FLOATING WHITE LOGIN CARD AREA */}
-        <div className="lg:w-[42%] bg-[#f4f7fc] p-6 lg:p-12 flex items-center justify-center relative">
+        {/* ===================================================================== */}
+        {/* RIGHT LOGIN PANEL (42% Width): CENTERED FLOATING CARD                 */}
+        {/* ===================================================================== */}
+        <div className="lg:w-[42%] h-full bg-[#F7F9FC] p-6 lg:p-8 flex items-center justify-center overflow-y-auto relative">
           {/* Main Floating White Card */}
-          <div className="w-full max-w-md bg-white rounded-3xl p-7 lg:p-8 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-slate-200/90 space-y-6">
-            {/* Title Header */}
-            <div className="text-center space-y-1.5 flex flex-col items-center">
-              <img src="/dharascan_logo.png" alt="DharaScan Logo" className="h-14 w-auto object-contain mb-1" />
-              <p className="text-xs font-medium text-slate-500">Welcome to</p>
-              <h2 className="text-2xl lg:text-3xl font-extrabold text-slate-900 tracking-tight font-mono">
-                DharaScan
+          <div className="w-full max-w-[420px] bg-white rounded-[28px] p-7 lg:p-8 shadow-[0_20px_60px_-15px_rgba(16,27,53,0.07)] border border-slate-200/90 space-y-5 my-auto relative z-10">
+            {/* Logo Badge & Header */}
+            <div className="text-center space-y-1 flex flex-col items-center">
+              <div className="w-10 h-10 rounded-full bg-[#009F73] text-white flex items-center justify-center shadow-md shadow-[#009F73]/20 mb-1.5">
+                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
+                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/>
+                </svg>
+              </div>
+              <p className="text-xs sm:text-sm font-medium text-slate-500">
+                Welcome to
+              </p>
+              <h2 className="text-2xl sm:text-[28px] font-black text-[#101B35] tracking-tight font-sans uppercase">
+                WATERSHED INSIGHT
               </h2>
               <p className="text-xs font-medium text-slate-500">
-                Geospatial Evidence Platform
+                Official Government Portal
               </p>
             </div>
 
-            {/* Segmented Control Role Switcher */}
-            <div className="bg-[#f1f5f9] p-1.5 rounded-2xl flex items-center gap-1 border border-slate-200/60">
-              <button
-                type="button"
-                onClick={() => setRoleType('officer')}
-                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                  roleType === 'officer'
-                    ? 'bg-[#059669] text-white shadow-md shadow-emerald-700/20'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Shield size={14} />
-                <span>Officer Login</span>
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setRoleType('user')}
-                className={`flex-1 py-2.5 px-3 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all cursor-pointer ${
-                  roleType === 'user'
-                    ? 'bg-[#059669] text-white shadow-md shadow-emerald-700/20'
-                    : 'text-slate-600 hover:text-slate-900'
-                }`}
-              >
-                <Users size={14} />
-                <span>User Login</span>
-              </button>
-            </div>
-
-            {/* Form */}
+            {/* Login Form */}
             <form onSubmit={handleLoginSubmit} className="space-y-4">
               {error && (
                 <div className="bg-rose-50 border border-rose-200 text-rose-700 text-xs p-3 rounded-xl font-medium">
@@ -406,8 +242,8 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
 
               {/* Email Field */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-700">
-                  Email ID
+                <label className="block text-xs font-bold text-[#101B35]">
+                  Official Email ID
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
@@ -419,14 +255,14 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     placeholder="Enter your official email ID"
-                    className="w-full bg-[#f8fafc] border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition-all"
+                    className="w-full bg-[#f8fafc] border border-slate-200 focus:border-[#009F73] focus:bg-white focus:ring-2 focus:ring-[#009F73]/20 rounded-xl pl-10 pr-4 py-3 text-xs font-medium text-[#101B35] placeholder-slate-400 outline-none transition-all"
                   />
                 </div>
               </div>
 
               {/* Password Field */}
               <div className="space-y-1.5">
-                <label className="block text-xs font-bold text-slate-700">
+                <label className="block text-xs font-bold text-[#101B35]">
                   Password
                 </label>
                 <div className="relative">
@@ -439,7 +275,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     placeholder="Enter your password"
-                    className="w-full bg-[#f8fafc] border border-slate-200 rounded-xl pl-10 pr-10 py-3 text-xs font-medium text-slate-900 placeholder-slate-400 focus:outline-none focus:border-[#059669] focus:ring-2 focus:ring-[#059669]/20 transition-all"
+                    className="w-full bg-[#f8fafc] border border-slate-200 focus:border-[#009F73] focus:bg-white focus:ring-2 focus:ring-[#009F73]/20 rounded-xl pl-10 pr-10 py-3 text-xs font-medium text-[#101B35] placeholder-slate-400 outline-none transition-all"
                   />
                   <button
                     type="button"
@@ -458,7 +294,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                     type="checkbox"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
-                    className="w-4 h-4 rounded border-slate-300 text-[#059669] focus:ring-[#059669] accent-[#059669] cursor-pointer"
+                    className="w-4 h-4 rounded border-slate-300 text-[#009F73] focus:ring-[#009F73] accent-[#009F73] cursor-pointer"
                   />
                   <span>Remember me</span>
                 </label>
@@ -466,9 +302,9 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                 <button
                   type="button"
                   onClick={() =>
-                    alert('Password reset link sent to official email.')
+                    alert('Password reset instructions sent to registered email.')
                   }
-                  className="font-bold text-[#059669] hover:underline cursor-pointer"
+                  className="font-bold text-[#009F73] hover:underline cursor-pointer"
                 >
                   Forgot Password?
                 </button>
@@ -478,15 +314,15 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-[#059669] hover:bg-[#047857] text-white font-bold text-sm py-3.5 rounded-xl transition-all shadow-md shadow-emerald-700/20 flex items-center justify-center gap-2 cursor-pointer mt-2"
+                className="w-full bg-[#009F73] hover:bg-[#008762] text-white font-bold text-sm py-3 rounded-xl transition-all shadow-md shadow-[#009F73]/20 flex items-center justify-center gap-2 cursor-pointer mt-1"
               >
                 <span>{loading ? 'Authenticating...' : 'Login'}</span>
                 <ArrowRight size={16} />
               </button>
             </form>
 
-            {/* Or continue with Divider */}
-            <div className="relative my-4">
+            {/* Government SSO Section */}
+            <div className="relative my-3">
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-slate-200" />
               </div>
@@ -497,33 +333,34 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               </div>
             </div>
 
-            {/* Government SSO Login Button */}
             <button
               type="button"
               onClick={() => handleDemoSignIn(DEMO_ACCOUNTS[0])}
-              className="w-full bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 text-xs font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-between cursor-pointer shadow-2xs"
+              className="w-full bg-white hover:bg-slate-50 border border-slate-200 text-[#101B35] text-xs font-bold py-3 px-4 rounded-xl transition-all flex items-center justify-between cursor-pointer shadow-2xs"
             >
               <div className="flex items-center gap-2.5">
-                <span className="text-sm">🏛️</span>
+                <svg className="w-4 h-4 text-[#101B35] fill-current" viewBox="0 0 24 24">
+                  <path d="M12 2L2 7v3c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V7l-10-5zm0 4a3 3 0 1 1 0 6 3 3 0 0 1 0-6zm0 13.5c-2.7-1.12-5-4.48-5-7.5v-3.7l5-2.5 5 2.5V12c0 3.02-2.3 6.38-5 7.5z"/>
+                </svg>
                 <span>Login with Government SSO</span>
               </div>
               <ChevronRight size={16} className="text-slate-400" />
             </button>
 
             {/* Quick Demo Sign-in Selector */}
-            <div className="pt-1">
+            <div className="pt-0.5">
               <button
                 type="button"
                 onClick={() => setShowDemoPicker(!showDemoPicker)}
-                className="w-full text-center text-[11px] font-bold text-[#059669] hover:underline cursor-pointer"
+                className="w-full text-center text-[11px] font-bold text-[#009F73] hover:underline cursor-pointer"
               >
                 {showDemoPicker
-                  ? '▲ Hide Demo Accounts'
-                  : '▼ Select Demo Officer Role (1-Click Sign In)'}
+                  ? '▲ Hide Demo Roles'
+                  : '▼ Quick Select Demo Officer Role (1-Click)'}
               </button>
 
               {showDemoPicker && (
-                <div className="mt-2.5 space-y-1 bg-slate-50 border border-slate-200 rounded-xl p-2 max-h-44 overflow-y-auto">
+                <div className="mt-2 space-y-1 bg-slate-50 border border-slate-200 rounded-xl p-2 max-h-40 overflow-y-auto">
                   {DEMO_ACCOUNTS.map((acc) => (
                     <button
                       key={acc.email}
@@ -532,14 +369,14 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                       className="w-full text-left bg-white hover:bg-emerald-50/80 border border-slate-200 p-2 rounded-lg transition-all flex items-center justify-between cursor-pointer group"
                     >
                       <div>
-                        <div className="text-xs font-bold text-slate-800 group-hover:text-[#059669]">
+                        <div className="text-xs font-bold text-[#101B35] group-hover:text-[#009F73]">
                           {acc.name}
                         </div>
                         <div className="text-[10px] text-slate-500">
                           {acc.roleTitle}
                         </div>
                       </div>
-                      <span className="text-[10px] font-bold bg-[#e6f4ea] text-[#047857] px-2 py-0.5 rounded">
+                      <span className="text-[10px] font-bold bg-[#E6F4EA] text-[#009F73] px-2 py-0.5 rounded">
                         {acc.badge}
                       </span>
                     </button>
@@ -548,13 +385,13 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
               )}
             </div>
 
-            {/* Security Banner Footer Box */}
-            <div className="bg-[#e6f4ea] border border-emerald-200/80 rounded-2xl p-3.5 flex items-start gap-3">
-              <div className="w-6 h-6 rounded-full bg-[#059669] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+            {/* Security Notice Box */}
+            <div className="bg-[#E6F4EA] border border-[#a7f3d0] rounded-2xl p-3 flex items-start gap-3">
+              <div className="w-6 h-6 rounded-full bg-[#009F73] text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
                 <ShieldCheck size={14} />
               </div>
-              <div className="text-[11px] text-slate-900 font-medium leading-snug">
-                <span className="font-bold block text-slate-900">
+              <div className="text-[11px] text-[#101B35] font-medium leading-snug">
+                <span className="font-bold block text-[#101B35]">
                   Secure access for authorized government officers only.
                 </span>
                 <span className="text-slate-600 text-[10px]">
@@ -568,3 +405,7 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
     </div>
   )
 }
+
+
+
+

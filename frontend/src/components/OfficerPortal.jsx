@@ -79,6 +79,8 @@ export default function OfficerPortal({
             catchment={catchment}
             hotspots={hotspots}
             loading={loading}
+            downloadReport={downloadReport}
+            busy={busy}
           />
         )}
 

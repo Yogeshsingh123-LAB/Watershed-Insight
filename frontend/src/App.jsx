@@ -23,6 +23,7 @@ import LoginModal from './components/LoginModal'
 
 import LandingPage from './components/LandingPage'
 import LoginPage from './components/LoginPage'
+import PublicPortal from './components/PublicPortal'
 import ForbiddenPage from './components/ForbiddenPage'
 import AdminPortal from './components/AdminPortal'
 import VerificationPortal from './components/VerificationPortal'
@@ -284,10 +285,7 @@ export default function App() {
     return (
       <LandingPage
         onLoginClick={() => setRouteView('login')}
-        onExploreClick={() => {
-          if (currentUser) setRouteView('app')
-          else setRouteView('login')
-        }}
+        onExploreClick={() => setRouteView('public')}
       />
     )
   }
@@ -298,6 +296,37 @@ export default function App() {
       <LoginPage
         onLoginSuccess={handleLoginSuccess}
         onBackToHome={() => setRouteView('landing')}
+      />
+    )
+  }
+
+  // 3. PUBLIC USER CITIZEN PORTAL
+  if (routeView === 'public') {
+    return (
+      <PublicPortal
+        catalog={catalog}
+        watershedId={watershedId}
+        onSelectWatershed={setWatershedId}
+        summary={summary}
+        overlays={overlays}
+        layers={layers}
+        setLayers={setLayers}
+        basemap={basemap}
+        setBasemap={setBasemap}
+        interventions={interventions}
+        photos={summary?.photos}
+        selectedId={selectedId}
+        selectIntervention={selectIntervention}
+        focus={focus}
+        radius={radius}
+        opacity={opacity}
+        catchment={layers.catchment ? catchment : null}
+        hotspots={summary?.hotspots}
+        loading={loading}
+        health={healthRef.current}
+        busy={busy}
+        downloadReport={downloadReport}
+        onOpenLogin={() => setRouteView('login')}
       />
     )
   }

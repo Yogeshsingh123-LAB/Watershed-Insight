@@ -10,7 +10,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 from backend.app.main import app
-from backend.app.database import Base, test_db_connection, get_db_url
+from backend.app.database import Base, check_db_connection, get_db_url
 from backend.app.models_db import (
     UserDB,
     WatershedDB,
@@ -50,7 +50,7 @@ def test_db_url_formatting():
 
 
 def test_db_connection_health(test_engine):
-    res = test_db_connection(test_engine)
+    res = check_db_connection(test_engine)
     assert res["status"] == "connected"
     assert res["test_query_result"] == 1
 

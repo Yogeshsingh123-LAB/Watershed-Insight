@@ -65,8 +65,8 @@ def init_db(target_engine=None) -> bool:
         return False
 
 
-def test_db_connection(target_engine=None) -> dict:
-    """Test connection to the configured PostgreSQL / SQLite database."""
+def check_db_connection(target_engine=None) -> dict:
+    """Check connection to the configured PostgreSQL / SQLite database."""
     eng = target_engine or engine
     try:
         with eng.connect() as conn:
