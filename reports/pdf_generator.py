@@ -499,7 +499,10 @@ def generate_intervention_pdf(store, intervention_id: str, output_path: str,
         f"v1.0 (SIH PS26015). Evidence ID: {item['id']}-{dt.datetime.now().strftime('%Y%m%d%H%M')}.",
         S["small"]))
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    try:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    except OSError:
+        pass
     _new_doc(output_path, f"Intervention Evidence Pack - {item['id']}").build(story)
     return output_path
 
@@ -736,7 +739,10 @@ def generate_watershed_pdf(store, watershed_id: str, output_path: str,
         f"v1.0 • Smart India Hackathon 2026, Problem Statement PS26015 • "
         f"Department of Land Resources, Ministry of Rural Development.", S["small"]))
 
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    try:
+        os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    except OSError:
+        pass
     _new_doc(output_path, f"Watershed Assessment - {ws.get('code')}").build(story)
     return output_path
 
