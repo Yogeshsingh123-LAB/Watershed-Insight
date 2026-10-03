@@ -4,7 +4,7 @@
   "outputDirectory": "frontend/dist",
   "functions": {
     "api/index.py": {
-      "includeFiles": "{backend,geospatial,data,reports}/**"
+      "includeFiles": "**"
     }
   },
   "rewrites": [
