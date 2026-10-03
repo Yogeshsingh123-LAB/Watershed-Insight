@@ -100,9 +100,9 @@ export default function WatershedExplorerView({
   const stats = summary?.stats || {}
 
   return (
-    <div className="flex-1 flex gap-3 p-3 overflow-hidden bg-[#f8fafc] text-xs select-none">
+    <div className="flex-1 flex flex-col xl:flex-row gap-3 p-2 sm:p-3 overflow-y-auto xl:overflow-hidden bg-[#f8fafc] text-xs select-none">
       {/* ================= COLUMN 1: LEFT SIDEBAR (Select Location & Quick Layers) ================= */}
-      <aside className="w-[260px] shrink-0 flex flex-col gap-3 overflow-y-auto pr-1">
+      <aside className="w-full xl:w-[260px] shrink-0 flex flex-col gap-3 pr-1">
         {/* CARD 1: SELECT LOCATION */}
         <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-3.5 flex flex-col gap-3">
           <div className="flex items-center gap-2 font-bold text-slate-900 text-xs border-b border-slate-100 pb-2">
@@ -218,9 +218,9 @@ export default function WatershedExplorerView({
       </aside>
 
       {/* ================= COLUMN 2: CENTER MAP VIEW (With Sub-Tabs Bar) ================= */}
-      <div className="flex-1 flex flex-col gap-2 min-w-0 h-full overflow-hidden">
+      <div className="w-full xl:flex-1 flex flex-col gap-2 min-w-0 min-h-[420px] xl:min-h-0 xl:h-full">
         {/* SUB-TABS DIRECTLY ABOVE MAP */}
-        <div className="flex items-center gap-1 border-b border-slate-200 bg-white px-2 py-1 rounded-t-xl text-xs font-semibold">
+        <div className="flex items-center gap-1 border-b border-slate-200 bg-white px-2 py-1 rounded-t-xl text-xs font-semibold overflow-x-auto whitespace-nowrap scrollbar-none">
           {[
             { id: 'map', label: 'Map View' },
             { id: 'satellite', label: 'Satellite Analysis' },
@@ -334,7 +334,7 @@ export default function WatershedExplorerView({
       </div>
 
       {/* ================= COLUMN 3: RIGHT SIDE PANEL (Information + Indicators + Rainfall) ================= */}
-      <aside className="w-[380px] shrink-0 flex flex-col gap-3 overflow-y-auto pr-1">
+      <aside className="w-full xl:w-[380px] shrink-0 flex flex-col gap-3 pr-1">
         {/* TOP TAB BAR */}
         <div className="bg-white rounded-xl border border-slate-200 p-2 flex items-center justify-between font-bold text-xs shadow-2xs">
           {[

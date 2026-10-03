@@ -78,7 +78,7 @@ export default function PublicPortal({
   downloadReport,
   onOpenLogin,
 }) {
-  const [navTab, setNavTab] = useState('home')
+  const [navTab, setNavTab] = useState('explorer')
   const [infoModalKey, setInfoModalKey] = useState(null)
   const [searchQuery, setSearchQuery] = useState('')
 
@@ -184,7 +184,7 @@ export default function PublicPortal({
 
         {/* PUBLIC HOME VIEW */}
         {navTab === 'home' && (
-          <div className="flex-1 flex gap-3 min-w-0 h-full overflow-y-auto pr-1">
+          <div className="flex-1 flex flex-col xl:flex-row gap-3 min-w-0 h-full overflow-y-auto pr-1">
             {/* Center Map & Main Content Column */}
             <div className="flex-1 flex flex-col gap-3 min-w-0 h-full">
               {/* Top Banner Alert */}
@@ -275,7 +275,7 @@ export default function PublicPortal({
             </div>
 
             {/* Right Information & Public Indicators Panel */}
-            <aside className="w-[380px] shrink-0 flex flex-col gap-3 overflow-y-auto pr-1">
+            <aside className="w-full xl:w-[380px] shrink-0 flex flex-col gap-3 overflow-y-auto pr-1">
               {/* Watershed Information Card */}
               <div className="bg-white rounded-xl border border-slate-200 shadow-2xs p-3.5 flex flex-col gap-2.5">
                 <div className="flex items-center justify-between border-b border-slate-100 pb-2">

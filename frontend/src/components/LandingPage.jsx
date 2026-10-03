@@ -154,9 +154,9 @@ export default function LandingPage({ onLoginClick, onExploreClick }) {
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
           <button
             onClick={onExploreClick}
-            className="hidden sm:flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold px-4 py-2 rounded-full border border-slate-300 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] sm:text-xs font-bold px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-slate-300 transition-all cursor-pointer"
           >
-            <Compass size={14} className="text-emerald-600" />
+            <Compass size={14} className="text-emerald-600 shrink-0" />
             <span>Explore Map</span>
           </button>
           <button
