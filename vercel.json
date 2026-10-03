@@ -1,7 +1,14 @@
 {
-  "version": 2,
-  "buildCommand": "npm --prefix frontend install && npm --prefix frontend run build",
-  "outputDirectory": "frontend/dist",
+  "services": {
+    "frontend": {
+      "root": "frontend",
+      "framework": "vite"
+    },
+    "api": {
+      "root": ".",
+      "entrypoint": "api/index.py"
+    }
+  },
   "functions": {
     "api/index.py": {
       "includeFiles": "**",
@@ -11,24 +18,23 @@
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": "/api/index.py"
+      "destination": { "service": "api" }
     },
     {
       "source": "/docs",
-      "destination": "/api/index.py"
+      "destination": { "service": "api" }
     },
     {
       "source": "/openapi.json",
-      "destination": "/api/index.py"
+      "destination": { "service": "api" }
     },
     {
       "source": "/static/(.*)",
-      "destination": "/api/index.py"
+      "destination": { "service": "api" }
     },
     {
       "source": "/(.*)",
-      "destination": "/index.html"
+      "destination": { "service": "frontend" }
     }
   ]
 }
-
