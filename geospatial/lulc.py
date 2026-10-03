@@ -110,7 +110,7 @@ class LulcResult:
                          mask: Optional[np.ndarray] = None) -> Dict[str, float]:
         """Hectares per class (optionally restricted to a buffer mask)."""
         area = np.broadcast_to(pixel_area_ha, self.classes.shape)
-        data = self.classes if mask is None else np.where(mask, self.classes, -1)
+        data = self.classes if mask is None else np.where(mask, self.classes.astype(int), -1)
         out = {name: 0.0 for _, (name, _, _) in sorted(CLASS_CODES.items())}
         for code in np.unique(data):
             code = int(code)

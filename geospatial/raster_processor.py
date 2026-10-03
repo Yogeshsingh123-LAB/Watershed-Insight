@@ -309,7 +309,7 @@ class RasterProcessor:
         """Hectares per integer class code (e.g. LULC) inside an optional mask."""
         area = np.broadcast_to(self.pixel_area_ha, class_array.shape)
         if mask is not None:
-            class_array = np.where(mask, class_array, -1)
+            class_array = np.where(mask, class_array.astype(int), -1)
         out: Dict[int, float] = {}
         for code in np.unique(class_array):
             code_int = int(code)
