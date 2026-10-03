@@ -58,6 +58,41 @@ const DEFAULT_LAYERS = {
   hotspots: false,
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props)
+    this.state = { hasError: false, error: null }
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error }
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error('ErrorBoundary caught:', error, errorInfo)
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="modal-overlay" onClick={() => this.setState({ hasError: false })}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()} style={{ padding: 24, textAlign: 'center', maxWidth: 480 }}>
+            <AlertTriangle size={32} color="#f87171" style={{ margin: '0 auto 12px' }} />
+            <h3 style={{ fontWeight: 700, color: '#0f172a' }}>Modal Render Notice</h3>
+            <p style={{ fontSize: '0.85rem', color: '#64748b', margin: '8px 0 16px' }}>
+              {this.state.error?.message || 'Unable to display structure evidence details.'}
+            </p>
+            <button
+              className="btn btn-primary"
+              onClick={() => this.setState({ hasError: false })}
+            >
+              Close Window
+            </button>
+          </div>
+        </div>
+      )
+    }
+    return this.props.children
+  }
+}
+
 export default function App() {
   // --- routing & view state ('landing' | 'login' | 'app') -------------------- //
   const [routeView, setRouteView] = useState('landing')
@@ -510,13 +545,15 @@ export default function App() {
       />
 
       {modalOpen && analysis && (
-        <InterventionModal
-          data={analysis}
-          radius={radius}
-          onClose={() => setModalOpen(false)}
-          onReport={() => downloadReport('intervention', analysis.intervention.id)}
-          busy={busy}
-        />
+        <ErrorBoundary>
+          <InterventionModal
+            data={analysis}
+            radius={radius}
+            onClose={() => setModalOpen(false)}
+            onReport={() => downloadReport('intervention', analysis.intervention?.id || selectedId)}
+            busy={busy}
+          />
+        </ErrorBoundary>
       )}
 
       {toast && (
