@@ -1,8 +1,10 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import {
   Bell, Calendar, ChevronDown, Compass, Download, Eye, FileText, Globe, Layers, LayoutDashboard,
-  LogOut, Map, MapPin, Maximize2, Share2, ShieldCheck, UserCheck
+  LogOut, Map, MapPin, Maximize2, Share2, ShieldCheck, UserCheck,
+  CheckCheck, X, AlertCircle, CheckCircle2, AlertTriangle, Info, ExternalLink, Trash2
 } from 'lucide-react'
+
 
 /**
  * Navbar Component - 3-Tier Government Header Bar:
@@ -53,6 +55,85 @@ export default function Navbar({
     setDistrictCode(current.di.code)
     setBlockCode(current.bl.code)
   }, [current?.st?.code, current?.di?.code, current?.bl?.code])
+
+  // Notifications State & Handlers
+  const [showNotifications, setShowNotifications] = useState(false)
+  const [notifFilter, setNotifFilter] = useState('all') // 'all' | 'unread' | 'alerts'
+  const notifRef = useRef(null)
+
+  const [notifications, setNotifications] = useState([
+    {
+      id: 'notif-1',
+      title: 'EXIF Location Mismatch',
+      message: 'DRISHTI Photo #PH-2025-089 (Nallasopara Check Dam) GPS coordinates are 420m outside buffer zone boundary.',
+      time: '12 mins ago',
+      type: 'warning',
+      unread: true,
+      linkTab: 'interventions'
+    },
+    {
+      id: 'notif-2',
+      title: 'NDVI Change Detection Ready',
+      message: 'Multi-epoch satellite change detection computed for Paithan Block (MWS-MH-2025-014). Net vegetation index increased +14.2%.',
+      time: '1 hour ago',
+      type: 'success',
+      unread: true,
+      linkTab: 'analytics'
+    },
+    {
+      id: 'notif-3',
+      title: 'Field Verification Pending',
+      message: 'Inspection report #INSP-2025-04 submitted by WDT Field Lead for Check Dam CD-04 requires nodal sign-off.',
+      time: '3 hours ago',
+      type: 'urgent',
+      unread: false,
+      linkTab: 'explorer'
+    },
+    {
+      id: 'notif-4',
+      title: 'Dossier PDF Generated',
+      message: 'Micro-Watershed Executive Summary Dossier generated for MWS-MH-2025-014 and ready for download.',
+      time: 'Yesterday',
+      type: 'info',
+      unread: false,
+      linkTab: 'downloads'
+    }
+  ])
+
+  // Close notifications dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (notifRef.current && !notifRef.current.contains(event.target)) {
+        setShowNotifications(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const unreadCount = useMemo(() => notifications.filter((n) => n.unread).length, [notifications])
+
+  const filteredNotifications = useMemo(() => {
+    if (notifFilter === 'unread') return notifications.filter((n) => n.unread)
+    if (notifFilter === 'alerts') return notifications.filter((n) => n.type === 'warning' || n.type === 'urgent')
+    return notifications
+  }, [notifications, notifFilter])
+
+  const markAllAsRead = () => {
+    setNotifications((prev) => prev.map((n) => ({ ...n, unread: false })))
+  }
+
+  const toggleRead = (id) => {
+    setNotifications((prev) =>
+      prev.map((n) => (n.id === id ? { ...n, unread: !n.unread } : n))
+    )
+  }
+
+  const dismissNotif = (id, e) => {
+    e.stopPropagation()
+    setNotifications((prev) => prev.filter((n) => n.id !== id))
+  }
+
 
   const state = hierarchy.find((s) => s.code === stateCode) || hierarchy[0]
   const districts = state?.districts || []
@@ -172,13 +253,184 @@ export default function Navbar({
                 )
               })()}
 
-              {/* Notifications */}
-              <div className="relative cursor-pointer p-1.5 hover:bg-slate-100 rounded-full transition-colors text-slate-600">
-                <Bell size={18} />
-                <span className="absolute top-0.5 right-0.5 w-4 h-4 rounded-full bg-rose-500 text-white text-[9px] font-bold flex items-center justify-center border-2 border-white">
-                  1
-                </span>
+              {/* Notifications Dropdown */}
+              <div className="relative" ref={notifRef}>
+                <button
+                  type="button"
+                  onClick={() => setShowNotifications(!showNotifications)}
+                  className={`relative p-2 rounded-full transition-all cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-500/50 ${
+                    showNotifications
+                      ? 'bg-emerald-50 text-emerald-700 ring-2 ring-emerald-500/40'
+                      : 'hover:bg-slate-100 text-slate-600 hover:text-slate-900'
+                  }`}
+                  title="Notifications & Alerts"
+                  aria-label="Notifications"
+                  aria-expanded={showNotifications}
+                >
+                  <Bell size={18} />
+                  {unreadCount > 0 && (
+                    <span className="absolute top-0.5 right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-rose-500 text-white text-[10px] font-extrabold flex items-center justify-center border-2 border-white shadow-xs animate-pulse">
+                      {unreadCount}
+                    </span>
+                  )}
+                </button>
+
+                {/* Notifications Dropdown Menu */}
+                {showNotifications && (
+                  <div className="absolute right-0 mt-2.5 w-80 sm:w-[380px] bg-white rounded-xl shadow-2xl border border-slate-200/90 z-[1300] overflow-hidden flex flex-col text-slate-800 text-left animate-in fade-in slide-in-from-top-2 duration-150">
+                    {/* Header */}
+                    <div className="px-4 py-3 bg-slate-900 text-white flex items-center justify-between border-b border-slate-800">
+                      <div className="flex items-center gap-2">
+                        <Bell size={16} className="text-emerald-400" />
+                        <span className="font-bold text-xs tracking-wide">System Notifications</span>
+                        {unreadCount > 0 && (
+                          <span className="bg-rose-500/90 text-white text-[10px] font-extrabold px-2 py-0.5 rounded-full">
+                            {unreadCount} New
+                          </span>
+                        )}
+                      </div>
+                      {unreadCount > 0 && (
+                        <button
+                          onClick={markAllAsRead}
+                          className="text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold flex items-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <CheckCheck size={13} />
+                          <span>Mark all read</span>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Filter Tabs */}
+                    <div className="flex items-center gap-1 px-3 py-2 bg-slate-50 border-b border-slate-200 text-[11px] font-semibold text-slate-600">
+                      <button
+                        onClick={() => setNotifFilter('all')}
+                        className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                          notifFilter === 'all'
+                            ? 'bg-white text-emerald-700 shadow-2xs font-bold border border-slate-200'
+                            : 'hover:bg-slate-200/60 text-slate-600'
+                        }`}
+                      >
+                        All ({notifications.length})
+                      </button>
+                      <button
+                        onClick={() => setNotifFilter('unread')}
+                        className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                          notifFilter === 'unread'
+                            ? 'bg-white text-emerald-700 shadow-2xs font-bold border border-slate-200'
+                            : 'hover:bg-slate-200/60 text-slate-600'
+                        }`}
+                      >
+                        Unread ({unreadCount})
+                      </button>
+                      <button
+                        onClick={() => setNotifFilter('alerts')}
+                        className={`px-2.5 py-1 rounded-md transition-colors cursor-pointer ${
+                          notifFilter === 'alerts'
+                            ? 'bg-white text-emerald-700 shadow-2xs font-bold border border-slate-200'
+                            : 'hover:bg-slate-200/60 text-slate-600'
+                        }`}
+                      >
+                        Alerts ({notifications.filter(n => n.type === 'warning' || n.type === 'urgent').length})
+                      </button>
+                    </div>
+
+                    {/* Notification List */}
+                    <div className="max-h-[320px] overflow-y-auto divide-y divide-slate-100">
+                      {filteredNotifications.length === 0 ? (
+                        <div className="py-8 px-4 text-center text-slate-400 text-xs">
+                          <Bell size={24} className="mx-auto mb-2 text-slate-300 stroke-1" />
+                          <p className="font-medium text-slate-500">No notifications found</p>
+                          <p className="text-[10px] text-slate-400 mt-0.5">You're all caught up with your monitoring queue.</p>
+                        </div>
+                      ) : (
+                        filteredNotifications.map((notif) => (
+                          <div
+                            key={notif.id}
+                            onClick={() => {
+                              toggleRead(notif.id)
+                              if (notif.linkTab) onSelectNavTab(notif.linkTab)
+                            }}
+                            className={`p-3 transition-colors cursor-pointer flex items-start gap-3 relative group ${
+                              notif.unread
+                                ? 'bg-emerald-50/40 hover:bg-emerald-50/80 border-l-3 border-emerald-500'
+                                : 'bg-white hover:bg-slate-50'
+                            }`}
+                          >
+                            {/* Type Icon */}
+                            <div className="mt-0.5 shrink-0">
+                              {notif.type === 'warning' && (
+                                <div className="w-7 h-7 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center">
+                                  <AlertTriangle size={14} />
+                                </div>
+                              )}
+                              {notif.type === 'urgent' && (
+                                <div className="w-7 h-7 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
+                                  <AlertCircle size={14} />
+                                </div>
+                              )}
+                              {notif.type === 'success' && (
+                                <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                                  <CheckCircle2 size={14} />
+                                </div>
+                              )}
+                              {notif.type === 'info' && (
+                                <div className="w-7 h-7 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center">
+                                  <Info size={14} />
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Text Content */}
+                            <div className="flex-1 min-w-0 pr-4">
+                              <div className="flex items-center justify-between gap-1 mb-0.5">
+                                <h4 className={`text-xs truncate ${notif.unread ? 'font-bold text-slate-900' : 'font-semibold text-slate-700'}`}>
+                                  {notif.title}
+                                </h4>
+                                <span className="text-[10px] text-slate-400 shrink-0">{notif.time}</span>
+                              </div>
+                              <p className="text-[11px] text-slate-600 leading-snug line-clamp-2">
+                                {notif.message}
+                              </p>
+                              {notif.linkTab && (
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-700 mt-1 hover:underline">
+                                  <span>View in {PAGE_TITLES[notif.linkTab] || notif.linkTab}</span>
+                                  <ExternalLink size={10} />
+                                </span>
+                              )}
+                            </div>
+
+                            {/* Dismiss button */}
+                            <button
+                              onClick={(e) => dismissNotif(notif.id, e)}
+                              className="opacity-0 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-600 rounded transition-all shrink-0 cursor-pointer"
+                              title="Dismiss"
+                            >
+                              <X size={13} />
+                            </button>
+                          </div>
+                        ))
+                      )}
+                    </div>
+
+                    {/* Footer */}
+                    <div className="p-2.5 bg-slate-50 border-t border-slate-200 flex items-center justify-between text-[11px] font-medium text-slate-500">
+                      <span className="text-slate-500">
+                        {notifications.length} total alert{notifications.length !== 1 ? 's' : ''}
+                      </span>
+                      {notifications.length > 0 && (
+                        <button
+                          onClick={() => setNotifications([])}
+                          className="text-slate-500 hover:text-rose-600 flex items-center gap-1 transition-colors cursor-pointer"
+                        >
+                          <Trash2 size={12} />
+                          <span>Clear All</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                )}
               </div>
+
 
               {/* Logout Button */}
               <button
