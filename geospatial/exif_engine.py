@@ -378,7 +378,10 @@ def to_geojson_feature(photo: PhotoMetadata) -> Optional[dict]:
 def make_thumbnail(src_path: str, dst_path: str, size: Tuple[int, int] = (320, 320)) -> Optional[str]:
     """Orientation-corrected JPEG thumbnail for the gallery / PDF pack."""
     try:
-        os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+        try:
+            os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+        except OSError:
+            pass
         with Image.open(src_path) as img:
             img = ImageOps.exif_transpose(img)
             img.thumbnail(size, Image.LANCZOS)
