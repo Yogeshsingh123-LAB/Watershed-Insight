@@ -1,0 +1,9 @@
+{
+  "name": "watershed-insight",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Watershed Insight - Decision Support System for Micro-Watershed Monitoring",
+  "scripts": {
+    "build": "npm --prefix frontend install && npm --prefix frontend run build"
+  }
+}
