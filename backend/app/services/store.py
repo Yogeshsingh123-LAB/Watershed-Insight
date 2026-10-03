@@ -94,10 +94,7 @@ class DataStore:
         self.output_dir = output_dir or settings.output_dir
         self.reports_dir = settings.reports_dir
         for path in (self.output_dir, self.reports_dir, settings.uploads_dir):
-            try:
-                os.makedirs(path, exist_ok=True)
-            except OSError:
-                pass
+            os.makedirs(path, exist_ok=True)
 
         self._lock = threading.RLock()
         self._processors: Dict[str, RasterProcessor] = {}

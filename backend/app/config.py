@@ -29,18 +29,6 @@ def _env_list(name: str, default: str) -> List[str]:
     return [item.strip() for item in raw.split(",") if item.strip()]
 
 
-import tempfile
-
-
-def _get_writable_path(env_var: str, default_rel: str) -> str:
-    val = os.getenv(env_var)
-    if val:
-        return val
-    if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
-        return os.path.join(tempfile.gettempdir(), default_rel)
-    return os.path.join(BASE_DIR, default_rel)
-
-
 @dataclass
 class Settings:
     """Runtime configuration."""
@@ -49,10 +37,10 @@ class Settings:
     base_dir: str = BASE_DIR
     data_dir: str = field(default_factory=lambda: os.getenv(
         "WS_DATA_DIR", os.path.join(BASE_DIR, "data", "sample")))
-    output_dir: str = field(default_factory=lambda: _get_writable_path(
-        "WS_OUTPUT_DIR", os.path.join("data", "sample", "overlays")))
-    reports_dir: str = field(default_factory=lambda: _get_writable_path(
-        "WS_REPORTS_DIR", os.path.join("reports", "generated")))
+    output_dir: str = field(default_factory=lambda: os.getenv(
+        "WS_OUTPUT_DIR", os.path.join(BASE_DIR, "data", "sample", "overlays")))
+    reports_dir: str = field(default_factory=lambda: os.getenv(
+        "WS_REPORTS_DIR", os.path.join(BASE_DIR, "reports", "generated")))
 
     # --- API -------------------------------------------------------------- #
     api_prefix: str = "/api/v1"
@@ -91,20 +79,14 @@ class Settings:
 
     @property
     def uploads_dir(self) -> str:
-        if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
-            return os.path.join(tempfile.gettempdir(), "uploads")
         return os.path.join(self.data_dir, "photos", "uploads")
 
     @property
     def audit_log_path(self) -> str:
-        if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
-            return os.path.join(tempfile.gettempdir(), "audit_log.json")
         return os.path.join(self.data_dir, "metadata", "audit_log.json")
 
     @property
     def field_inspections_path(self) -> str:
-        if os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME"):
-            return os.path.join(tempfile.gettempdir(), "field_inspections.json")
         return os.path.join(self.data_dir, "metadata", "field_inspections.json")
 
 

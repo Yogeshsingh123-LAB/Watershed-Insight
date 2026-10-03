@@ -9,11 +9,6 @@
       "entrypoint": "api/index.py"
     }
   },
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "**"
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",

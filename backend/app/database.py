@@ -28,10 +28,6 @@ def create_db_engine(url: str | None = None):
     connect_args = {}
     if target_url.startswith("sqlite"):
         connect_args["check_same_thread"] = False
-        if (os.getenv("VERCEL") or os.getenv("AWS_LAMBDA_FUNCTION_NAME")) and ":memory:" not in target_url:
-            import tempfile
-            db_path = os.path.join(tempfile.gettempdir(), "watershed.db")
-            target_url = f"sqlite:///{db_path}"
         engine = create_engine(target_url, connect_args=connect_args, pool_pre_ping=True)
     else:
         # PostgreSQL

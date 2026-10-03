@@ -15,10 +15,7 @@ from __future__ import annotations
 import os
 import platform
 import sys
-import tempfile
 import time
-
-os.environ.setdefault("MPLCONFIGDIR", tempfile.gettempdir())
 from contextlib import asynccontextmanager
 from typing import Any, Dict
 
