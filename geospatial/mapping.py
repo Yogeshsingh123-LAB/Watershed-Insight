@@ -25,6 +25,10 @@ from typing import Dict, List, Optional, Sequence, Tuple
 import numpy as np
 from PIL import Image
 
+import os
+import tempfile
+os.environ.setdefault("MPLCONFIGDIR", tempfile.gettempdir())
+
 import matplotlib
 matplotlib.use("Agg")            # headless rendering (servers / containers)
 import matplotlib.pyplot as plt  # noqa: E402
