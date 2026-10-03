@@ -1,0 +1,7 @@
+.git
+.agents
+.pytest_cache
+tests
+frontend/node_modules
+__pycache__
+*.pyc

@@ -15,7 +15,10 @@ from __future__ import annotations
 import os
 import platform
 import sys
+import tempfile
 import time
+
+os.environ.setdefault("MPLCONFIGDIR", tempfile.gettempdir())
 from contextlib import asynccontextmanager
 from typing import Any, Dict
 
@@ -156,6 +159,17 @@ def health() -> Dict[str, Any]:
 @app.exception_handler(WatershedNotFound)
 async def watershed_not_found(request: Request, exc: WatershedNotFound):
     return JSONResponse(status_code=404, content={"detail": str(exc)})
+
+
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    import traceback
+    trace = traceback.format_exc()
+    print(f"[ERROR] 500 on {request.url.path}: {exc}\n{trace}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"{type(exc).__name__}: {str(exc)}"}
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover

@@ -336,9 +336,42 @@ export default function App() {
       <div className="error-screen">
         <AlertTriangle size={38} color="#f87171" />
         <h2>Cannot reach the analysis engine</h2>
-        <p>{error}</p>
-        <p>
-          Start the FastAPI backend and reload:
+        <p style={{ maxWidth: 520, margin: '0.5rem auto 1.5rem', color: '#fca5a5', wordBreak: 'break-word' }}>
+          {error}
+        </p>
+        <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center', marginBottom: '1.5rem' }}>
+          <button
+            className="btn btn-primary"
+            onClick={() => {
+              setError(null)
+              setLoading(true)
+              api.catalog()
+                .then((cat) => {
+                  setCatalog(cat)
+                  const firstId = cat?.watersheds ? Object.keys(cat.watersheds)[0] : null
+                  if (firstId) setWatershedId(firstId)
+                  else setLoading(false)
+                })
+                .catch((err) => {
+                  setError(err.message || 'Unable to reach the DharaScan API.')
+                  setLoading(false)
+                })
+            }}
+          >
+            Retry Connection
+          </button>
+          <button
+            className="btn btn-secondary"
+            onClick={() => {
+              setError(null)
+              setRouteView('landing')
+            }}
+          >
+            Back to Home
+          </button>
+        </div>
+        <p style={{ fontSize: '0.85rem', color: '#94a3b8' }}>
+          If running locally:
           <br />
           <code>python -m uvicorn backend.app.main:app --host 0.0.0.0 --port 8000</code>
           <br />
