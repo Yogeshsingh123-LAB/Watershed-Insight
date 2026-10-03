@@ -9,12 +9,6 @@
       "entrypoint": "api/index.py"
     }
   },
-  "functions": {
-    "api/index.py": {
-      "includeFiles": "**",
-      "maxDuration": 30
-    }
-  },
   "rewrites": [
     {
       "source": "/api/(.*)",
