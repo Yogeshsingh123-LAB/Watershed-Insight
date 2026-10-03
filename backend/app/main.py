@@ -76,8 +76,12 @@ app.add_middleware(
 # Static assets (photos, satellite previews, generated overlays & reports)
 # --------------------------------------------------------------------------- #
 def _mount_if_exists(route: str, directory: str, name: str) -> None:
-    os.makedirs(directory, exist_ok=True)
-    app.mount(route, StaticFiles(directory=directory), name=name)
+    try:
+        os.makedirs(directory, exist_ok=True)
+    except OSError:
+        pass
+    if os.path.exists(directory):
+        app.mount(route, StaticFiles(directory=directory), name=name)
 
 
 _mount_if_exists("/static/photos", settings.photos_dir, "photos")
@@ -152,6 +156,17 @@ def health() -> Dict[str, Any]:
 @app.exception_handler(WatershedNotFound)
 async def watershed_not_found(request: Request, exc: WatershedNotFound):
     return JSONResponse(status_code=404, content={"detail": str(exc)})
+
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    tb = traceback.format_exc()
+    print(f"[ERROR] Request {request.url} failed: {exc}\n{tb}")
+    return JSONResponse(
+        status_code=500,
+        content={"detail": f"Internal Server Error: {str(exc)}", "error_type": type(exc).__name__},
+    )
 
 
 if __name__ == "__main__":  # pragma: no cover
