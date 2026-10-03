@@ -139,7 +139,10 @@ export default function WatershedMap({
                       <span style={{ fontSize: '12px', color: '#475569' }}>Type: {props.type.replace('_', ' ').toUpperCase()}</span><br />
                       <span style={{ fontSize: '12px', color: '#475569' }}>Date: {props.installation_date}</span><br />
                       <button
-                        onClick={() => onSelectIntervention(props)}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          onSelectIntervention(props)
+                        }}
                         style={{
                           marginTop: '8px',
                           background: '#10b981',

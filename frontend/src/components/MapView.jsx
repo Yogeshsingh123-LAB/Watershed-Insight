@@ -187,7 +187,10 @@ export default function MapView({
                           {item.type.replace(/_/g, ' ')} · {item.status} · {item.installation_date}
                         </div>
                         <button
-                          onClick={() => onSelect(item.id, { open: true })}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            onSelect(item.id, { open: true })
+                          }}
                           className="mt-2 w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-1 px-2 rounded text-xs transition-colors cursor-pointer"
                         >
                           Inspect Structure Evidence

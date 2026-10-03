@@ -280,29 +280,31 @@ export default function App() {
 
   const epochs = useMemo(() => summary?.epochs || [], [summary])
 
+  const role = currentUser?.role || 'DISTRICT_OFFICER'
+
+  let mainContent = null
+
   // 1. PUBLIC LANDING PAGE
   if (routeView === 'landing') {
-    return (
+    mainContent = (
       <LandingPage
         onLoginClick={() => setRouteView('login')}
         onExploreClick={() => setRouteView('public')}
       />
     )
   }
-
   // 2. DEDICATED LOGIN PAGE
-  if (routeView === 'login') {
-    return (
+  else if (routeView === 'login') {
+    mainContent = (
       <LoginPage
         onLoginSuccess={handleLoginSuccess}
         onBackToHome={() => setRouteView('landing')}
       />
     )
   }
-
   // 3. PUBLIC USER CITIZEN PORTAL
-  if (routeView === 'public') {
-    return (
+  else if (routeView === 'public') {
+    mainContent = (
       <PublicPortal
         catalog={catalog}
         watershedId={watershedId}
@@ -330,9 +332,8 @@ export default function App() {
       />
     )
   }
-
-  if (error) {
-    return (
+  else if (error) {
+    mainContent = (
       <div className="error-screen">
         <AlertTriangle size={38} color="#f87171" />
         <h2>Cannot reach the analysis engine</h2>
@@ -380,22 +381,17 @@ export default function App() {
       </div>
     )
   }
-
-  if (loading && !summary) {
-    return (
+  else if (loading && !summary) {
+    mainContent = (
       <div className="loader-screen">
         <Loader2 className="spinner" size={36} />
         <div>Loading micro-watershed intelligence…</div>
       </div>
     )
   }
-
-  // 3. AUTHENTICATED ROLE PORTALS
-  const role = currentUser?.role || 'DISTRICT_OFFICER'
-
   // SUPER ADMIN PORTAL
-  if (role === 'ADMIN') {
-    return (
+  else if (role === 'ADMIN') {
+    mainContent = (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <Navbar
           catalog={catalog}
@@ -415,10 +411,9 @@ export default function App() {
       </div>
     )
   }
-
   // VERIFICATION OFFICER PORTAL
-  if (role === 'FIELD_OFFICER') {
-    return (
+  else if (role === 'FIELD_OFFICER') {
+    mainContent = (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <Navbar
           catalog={catalog}
@@ -438,10 +433,9 @@ export default function App() {
       </div>
     )
   }
-
   // AUDITOR PORTAL
-  if (role === 'AUDITOR') {
-    return (
+  else if (role === 'AUDITOR') {
+    mainContent = (
       <div style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <Navbar
           catalog={catalog}
@@ -461,8 +455,8 @@ export default function App() {
       </div>
     )
   }
-  return (
-    <>
+  else {
+    mainContent = (
       <OfficerPortal
         catalog={catalog}
         watershedId={watershedId}
@@ -490,6 +484,12 @@ export default function App() {
         onLogout={handleLogout}
         analysis={analysis}
       />
+    )
+  }
+
+  return (
+    <>
+      {mainContent}
 
       <AiAssistantModal
         watershedId={watershedId}
