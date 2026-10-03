@@ -1,34 +1,28 @@
 {
-  "services": {
-    "frontend": {
-      "root": "frontend",
-      "framework": "vite"
-    },
-    "api": {
-      "root": ".",
-      "entrypoint": "api/index.py"
-    }
-  },
+  "version": 2,
+  "buildCommand": "npm --prefix frontend install && npm --prefix frontend run build",
+  "outputDirectory": "frontend/dist",
   "rewrites": [
     {
       "source": "/api/(.*)",
-      "destination": { "service": "api" }
+      "destination": "/api/index.py"
     },
     {
       "source": "/docs",
-      "destination": { "service": "api" }
+      "destination": "/api/index.py"
     },
     {
       "source": "/openapi.json",
-      "destination": { "service": "api" }
+      "destination": "/api/index.py"
     },
     {
       "source": "/static/(.*)",
-      "destination": { "service": "api" }
+      "destination": "/api/index.py"
     },
     {
       "source": "/(.*)",
-      "destination": { "service": "frontend" }
+      "destination": "/index.html"
     }
   ]
 }
+
