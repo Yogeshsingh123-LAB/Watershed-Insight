@@ -1132,9 +1132,9 @@ def _recommendation(row: dict) -> str:
 _store: Optional[DataStore] = None
 
 
-def get_store() -> DataStore:
+def get_store(data_dir: Optional[str] = None) -> DataStore:
     """Process-wide store singleton (also used as a FastAPI dependency)."""
     global _store
-    if _store is None:
-        _store = DataStore()
+    if _store is None or (data_dir and _store.data_dir != data_dir):
+        _store = DataStore(data_dir=data_dir)
     return _store

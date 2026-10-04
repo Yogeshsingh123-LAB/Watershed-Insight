@@ -1,5 +1,39 @@
 [
   {
+    "id": "AUD-815BF89F",
+    "timestamp": "2026-10-04T23:42:47Z",
+    "user_id": "field_officer_01",
+    "role": "FIELD_OFFICER",
+    "action": "UPDATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-533FA0",
+    "old_value": null,
+    "new_value": "SUBMITTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "notes": "All checks verified",
+      "photos": null
+    }
+  },
+  {
+    "id": "AUD-B1F3EEE4",
+    "timestamp": "2026-10-04T23:42:47Z",
+    "user_id": "district_officer_01",
+    "role": "DISTRICT_OFFICER",
+    "action": "CREATE_FIELD_INSPECTION",
+    "entity": "FieldInspection",
+    "entity_id": "INSP-533FA0",
+    "old_value": null,
+    "new_value": "REQUESTED",
+    "analysis_version": "1.0.0",
+    "dataset_version": "sample_v1",
+    "details": {
+      "intervention_id": "INT-PT-003",
+      "reason": "Test inspection request"
+    }
+  },
+  {
     "id": "AUD-8CE773CB",
     "timestamp": "2026-10-04T23:37:26Z",
     "user_id": "field_officer_01",
