@@ -38,13 +38,14 @@ export default function CinematicTerrain3D({
     setActiveCamPreset(cameraMode)
   }, [cameraMode])
 
-  // 3D Intervention & Evidence Hotspot Nodes
+  // 3D Intervention & Evidence Hotspot Nodes — real structures from the
+  // watershed dataset (IDs, costs and impact signals match the API records).
   const MARKERS = [
-    { id: 'INT-024', name: 'Check Dam #024', type: 'Check Dam', x: -4, z: 2, y: 1.2, status: 'Active Monitoring', evidence: 12, impact: '+0.21 NDVI', cost: '₹ 3.2 Lakh' },
-    { id: 'INT-018', name: 'Farm Pond FP-02', type: 'Farm Pond', x: 2.5, z: -3, y: 0.8, status: 'Verified', evidence: 8, impact: '+1.9 ha Water', cost: '₹ 2.4 Lakh' },
-    { id: 'INT-031', name: 'Contour Trench CT-09', type: 'Contour Trench', x: 6, z: 4, y: 2.1, status: 'Verified', evidence: 5, impact: '+0.14 SAVI', cost: '₹ 1.8 Lakh' },
-    { id: 'INT-005', name: 'Afforestation Block A1', type: 'Afforestation', x: -7, z: -5, y: 2.8, status: 'High Growth', evidence: 16, impact: '+0.35 Canopy', cost: '₹ 4.5 Lakh' },
-    { id: 'PHOTO-102', name: 'DRISHTI Field Inspection', type: 'Field Photo', x: -2, z: 1.2, y: 1.4, status: 'EXIF Valid (38m)', evidence: 1, impact: 'Proximity Valid', cost: 'Field Audit' },
+    { id: 'INT-CD-001', name: 'Masonry Check Dam #001', type: 'Check Dam', x: -4, z: 2, y: 1.2, status: 'Completed', evidence: 8, impact: '+0.095 NDVI', cost: '₹ 6.01 Lakh' },
+    { id: 'INT-PT-003', name: 'Percolation Tank #003', type: 'Percolation Tank', x: 2.5, z: -3, y: 0.8, status: 'Completed', evidence: 6, impact: '+0.431 NDWI', cost: '₹ 9.60 Lakh' },
+    { id: 'INT-FP-005', name: 'Farm Pond (lined) #005', type: 'Farm Pond', x: 6, z: 4, y: 2.1, status: 'Completed', evidence: 4, impact: '+0.402 NDWI', cost: '₹ 3.10 Lakh' },
+    { id: 'INT-PL-002', name: 'Horti-Afforestation #002', type: 'Plantation', x: -7, z: -5, y: 2.8, status: 'Completed', evidence: 6, impact: '+0.203 NDVI', cost: '₹ 1.97 Lakh' },
+    { id: 'IMG_20251008_001', name: 'DRISHTI Field Inspection', type: 'Field Photo', x: -2, z: 1.2, y: 1.4, status: 'EXIF Valid (9m)', evidence: 1, impact: 'Proximity Valid', cost: 'Field Audit' },
   ]
 
   useEffect(() => {
@@ -188,21 +189,21 @@ export default function CinematicTerrain3D({
 
     const fallbackTexture = new THREE.CanvasTexture(fallbackCanvas)
 
-    let materialColor = 0xffffff
-    if (activeLayer === 'ndvi') materialColor = 0xd1fae5
-    else if (activeLayer === 'ndwi') materialColor = 0xe0f2fe
-    else if (activeLayer === 'lulc') materialColor = 0xf3e8ff
-    else if (activeLayer === 'change') materialColor = 0xffe4e6
+    // Each spectral layer drapes the terrain with the raster actually computed
+    // for that layer (same data the Web-GIS overlays use). The 'change' button
+    // maps to the NDVI delta raster. Textures are pre-rendered by
+    // scripts/generate_demo_assets.py.
+    const layerTextureUrl = activeLayer === 'change' ? '/terrain/delta.png' : `/terrain/${activeLayer}.png`
 
     const material = new THREE.MeshStandardMaterial({
       map: fallbackTexture,
-      color: materialColor,
+      color: 0xffffff,
       roughness: 0.35,
       metalness: 0.1,
       flatShading: false,
     })
 
-    new THREE.TextureLoader().load('/watershed_hero_bg.jpg', (tex) => {
+    new THREE.TextureLoader().load(layerTextureUrl, (tex) => {
       tex.wrapS = THREE.RepeatWrapping
       tex.wrapT = THREE.RepeatWrapping
       material.map = tex

@@ -5,6 +5,7 @@ import {
   Compass,
   Eye,
   EyeOff,
+  Info,
   Lock,
   Mail,
   ShieldCheck,
@@ -383,6 +384,22 @@ export default function LoginPage({ onLoginSuccess, onBackToHome }) {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Demo Mode Disclosure */}
+            <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex items-start gap-3">
+              <div className="w-6 h-6 rounded-full bg-amber-500 text-white flex items-center justify-center shrink-0 mt-0.5 shadow-2xs">
+                <Info size={14} />
+              </div>
+              <div className="text-[11px] text-[#101B35] font-medium leading-snug">
+                <span className="font-bold block text-[#101B35]">
+                  Demo mode: simulated authentication.
+                </span>
+                <span className="text-slate-600 text-[10px]">
+                  One-click sign-in and pre-filled credentials are for demonstration only — no real
+                  government SSO or credential verification is performed.
+                </span>
+              </div>
             </div>
 
             {/* Security Notice Box */}

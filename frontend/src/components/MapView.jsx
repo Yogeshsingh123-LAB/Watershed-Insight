@@ -30,6 +30,51 @@ const TYPE_META = {
   gully_plug: { code: 'GP', color: '#9333ea' },
 }
 
+// Legend config per raster layer — mirrors the palettes/ranges used by the
+// geospatial overlay renderer (geospatial/mapping.py) so the legend can never
+// drift from the raster actually draped on the map.
+const LEGENDS = {
+  ndvi: {
+    title: 'NDVI (Vegetation Vigour)',
+    gradient: 'linear-gradient(90deg, #a50026 0%, #fdae61 25%, #ffffbf 50%, #a6d96a 75%, #1a9850 100%)',
+    min: '-0.2',
+    max: '0.9',
+  },
+  ndwi: {
+    title: 'NDWI (Surface Water)',
+    gradient: 'linear-gradient(90deg, #8c510a 0%, #dfc27d 25%, #f6e8c3 50%, #80cdc1 75%, #01665e 100%)',
+    min: '-0.6',
+    max: '0.8',
+  },
+  lulc: {
+    title: 'Land Use / Land Cover',
+    swatches: [
+      { label: 'Water', color: '#1d4ed8' },
+      { label: 'Dense Veg', color: '#15803d' },
+      { label: 'Cropland', color: '#65a30d' },
+      { label: 'Scrub', color: '#d97706' },
+      { label: 'Bare', color: '#a16207' },
+      { label: 'Built-up', color: '#57534e' },
+    ],
+  },
+  elevation: {
+    title: 'Elevation (Hillshade)',
+    gradient: 'linear-gradient(90deg, #1e293b 0%, #94a3b8 50%, #f8fafc 100%)',
+    min: 'low relief',
+    max: 'high relief',
+  },
+  slope: {
+    title: 'Slope Gradient',
+    gradient: 'linear-gradient(90deg, #3b2f2f 0%, #8c6b4a 25%, #c2b280 50%, #8fbc8f 75%, #f5f5f5 100%)',
+    min: '0%',
+    max: 'steep',
+  },
+  structures: {
+    title: 'Intervention Structures',
+    swatches: Object.entries(TYPE_META).map(([, meta]) => ({ label: meta.code, color: meta.color })),
+  },
+}
+
 function pinIcon(color, label) {
   return L.divIcon({
     className: 'marker-pin',
@@ -82,6 +127,9 @@ export default function MapView({
 
   // Active primary raster overlay selection
   const [activeRaster, setActiveRaster] = useState('ndvi')
+
+  // Legend for the raster currently draped on the map (never goes stale)
+  const activeLegend = LEGENDS[activeRaster] || LEGENDS.ndvi
 
   const interventionIcons = useMemo(() => {
     const map = {}
@@ -323,7 +371,7 @@ export default function MapView({
                   { id: 'ndwi', label: 'Surface Water', color: '#0ea5e9' },
                   { id: 'lulc', label: 'Land Use / Land Cover', color: '#eab308' },
                   { id: 'elevation', label: 'Elevation (DEM)', color: '#8b5cf6' },
-                  { id: 'slope', label: 'Soil Type', color: '#f97316' },
+                  { id: 'slope', label: 'Slope Gradient', color: '#f97316' },
                   { id: 'structures', label: 'Intervention Structures', color: '#047857' },
                 ].map((item) => (
                   <label key={item.id} className="flex items-center gap-2 cursor-pointer hover:bg-slate-50 p-1 rounded-md transition-colors">
@@ -366,17 +414,27 @@ export default function MapView({
         )}
       </div>
 
-      {/* Floating Bottom Left NDVI Legend Bar */}
+      {/* Floating Bottom Left Layer Legend - follows the active raster */}
       <div className="absolute bottom-4 left-4 z-[400] bg-white border border-slate-200 rounded-lg shadow-md p-2.5 flex flex-col gap-1 text-[11px] w-64 select-none">
-        <span className="font-bold text-slate-800 text-[11px]">NDVI (Vegetation Vigour)</span>
-        <div
-          className="h-2.5 rounded-full w-full"
-          style={{ background: 'linear-gradient(90deg, #a50026 0%, #fdae61 25%, #ffffbf 50%, #a6d96a 75%, #1a9850 100%)' }}
-        />
-        <div className="flex justify-between font-mono text-[10px] text-slate-500 font-semibold">
-          <span>-0.2</span>
-          <span>0.9</span>
-        </div>
+        <span className="font-bold text-slate-800 text-[11px]">{activeLegend.title}</span>
+        {activeLegend.gradient && (
+          <div className="h-2.5 rounded-full w-full" style={{ background: activeLegend.gradient }} />
+        )}
+        {activeLegend.swatches ? (
+          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 font-medium text-slate-600">
+            {activeLegend.swatches.map((s) => (
+              <span key={s.label} className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: s.color }} />
+                {s.label}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <div className="flex justify-between font-mono text-[10px] text-slate-500 font-semibold">
+            <span>{activeLegend.min}</span>
+            <span>{activeLegend.max}</span>
+          </div>
+        )}
       </div>
 
       {/* Floating Bottom Right Map Scale */}

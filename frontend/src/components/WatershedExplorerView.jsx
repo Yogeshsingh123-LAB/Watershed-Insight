@@ -151,7 +151,7 @@ export default function WatershedExplorerView({
         ndvi: next.ndvi,
         ndwi: next.water,
         lulc: next.lulc,
-        slope: next.elevation,
+        hillshade: next.elevation,
         streams: next.streams,
       }))
       return next
