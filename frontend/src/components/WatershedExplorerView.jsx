@@ -90,9 +90,33 @@ export default function WatershedExplorerView({
   const current = summary?.watershed || {}
 
   // Location selector state
-  const [selectedState, setSelectedState] = useState('Maharashtra')
-  const [selectedDistrict, setSelectedDistrict] = useState('Chhatrapati Sambhajinagar')
-  const [selectedBlock, setSelectedBlock] = useState('Paithan')
+  const currentLoc = useMemo(() => {
+    for (const st of hierarchy) {
+      for (const di of st.districts || []) {
+        for (const bl of di.blocks || []) {
+          const ws = bl.watersheds?.find((w) => w.id === watershedId)
+          if (ws) return { st, di, bl, ws }
+        }
+      }
+    }
+    const st = hierarchy[0]
+    const di = st?.districts?.[0]
+    const bl = di?.blocks?.[0]
+    return st && di && bl ? { st, di, bl, ws: bl.watersheds?.[0] } : null
+  }, [hierarchy, watershedId])
+
+  const [stateCode, setStateCode] = useState(currentLoc?.st?.code || '')
+  const [districtCode, setDistrictCode] = useState(currentLoc?.di?.code || '')
+  const [blockCode, setBlockCode] = useState(currentLoc?.bl?.code || '')
+  const [selectedWsId, setSelectedWsId] = useState(watershedId || '')
+
+  useEffect(() => {
+    if (!currentLoc) return
+    setStateCode(currentLoc.st.code)
+    setDistrictCode(currentLoc.di.code)
+    setBlockCode(currentLoc.bl.code)
+    setSelectedWsId(currentLoc.ws?.id || watershedId || '')
+  }, [currentLoc, watershedId])
 
   // Center Map Tab State
   const [mapTab, setMapTab] = useState('map')
@@ -259,11 +283,26 @@ export default function WatershedExplorerView({
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-semibold text-slate-600">State</label>
               <select
-                value={selectedState}
-                onChange={(e) => setSelectedState(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500"
+                value={stateCode || ''}
+                onChange={(e) => {
+                  const sCode = e.target.value
+                  setStateCode(sCode)
+                  const st = hierarchy.find((x) => x.code === sCode)
+                  const dCode = st?.districts?.[0]?.code || ''
+                  const bCode = st?.districts?.[0]?.blocks?.[0]?.code || ''
+                  const targetWsId = st?.districts?.[0]?.blocks?.[0]?.watersheds?.[0]?.id || ''
+                  setDistrictCode(dCode)
+                  setBlockCode(bCode)
+                  if (targetWsId) {
+                    setSelectedWsId(targetWsId)
+                    if (onSelectWatershed) onSelectWatershed(targetWsId)
+                  }
+                }}
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 cursor-pointer"
               >
-                <option value="Maharashtra">Maharashtra</option>
+                {hierarchy.map((s) => (
+                  <option key={s.code} value={s.code}>{s.name}</option>
+                ))}
               </select>
             </div>
 
@@ -271,11 +310,25 @@ export default function WatershedExplorerView({
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-semibold text-slate-600">District</label>
               <select
-                value={selectedDistrict}
-                onChange={(e) => setSelectedDistrict(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500"
+                value={districtCode || ''}
+                onChange={(e) => {
+                  const dCode = e.target.value
+                  setDistrictCode(dCode)
+                  const st = hierarchy.find((x) => x.code === stateCode) || hierarchy[0]
+                  const dist = st?.districts?.find((x) => x.code === dCode)
+                  const bCode = dist?.blocks?.[0]?.code || ''
+                  const targetWsId = dist?.blocks?.[0]?.watersheds?.[0]?.id || ''
+                  setBlockCode(bCode)
+                  if (targetWsId) {
+                    setSelectedWsId(targetWsId)
+                    if (onSelectWatershed) onSelectWatershed(targetWsId)
+                  }
+                }}
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 cursor-pointer"
               >
-                <option value="Chhatrapati Sambhajinagar">Chhatrapati Sambhajinagar</option>
+                {((hierarchy.find((s) => s.code === stateCode) || hierarchy[0])?.districts || []).map((d) => (
+                  <option key={d.code} value={d.code}>{d.name}</option>
+                ))}
               </select>
             </div>
 
@@ -283,11 +336,24 @@ export default function WatershedExplorerView({
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-semibold text-slate-600">Block</label>
               <select
-                value={selectedBlock}
-                onChange={(e) => setSelectedBlock(e.target.value)}
-                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500"
+                value={blockCode || ''}
+                onChange={(e) => {
+                  const bCode = e.target.value
+                  setBlockCode(bCode)
+                  const st = hierarchy.find((x) => x.code === stateCode) || hierarchy[0]
+                  const dist = st?.districts?.find((x) => x.code === districtCode) || st?.districts?.[0]
+                  const b = dist?.blocks?.find((x) => x.code === bCode)
+                  const targetWsId = b?.watersheds?.[0]?.id || ''
+                  if (targetWsId) {
+                    setSelectedWsId(targetWsId)
+                    if (onSelectWatershed) onSelectWatershed(targetWsId)
+                  }
+                }}
+                className="w-full bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1.5 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 cursor-pointer"
               >
-                <option value="Paithan">Paithan</option>
+                {(((hierarchy.find((s) => s.code === stateCode) || hierarchy[0])?.districts?.find((d) => d.code === districtCode) || hierarchy[0]?.districts?.[0])?.blocks || []).map((b) => (
+                  <option key={b.code} value={b.code}>{b.name}</option>
+                ))}
               </select>
             </div>
 
@@ -295,21 +361,41 @@ export default function WatershedExplorerView({
             <div className="flex flex-col gap-1">
               <label className="text-[11px] font-semibold text-slate-600">Watershed / Micro-watershed</label>
               <select
-                value={watershedId || ''}
-                onChange={(e) => onSelectWatershed(e.target.value)}
-                className="w-full bg-white border border-emerald-600 text-emerald-800 font-bold rounded-lg px-2.5 py-1.5 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+                value={selectedWsId || watershedId || ''}
+                onChange={(e) => {
+                  const val = e.target.value
+                  setSelectedWsId(val)
+                  if (val && onSelectWatershed) onSelectWatershed(val)
+                }}
+                className="w-full bg-white border border-emerald-600 text-emerald-800 font-bold rounded-lg px-2.5 py-1.5 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs cursor-pointer"
               >
-                <option value="MWS-MH-2025-014">MWS-MH-2025-014 (Aurangabad North)</option>
+                {((((hierarchy.find((s) => s.code === stateCode) || hierarchy[0])?.districts?.find((d) => d.code === districtCode) || hierarchy[0]?.districts?.[0])?.blocks?.find((b) => b.code === blockCode) || hierarchy[0]?.districts?.[0]?.blocks?.[0])?.watersheds || Object.values(catalog?.watersheds || {})).map((w) => (
+                  <option key={w.id} value={w.id}>
+                    {w.code} - {w.name || w.code}
+                  </option>
+                ))}
               </select>
             </div>
 
             {/* Action Buttons */}
             <div className="flex items-center gap-2 mt-1">
-              <button className="flex-1 bg-[#047857] hover:bg-[#065f46] text-white py-1.5 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer">
+              <button
+                onClick={() => {
+                  const targetId = selectedWsId || watershedId
+                  if (targetId && onSelectWatershed) onSelectWatershed(targetId)
+                }}
+                className="flex-1 bg-[#047857] hover:bg-[#065f46] text-white py-1.5 rounded-lg font-bold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+              >
                 <Search size={13} />
                 <span>Apply</span>
               </button>
-              <button className="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-1.5 rounded-lg font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer">
+              <button
+                onClick={() => {
+                  const firstId = catalog?.watersheds ? Object.keys(catalog.watersheds)[0] : null
+                  if (firstId && onSelectWatershed) onSelectWatershed(firstId)
+                }}
+                className="flex-1 bg-white border border-slate-300 hover:bg-slate-50 text-slate-700 py-1.5 rounded-lg font-semibold text-xs flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+              >
                 <RefreshCw size={12} />
                 <span>Reset</span>
               </button>

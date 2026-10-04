@@ -48,13 +48,15 @@ export default function Navbar({
   const [stateCode, setStateCode] = useState(current?.st?.code || '')
   const [districtCode, setDistrictCode] = useState(current?.di?.code || '')
   const [blockCode, setBlockCode] = useState(current?.bl?.code || '')
+  const [selectedWsId, setSelectedWsId] = useState(watershedId || '')
 
   useEffect(() => {
     if (!current) return
     setStateCode(current.st.code)
     setDistrictCode(current.di.code)
     setBlockCode(current.bl.code)
-  }, [current?.st?.code, current?.di?.code, current?.bl?.code])
+    setSelectedWsId(current.ws?.id || watershedId || '')
+  }, [current, watershedId])
 
   // Notifications State & Handlers
   const [showNotifications, setShowNotifications] = useState(false)
@@ -490,14 +492,21 @@ export default function Navbar({
             <div className="flex items-center gap-1.5">
               <label className="text-slate-500 font-medium text-[11px]">State</label>
               <select
-                className="bg-white border border-slate-300 rounded-md px-3 py-1 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+                className="bg-white border border-slate-300 rounded-md px-3 py-1 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs cursor-pointer"
                 value={state?.code || ''}
                 onChange={(e) => {
-                  setStateCode(e.target.value)
-                  const s = hierarchy.find((x) => x.code === e.target.value)
-                  setDistrictCode(s?.districts?.[0]?.code || '')
-                  setBlockCode(s?.districts?.[0]?.blocks?.[0]?.code || '')
-                  pickFirstWatershed(s?.districts?.[0]?.blocks?.[0]?.watersheds)
+                  const sCode = e.target.value
+                  setStateCode(sCode)
+                  const s = hierarchy.find((x) => x.code === sCode)
+                  const dCode = s?.districts?.[0]?.code || ''
+                  const bCode = s?.districts?.[0]?.blocks?.[0]?.code || ''
+                  const targetWsId = s?.districts?.[0]?.blocks?.[0]?.watersheds?.[0]?.id || ''
+                  setDistrictCode(dCode)
+                  setBlockCode(bCode)
+                  if (targetWsId) {
+                    setSelectedWsId(targetWsId)
+                    onSelectWatershed(targetWsId)
+                  }
                 }}
               >
                 {hierarchy.map((s) => (
@@ -510,13 +519,19 @@ export default function Navbar({
             <div className="flex items-center gap-1.5">
               <label className="text-slate-500 font-medium text-[11px]">District</label>
               <select
-                className="bg-white border border-slate-300 rounded-md px-3 py-1 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+                className="bg-white border border-slate-300 rounded-md px-3 py-1 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs cursor-pointer"
                 value={district?.code || ''}
                 onChange={(e) => {
-                  setDistrictCode(e.target.value)
-                  const d = districts.find((x) => x.code === e.target.value)
-                  setBlockCode(d?.blocks?.[0]?.code || '')
-                  pickFirstWatershed(d?.blocks?.[0]?.watersheds)
+                  const dCode = e.target.value
+                  setDistrictCode(dCode)
+                  const d = districts.find((x) => x.code === dCode)
+                  const bCode = d?.blocks?.[0]?.code || ''
+                  const targetWsId = d?.blocks?.[0]?.watersheds?.[0]?.id || ''
+                  setBlockCode(bCode)
+                  if (targetWsId) {
+                    setSelectedWsId(targetWsId)
+                    onSelectWatershed(targetWsId)
+                  }
                 }}
               >
                 {districts.map((d) => (
@@ -529,12 +544,17 @@ export default function Navbar({
             <div className="flex items-center gap-1.5">
               <label className="text-slate-500 font-medium text-[11px]">Block</label>
               <select
-                className="bg-white border border-slate-300 rounded-md px-3 py-1 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs"
+                className="bg-white border border-slate-300 rounded-md px-3 py-1 font-semibold text-slate-800 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs cursor-pointer"
                 value={block?.code || ''}
                 onChange={(e) => {
-                  setBlockCode(e.target.value)
-                  const b = blocks.find((x) => x.code === e.target.value)
-                  pickFirstWatershed(b?.watersheds)
+                  const bCode = e.target.value
+                  setBlockCode(bCode)
+                  const b = blocks.find((x) => x.code === bCode)
+                  const targetWsId = b?.watersheds?.[0]?.id || ''
+                  if (targetWsId) {
+                    setSelectedWsId(targetWsId)
+                    onSelectWatershed(targetWsId)
+                  }
                 }}
               >
                 {blocks.map((b) => (
@@ -547,18 +567,34 @@ export default function Navbar({
             <div className="flex items-center gap-1.5">
               <label className="text-slate-500 font-medium text-[11px]">Watershed / Micro-watershed</label>
               <select
-                className="bg-white border border-emerald-600 text-emerald-800 font-bold rounded-md px-3 py-1 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs"
-                value={watershedId || ''}
-                onChange={(e) => onSelectWatershed(e.target.value)}
+                className="bg-white border border-emerald-600 text-emerald-800 font-bold rounded-md px-3 py-1 text-xs focus:ring-1 focus:ring-emerald-500 shadow-2xs cursor-pointer"
+                value={selectedWsId || watershedId || ''}
+                onChange={(e) => {
+                  const val = e.target.value
+                  setSelectedWsId(val)
+                  if (val && onSelectWatershed) {
+                    onSelectWatershed(val)
+                  }
+                }}
               >
                 {wsOptions.map((w) => (
-                  <option key={w.id} value={w.id}>{w.code}</option>
+                  <option key={w.id} value={w.id}>
+                    {w.code} - {w.name || w.code}
+                  </option>
                 ))}
               </select>
             </div>
 
             {/* Apply Button */}
-            <button className="bg-[#047857] hover:bg-[#065f46] text-white px-3.5 py-1 rounded-md font-semibold text-xs transition-colors shadow-2xs flex items-center gap-1 cursor-pointer">
+            <button
+              onClick={() => {
+                const targetId = selectedWsId || watershedId
+                if (targetId && onSelectWatershed) {
+                  onSelectWatershed(targetId)
+                }
+              }}
+              className="bg-[#047857] hover:bg-[#065f46] text-white px-3.5 py-1 rounded-md font-semibold text-xs transition-colors shadow-2xs flex items-center gap-1 cursor-pointer"
+            >
               <span>Apply</span>
             </button>
           </div>
