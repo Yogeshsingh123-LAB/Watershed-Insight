@@ -72,9 +72,9 @@ For **every** IWMP structure the platform answers one auditable question:
 | # | Module | What it delivers | Key techniques |
 | :--- | :--- | :--- | :--- |
 | **1** | **Watershed Explorer** | State → District → Block → Micro-watershed cascade, 13 toggleable Web-GIS layers, 6 acquisition epochs | Leaflet, RGBA raster overlays, GeoJSON |
-| **2** | **Geo-Coded Photo Intelligence** | EXIF GPS/time extraction, binding to the nearest structure, evidence validation, *content* interpretation of each photograph | `piexif`, haversine binding, ExG / VARI colour indices, Laplacian sharpness |
+| **2** | **Geo-Coded Photo Intelligence** | EXIF GPS/time extraction, binding to the nearest structure, evidence validation, *content* interpretation of each photograph | `piexif`, haversine binding, colour-index rules |
 | **3** | **Satellite Change Detection** | NDVI / NDWI / NDBI / SAVI, season-matched Δ maps, change-class accounting, hotspot ranking | Multi-epoch band math, area-weighted zonal statistics |
-| **4** | **Intervention Impact Analysis** | 250 m buffer assessment, inundation-aware vegetation response, LULC transition, DEM catchment delineation, 0-100 composite impact score, ₹/ha cost-effectiveness | D8 flow routing, Strahler ordering, rule-based LULC, composite scoring |
+| **4** | **Intervention Impact Analysis** | 250 m buffer assessment, inundation-aware vegetation response, LULC transition, DEM catchment delineation, 0-100 composite impact score, ₹/ha cost-effectiveness | Spatial statistics, hydrology, model scoring |
 | **5** | **Evidence Generator** | Two ReportLab PDF products: a per-structure **Evidence Pack** and a full **Micro-Watershed Assessment** | ReportLab Platypus + embedded matplotlib figures |
 
 ---
@@ -143,34 +143,34 @@ flowchart TB
 ```
 
 ```text
-┌─────────────────────────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────────────[...]
 │ PRESENTATION · React 18 + Vite                                              │
 │ Explorer · Change · Photos · Thematic · Reports · Leaflet · Recharts      │
-└──────────────────────────────────┬──────────────────────────────────────────┘
+└──────────────────────────────────┬─────────────────────────────[...]
                                    │ HTTP /api/v1 (JSON) · /static (map assets)
                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────────────[...]
 │ APPLICATION · FastAPI                                                       │
 │ Watersheds · Interventions · Photos · Analytics · Reports                  │
 │                         │                                                   │
 │                         ▼                                                   │
 │        DataStore · dataset loading · per-watershed cache · photo index      │
-└─────────────────────────┬───────────────────────────────────────────────────┘
+└─────────────────────────┬──────────────────────────────────────[...]
                           │ loads data and calls analysis services
                           ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────────────[...]
 │ ANALYSIS · Geospatial engine                                                │
 │ Raster indices/change · LULC · D8 hydrology · EXIF/photo interpretation     │
 │                         │                                                   │
 │                         ├──────────────► Map overlays (PNG / static)        │
 │                         └──────────────► Report figures                     │
-└─────────────────────────┬───────────────────────────────────────────────────┘
+└─────────────────────────┬──────────────────────────────────────[...]
                           │ reads
                           ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
+┌────────────────────────────────────────────────────────────────[...]
 │ INPUT DATA · data/sample or WS_DATA_DIR                                     │
 │ Boundaries · DEM · satellite epochs · interventions · geo-tagged photos    │
-└─────────────────────────────────────────────────────────────────────────────┘
+└────────────────────────────────────────────────────────────────[...]
 
 REPORTING · FastAPI report routes combine analysis results and figures into
 Evidence Pack and Micro-Watershed Assessment PDFs (ReportLab + matplotlib).
@@ -181,7 +181,7 @@ The two views show the same architecture at different levels: Mermaid emphasizes
 component relationships, while the text diagram traces the main request, data,
 analysis, and output paths.
 
-Full component-level design: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · API reference: **[docs/API.md](docs/API.md)** · **[validation report](docs/VALIDATION.md)** · **[judge prep](docs/SIH_PREP.md)** · build log: **[walkthrough.md](walkthrough.md)**.
+Full component-level design: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · API reference: **[docs/API.md](docs/API.md)** · **[validation report](docs/VALIDATION.md)** · **[judge prep](docs/SIH_PREP.md)**.
 
 ### Why NumPy only — no GDAL / rasterio / geopandas
 
@@ -436,7 +436,6 @@ Interactive docs at **`/docs`** (Swagger) and **`/redoc`**. Full reference:
 | `GET` | `/api/v1/watersheds/{id}/lulc` | LULC areas + T0→T1 transition matrix |
 | `GET` | `/api/v1/watersheds/{id}/drainage` | Stream network (GeoJSON) + morphometry (+ catchment) |
 | `GET` | `/api/v1/watersheds/{id}/terrain` | Slope classes, TWI, elevation distribution |
-| `GET` | `/api/v1/watersheds/{id}/overlays[/{name}]` | Rendered transparent map overlays |
 | `GET` | `/api/v1/interventions` | Structures as GeoJSON (filter by type/status) |
 | `GET` | `/api/v1/interventions/ranking` | Impact ranking + recommendations + ₹/ha |
 | `GET` | `/api/v1/interventions/{id}/analysis` | Full evidence bundle (buffer + LULC + photos + cross-checks) |
@@ -506,8 +505,8 @@ python -m pytest tests/ -v        # 64 tests, ~13 s
 
 | Suite | Covers |
 | :--- | :--- |
-| **`tests/test_calibration.py`** | **Known-answer / calibration tests — do the *measurements* come out right?** A planted water body of known area is recovered within 5 %; a 250 m buffer encloses πr² ha within 1 %; area-weighting changes the mean with latitude; cloud-masked pixels do not bias a statistic; the impact score is monotonic in each component; confidence moves with evidence quality and is independent of impact; the control sample is reproducible |
-| `tests/test_geospatial.py` | Geodesy (haversine against known distances), raster grid ↔ world, buffer area vs πr², index maths, LULC rules, transition conservation, D8 routing on a plane, sink filling, Strahler ordering, EXIF DMS round-trip, photo interpretation |
+| **`tests/test_calibration.py`** | **Known-answer / calibration tests — do the *measurements* come out right?** A planted water body of known area is recovered within 5 %; a 250 m buffer encloses the correct area; the geometry is validated against the same raster grid used in production. |
+| `tests/test_geospatial.py` | Geodesy (haversine against known distances), raster grid ↔ world, buffer area vs πr², index maths, LULC rules, transition conservation, D8 routing on a plane, stream ordering and catchment edge cases. |
 | `tests/test_api.py` | Every REST endpoint, payload consistency (areas add up, 100 % partitions), ranking monotonicity, upload → binding → validation, PDF validity (`%PDF` magic bytes) |
 
 ---
@@ -545,25 +544,6 @@ Every generated report carries a **Methodology & Limitations** section:
    confounders.
 5. **Photo evidence** — colour-index interpretation is supporting, not conclusive.
 6. **Cloud** — residual cloud shadow can depress NDVI locally.
-
----
-
-## 🏆 60-Second Demo Script
-
-1. **Explorer** — pick `MWS-MH-2025-014`; the boundary, 10 structures, 37 photo pins and
-   the NDVI raster appear.
-2. **Change** — show ΔNDVI +0.046 and 29 % of the watershed improving; point at the
-   gainer/loser hotspots.
-3. **Photos** — open a photograph: EXIF GPS, "23.6 m from structure", automated read
-   ("water impoundment visible — water 15.9 %"), and the satellite cross-check.
-4. **Impact** — click *Percolation Tank #003*: **impact 65/100**, **confidence 100/100**, **p97 vs control**,
-   net-of-background +0.025, LULC transition, catchment delineated from the DEM.
-   Then: *"and here is the same pipeline on real Sentinel-2"* → `WS_DATA_DIR=data/real`.
-5. **Evidence** — *Generate PDF*: a 4-page, signed, audit-ready evidence pack with maps,
-   indicator tables, photographs and the limitations section.
-
-> **"DharaScan turns satellite pixels and geo-tagged photographs into spatially
-> validated, decision-ready evidence."**
 
 ---
 
