@@ -281,7 +281,7 @@ export default function LandingPage({ onLoginClick, onExploreClick }) {
             {/* Multispectral Layer Switcher */}
             <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-2xl border border-slate-200 overflow-x-auto">
               {[
-                { id: 'satellite', label: 'Satellite RGB' },
+                { id: 'satellite', label: 'Satellite (NIR)' },
                 { id: 'ndvi', label: 'NDVI' },
                 { id: 'ndwi', label: 'NDWI' },
                 { id: 'lulc', label: 'LULC' },
