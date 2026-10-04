@@ -202,25 +202,8 @@ export default function Navbar({
           </div>
         </div>
 
-        {/* Right Officer Profile / Public Access & Accessibility Tools */}
+        {/* Right Officer Profile / Public Access */}
         <div className="flex items-center gap-4">
-          {/* Utility accessibility links */}
-          <div className="hidden lg:flex items-center gap-3 text-[11px] text-slate-600 font-medium border-r border-slate-200 pr-4">
-            <span className="hover:text-slate-900 cursor-pointer">Skip to main content</span>
-            <span className="text-slate-300">|</span>
-            <div className="flex items-center gap-1 font-semibold text-slate-700">
-              <span className="hover:text-emerald-700 cursor-pointer text-[10px]">A-</span>
-              <span className="hover:text-emerald-700 cursor-pointer text-[11px]">A</span>
-              <span className="hover:text-emerald-700 cursor-pointer text-[12px]">A+</span>
-            </div>
-            <span className="text-slate-300">|</span>
-            <div className="flex items-center gap-1 cursor-pointer hover:text-emerald-700">
-              <Globe size={13} className="text-slate-500" />
-              <span>English</span>
-              <ChevronDown size={11} className="text-slate-400" />
-            </div>
-          </div>
-
           {isPublic ? (
             <div className="flex items-center gap-3">
               {/* Public Badge */}
