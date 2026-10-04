@@ -543,7 +543,7 @@ Every generated report carries a **Methodology & Limitations** section:
    Rainfall variability, cropping change, groundwater extraction and other schemes are
    confounders.
 5. **Photo evidence** — colour-index interpretation is supporting, not conclusive.
-6. **Cloud** — residual cloud shadow can depress NDVI locally.
+6. **Cloud** — lingering cloud shadows may locally lower NDVI values.
 
 ---
 
