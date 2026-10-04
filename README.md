@@ -83,51 +83,63 @@ For **every** IWMP structure the platform answers one auditable question:
 
 ```mermaid
 flowchart TB
-    subgraph UI[Presentation · React 18 + Vite]
-        Dashboard[Dashboard panels<br/>Explorer · Change · Photos · Thematic · Reports]
-        MapCharts[Leaflet maps · Recharts]
-        ApiClient[API client]
-        Dashboard --> MapCharts
-        Dashboard --> ApiClient
+    %% Colour-coded system layers
+    subgraph CLIENT["1 · Dashboard"]
+        direction TB
+        UI["React 18 + Vite<br/>Explorer · Change · Photos<br/>Thematic · Reports"]
+        VIS["Leaflet maps<br/>Recharts"]
+        UI --- VIS
     end
 
-    Proxy[Vite proxy or nginx<br/>/api/v1 · /static]
-    ApiClient -->|HTTP JSON requests| Proxy
-
-    subgraph API[Application · FastAPI]
-        Routers[REST routers<br/>watersheds · interventions · photos<br/>analytics · reports]
-        Store[DataStore<br/>load · cache · analyse · photo index]
-        Routers --> Store
+    subgraph SERVICE["2 · API service"]
+        direction TB
+        API["FastAPI<br/>Watersheds · Interventions<br/>Photos · Analytics · Reports"]
+        STORE["DataStore<br/>Load · Cache · Photo index"]
+        API --> STORE
     end
-    Proxy --> Routers
 
-    subgraph Engine[Geospatial engine · deterministic NumPy analysis]
-        Raster[Raster processor<br/>indices · buffers · change detection]
-        LULC[LULC classifier<br/>areas · transition matrix]
-        Hydro[Hydrology<br/>D8 · drainage · catchments]
-        Photo[EXIF · photo interpretation<br/>binding · validation · cross-check]
-        Mapping[Mapping<br/>overlays · report figures]
+    subgraph ANALYSIS["3 · Geospatial analysis"]
+        direction TB
+        GEO["NumPy engine"]
+        GEODETAIL["Raster indices & change · LULC<br/>D8 hydrology · EXIF & photo analysis"]
+        GEO --- GEODETAIL
     end
-    Store --> Raster
-    Store --> LULC
-    Store --> Hydro
-    Store --> Photo
-    Store --> Mapping
 
-    subgraph Data[Data · data/sample or WS_DATA_DIR]
-        Inputs[Watershed boundaries · DEM · satellite band stacks<br/>interventions · geo-tagged photographs]
+    subgraph STORAGE["4 · Data"]
+        direction TB
+        DATA["data/sample or WS_DATA_DIR<br/>Boundaries · DEM · Satellite epochs<br/>Interventions · Geo-tagged photos"]
     end
-    Inputs --> Store
 
-    subgraph Outputs[Generated outputs]
-        Overlays[Map overlays<br/>PNG · static assets]
-        PDFs[Evidence Pack · Watershed Assessment<br/>ReportLab PDFs + matplotlib figures]
+    subgraph RESULTS["5 · Outputs"]
+        direction TB
+        MAPS["Map overlays<br/>PNG / static assets"]
+        PDF["Evidence Pack & Watershed Assessment<br/>ReportLab PDF + matplotlib figures"]
     end
-    Mapping --> Overlays
-    Overlays -.->|static map assets| Proxy
-    Store --> PDFs
-    Mapping --> PDFs
-    PDFs -->|PDF response| Routers
+
+    UI -->|"HTTP · JSON / PDF"| API
+    STORE --> GEO
+    DATA --> STORE
+    GEO -->|"analysis results"| API
+    GEO -->|"render"| MAPS
+    GEO -->|"figures"| PDF
+    MAPS -.->|"/static"| UI
+
+    classDef client fill:#dbeafe,stroke:#2563eb,color:#172554,stroke-width:2px;
+    classDef service fill:#dcfce7,stroke:#16a34a,color:#052e16,stroke-width:2px;
+    classDef analysis fill:#fef3c7,stroke:#d97706,color:#451a03,stroke-width:2px;
+    classDef storage fill:#f3e8ff,stroke:#9333ea,color:#3b0764,stroke-width:2px;
+    classDef output fill:#ffe4e6,stroke:#e11d48,color:#4c0519,stroke-width:2px;
+    class UI,VIS client;
+    class API,STORE service;
+    class GEO,GEODETAIL analysis;
+    class DATA storage;
+    class MAPS,PDF output;
+
+    style CLIENT fill:#eff6ff,stroke:#93c5fd,stroke-width:1px;
+    style SERVICE fill:#f0fdf4,stroke:#86efac,stroke-width:1px;
+    style ANALYSIS fill:#fffbeb,stroke:#fcd34d,stroke-width:1px;
+    style STORAGE fill:#faf5ff,stroke:#d8b4fe,stroke-width:1px;
+    style RESULTS fill:#fff1f2,stroke:#fda4af,stroke-width:1px;
 ```
 
 ```text
