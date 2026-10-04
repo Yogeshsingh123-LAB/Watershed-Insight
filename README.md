@@ -81,29 +81,93 @@ For **every** IWMP structure the platform answers one auditable question:
 
 ## 🏛 Architecture
 
+```mermaid
+flowchart TB
+    subgraph UI[Presentation · React 18 + Vite]
+        Dashboard[Dashboard panels<br/>Explorer · Change · Photos · Thematic · Reports]
+        MapCharts[Leaflet maps · Recharts]
+        ApiClient[API client]
+        Dashboard --> MapCharts
+        Dashboard --> ApiClient
+    end
+
+    Proxy[Vite proxy or nginx<br/>/api/v1 · /static]
+    ApiClient -->|HTTP JSON requests| Proxy
+
+    subgraph API[Application · FastAPI]
+        Routers[REST routers<br/>watersheds · interventions · photos<br/>analytics · reports]
+        Store[DataStore<br/>load · cache · analyse · photo index]
+        Routers --> Store
+    end
+    Proxy --> Routers
+
+    subgraph Engine[Geospatial engine · deterministic NumPy analysis]
+        Raster[Raster processor<br/>indices · buffers · change detection]
+        LULC[LULC classifier<br/>areas · transition matrix]
+        Hydro[Hydrology<br/>D8 · drainage · catchments]
+        Photo[EXIF · photo interpretation<br/>binding · validation · cross-check]
+        Mapping[Mapping<br/>overlays · report figures]
+    end
+    Store --> Raster
+    Store --> LULC
+    Store --> Hydro
+    Store --> Photo
+    Store --> Mapping
+
+    subgraph Data[Data · data/sample or WS_DATA_DIR]
+        Inputs[Watershed boundaries · DEM · satellite band stacks<br/>interventions · geo-tagged photographs]
+    end
+    Inputs --> Store
+
+    subgraph Outputs[Generated outputs]
+        Overlays[Map overlays<br/>PNG · static assets]
+        PDFs[Evidence Pack · Watershed Assessment<br/>ReportLab PDFs + matplotlib figures]
+    end
+    Mapping --> Overlays
+    Overlays -.->|static map assets| Proxy
+    Store --> PDFs
+    Mapping --> PDFs
+    PDFs -->|PDF response| Routers
 ```
- ┌───────────────────────────────────────────────────────────────────────────────┐
- │                          React 18 + Vite dashboard                             │
- │  Explorer │ Change │ Photos │ Thematic │ Reports      ·  Leaflet · Recharts    │
- └───────────────────────────────┬───────────────────────────────────────────────┘
-                                 │  /api/v1  (Vite proxy or nginx)
- ┌───────────────────────────────▼───────────────────────────────────────────────┐
- │                            FastAPI application                                 │
- │  watersheds · interventions · photos · analytics · reports   (5 routers)       │
- └───────────┬──────────────────────────────────────────┬────────────────────────┘
-             │                                          │
- ┌───────────▼──────────────┐              ┌────────────▼────────────────────────┐
- │  geospatial/ engine      │              │  reports/ evidence generator        │
- │  raster_processor        │              │  generate_intervention_pdf()        │
- │  lulc · hydrology        │─────────────►│  generate_watershed_pdf()           │
- │  exif · photo_interpreter│              │  (ReportLab + matplotlib figures)   │
- │  mapping · geo_utils     │              └─────────────────────────────────────┘
- └───────────┬──────────────┘
-             │
- ┌───────────▼───────────────────────────────────────────────────────────────────┐
- │  data/sample — boundaries · DEM · 6-epoch band stacks · interventions · photos │
- └───────────────────────────────────────────────────────────────────────────────┘
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ PRESENTATION · React 18 + Vite                                              │
+│ Explorer · Change · Photos · Thematic · Reports · Leaflet · Recharts      │
+└──────────────────────────────────┬──────────────────────────────────────────┘
+                                   │ HTTP /api/v1 (JSON) · /static (map assets)
+                                   ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ APPLICATION · FastAPI                                                       │
+│ Watersheds · Interventions · Photos · Analytics · Reports                  │
+│                         │                                                   │
+│                         ▼                                                   │
+│        DataStore · dataset loading · per-watershed cache · photo index      │
+└─────────────────────────┬───────────────────────────────────────────────────┘
+                          │ loads data and calls analysis services
+                          ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ ANALYSIS · Geospatial engine                                                │
+│ Raster indices/change · LULC · D8 hydrology · EXIF/photo interpretation     │
+│                         │                                                   │
+│                         ├──────────────► Map overlays (PNG / static)        │
+│                         └──────────────► Report figures                     │
+└─────────────────────────┬───────────────────────────────────────────────────┘
+                          │ reads
+                          ▼
+┌─────────────────────────────────────────────────────────────────────────────┐
+│ INPUT DATA · data/sample or WS_DATA_DIR                                     │
+│ Boundaries · DEM · satellite epochs · interventions · geo-tagged photos    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+REPORTING · FastAPI report routes combine analysis results and figures into
+Evidence Pack and Micro-Watershed Assessment PDFs (ReportLab + matplotlib).
+The dashboard receives JSON and static map assets; report routes return PDFs.
 ```
+
+The two views show the same architecture at different levels: Mermaid emphasizes
+component relationships, while the text diagram traces the main request, data,
+analysis, and output paths.
 
 Full component-level design: **[docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)** · API reference: **[docs/API.md](docs/API.md)** · **[validation report](docs/VALIDATION.md)** · **[judge prep](docs/SIH_PREP.md)** · build log: **[walkthrough.md](walkthrough.md)**.
 
