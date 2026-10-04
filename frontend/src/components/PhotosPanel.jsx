@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { AlertTriangle, Camera, CheckCircle2, CloudUpload, Crosshair, RefreshCw, Upload, X } from 'lucide-react'
+import { AlertTriangle, Award, Camera, CheckCircle2, CloudUpload, Crosshair, RefreshCw, Upload, X } from 'lucide-react'
 import {
   Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from 'recharts'
@@ -263,16 +263,30 @@ export default function PhotosPanel({ watershedId, summary, selectedId, onSelect
                       : <span className="chip badge-negative"><AlertTriangle size={10} /> {detail.photo.validation?.join(', ') || 'questionable'}</span>}
                   </div>
                 </div>
-                <button
-                  className="btn-ghost"
-                  style={{ width: '100%', marginTop: 8 }}
-                  onClick={() => {
-                    onFly(detail.photo)
-                    setDetail(null)
-                  }}
-                >
-                  <Crosshair size={13} /> Zoom to capture point
-                </button>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 8 }}>
+                  {detail.photo.intervention_id && (
+                    <button
+                      className="btn-ghost"
+                      style={{ width: '100%', background: '#ecfdf5', color: '#047857', border: '1px solid #a7f3d0' }}
+                      onClick={() => {
+                        onSelect(detail.photo.intervention_id, { open: true })
+                        setDetail(null)
+                      }}
+                    >
+                      <Award size={13} /> Inspect Structure Evidence Pack
+                    </button>
+                  )}
+                  <button
+                    className="btn-ghost"
+                    style={{ width: '100%' }}
+                    onClick={() => {
+                      onFly(detail.photo)
+                      setDetail(null)
+                    }}
+                  >
+                    <Crosshair size={13} /> Zoom to capture point
+                  </button>
+                </div>
               </div>
 
               <div>
