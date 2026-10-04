@@ -42,7 +42,7 @@ Two rich data streams already exist:
 
 | Stream | What it holds | Status today |
 | :--- | :--- | :--- |
-| **SRISHTI** (Web-GIS) | Satellite layers, watershed boundaries, intervention inventories | Mapped, but rarely *analysed* |
+| **SRISHTI** (Web-GIS) | Satellite layers, watershed boundaries, intervention inventories | Mapped, but poorly *analysed* |
 | **DRISHTI** (field app) | Lakhs of geo-tagged implementation photographs | Collected, but used only as *documentation* |
 
 The result: **data without decisions.** Photographs are filed, not interpreted; satellite
