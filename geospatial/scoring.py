@@ -211,6 +211,9 @@ def confidence(factors: Dict[str, float],
     return {
         "score": score,
         "band": band,
+        "label": "Evidence Quality Index",
+        "disclaimer": "Measures data completeness and evidence quality across 6 observational criteria. Not a 100% statistical certainty rating.",
+        "attribution_disclaimer": "Difference-in-Differences methodology isolates structure-associated spatial change net of background greening under identical rainfall, establishing strong spatial association.",
         "components": parts,
         "factors": {k: round(float(max(0.0, min(1.0, v))), 4)
                     for k, v in factors.items()},
@@ -221,7 +224,7 @@ def confidence(factors: Dict[str, float],
 def confidence_formula() -> str:
     """One-line statement of how confidence is computed (printed in reports)."""
     return (
-        "Confidence = 100 x ("
+        "Evidence Quality Index = 100 x ("
         + " + ".join(f"{w:.2f}·{k}" for k, w in CONFIDENCE_WEIGHTS.items())
         + f"), with temporal_replication = min(1, epochs/{EPOCHS_FOR_FULL_REPLICATION}), "
         + f"photo_corroboration = min(1, verified_photos/{PHOTOS_FOR_FULL_CORROBORATION}), "

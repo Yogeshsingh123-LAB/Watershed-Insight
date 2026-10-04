@@ -183,30 +183,30 @@ export default function InterventionModal({ data, radius = 250, onClose, onRepor
 
             {(bundle.confidence || bundle.control_context) && (
               <div className="kpi-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 8, marginTop: 4 }}>
-                <div className="kpi-tile">
-                  <div className="label">Confidence</div>
+                <div className="kpi-tile" title="Evidence Quality Index (0-100): Measures data quality and completeness across 6 criteria. Not a 100% statistical probability rating.">
+                  <div className="label">Evidence Quality</div>
                   <div className="value" style={{ fontSize: '1.05rem' }}>
                     {fmtNum(bundle.confidence?.score, 0)}
                     <span className="tiny text-dim"> / 100</span>
                   </div>
-                  <div className="tiny text-dim">{bundle.confidence?.band || 'HIGH'}</div>
+                  <div className="tiny text-dim">{bundle.confidence?.band || 'HIGH'} (Data Index)</div>
                 </div>
-                <div className="kpi-tile">
-                  <div className="label">vs random control</div>
+                <div className="kpi-tile" title="Benchmarked against 200 random control points inside the same micro-watershed">
+                  <div className="label">vs 200 controls</div>
                   <div className="value" style={{ fontSize: '1.05rem' }}>
                     {bundle.percentile_vs_control != null ? `p${fmtNum(bundle.percentile_vs_control, 0)}` : '—'}
                   </div>
                   <div className="tiny text-dim">
-                    background {fmtNum(bundle.control_context?.mean, 1)} ± {fmtNum(bundle.control_context?.std, 1)}
+                    bg {fmtNum(bundle.control_context?.mean, 1)} ± {fmtNum(bundle.control_context?.std, 1)}
                   </div>
                 </div>
-                <div className="kpi-tile">
-                  <div className="label">Net of background</div>
+                <div className="kpi-tile" title="Difference-in-Differences: Isolates structure-associated spatial change net of watershed-wide background greening under identical rainfall">
+                  <div className="label">DiD Spatial Change</div>
                   <div className="value" style={{ fontSize: '1.05rem', color: (a.net_ndvi_change_land ?? 0) >= 0 ? 'var(--pos)' : 'var(--neg)' }}>
                     {fmtNum(a.net_ndvi_change_land, 3, true)}
                   </div>
                   <div className="tiny text-dim">
-                    buffer {fmtNum(a.ndvi_change_land, 3, true)} − watershed {fmtNum(a.background?.ndvi_change, 3, true)}
+                    net of background
                   </div>
                 </div>
               </div>

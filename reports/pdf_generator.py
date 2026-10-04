@@ -202,7 +202,7 @@ def _confidence_table(bundle: dict) -> Table:
         "spatial_coverage": "Buffer fully inside the imagery",
         "baseline_control": "Pre-works baseline observation exists",
     }
-    rows = [[_p("<b>Confidence factor</b>"), _p("<b>Weight</b>"),
+    rows = [[_p("<b>Evidence Quality Factor</b>"), _p("<b>Weight</b>"),
              _p("<b>Measured</b>"), _p("<b>Points</b>")]]
     for key, weight in (conf.get("weights") or {}).items():
         rows.append([
@@ -211,7 +211,7 @@ def _confidence_table(bundle: dict) -> Table:
             _p(f"{(conf.get('factors') or {}).get(key, 0) * 100:.0f} %"),
             _p(f"{(conf.get('components') or {}).get(key, 0):.1f}"),
         ])
-    rows.append([_p("<b>Confidence</b>"), _p(""), _p(""),
+    rows.append([_p("<b>Evidence Quality Index</b>"), _p(""), _p(""),
                  _p(f"<b>{conf.get('score', 0):.1f} / 100 ({conf.get('band', 'n/a')})</b>")])
     table = Table(rows, colWidths=[80 * mm, 22 * mm, 26 * mm, 22 * mm])
     table.setStyle(TableStyle([
@@ -222,16 +222,16 @@ def _confidence_table(bundle: dict) -> Table:
         ("TOPPADDING", (0, 0), (-1, -1), 3),
         ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
     ]))
-    body = [_p("<b>Impact is not confidence.</b> The impact score answers "
-               "<i>how much</i> change was measured; the confidence score "
-               "answers <i>how much that number can be trusted</i>. They are "
-               "computed independently and must be read together."),
+    body = [_p("<b>Impact vs Evidence Quality Index:</b> The impact score answers "
+               "<i>how much</i> physical change was measured; the Evidence Quality Index "
+               "answers <i>how complete and reliable the underlying data is</i>. "
+               "It is a data completeness rating (0–100), not a statistical probability interval."),
             _p(confidence_formula()),
             Spacer(1, 4), table]
     if control.get("available"):
         body += [
             Spacer(1, 6),
-            _p(f"<b>Background comparison.</b> The identical scoring chain was "
+            _p(f"<b>Background comparison & Spatial Association.</b> The identical scoring chain was "
                f"run at {control['n']} seeded random control points inside the "
                f"watershed: mean {control['mean']:.1f}, standard deviation "
                f"{control['std']:.1f}, median {control['median']:.1f}. This "
@@ -243,7 +243,7 @@ def _confidence_table(bundle: dict) -> Table:
                f"(buffer {a.get('ndvi_change_land', 0):+.3f} minus watershed "
                f"{(a.get('background') or {}).get('ndvi_change', 0):+.3f}), "
                f"which is the difference-in-differences estimate of the "
-               f"structure's own effect as opposed to a good monsoon."),
+               f"structure-associated spatial change net of broader watershed greening under identical rainfall."),
         ]
     return Table([[item] for item in body], colWidths=[160 * mm],
                  style=TableStyle([("LEFTPADDING", (0, 0), (-1, -1), 0),

@@ -74,6 +74,8 @@ export const api = {
 
   // --- extension modules ------------------------------------------------ //
   dataSources: () => client.get('/data-sources').then((r) => r.data),
+  syncMirror: () => client.post('/data-sources/sync-mirror').then((r) => r.data),
+  switchMode: (mode) => client.post('/data-sources/switch-mode', null, { params: { mode } }).then((r) => r.data),
   decisionSummary: (wsId) => client.get(`/watersheds/${wsId}/decision-summary`).then((r) => r.data),
   environment: (wsId) => client.get(`/watersheds/${wsId}/environment`).then((r) => r.data),
   timeline: (id) => client.get(`/interventions/${id}/timeline`).then((r) => r.data),

@@ -400,6 +400,456 @@
           19.790931
         ]
       }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CD-001",
+        "watershed_id": "watershed_003",
+        "name": "Masonry Check Dam #001",
+        "type": "check_dam",
+        "installation_date": "2024-12-22",
+        "status": "Completed",
+        "cost_inr": 519000,
+        "capacity_tcm": 3.11,
+        "latitude": 19.693108,
+        "longitude": 75.004771,
+        "village": "Lasanpur",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 128
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.004771,
+          19.693108
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PL-002",
+        "watershed_id": "watershed_003",
+        "name": "Horti-Afforestation #002",
+        "type": "plantation",
+        "installation_date": "2024-11-09",
+        "status": "Completed",
+        "cost_inr": 218000,
+        "capacity_tcm": 0.0,
+        "latitude": 19.693332,
+        "longitude": 75.008659,
+        "village": "Lasanpur",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 46
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.008659,
+          19.693332
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PT-003",
+        "watershed_id": "watershed_003",
+        "name": "Percolation Tank #003",
+        "type": "percolation_tank",
+        "installation_date": "2024-07-14",
+        "status": "Completed",
+        "cost_inr": 646000,
+        "capacity_tcm": 12.08,
+        "latitude": 19.698909,
+        "longitude": 75.017149,
+        "village": "Lasanpur",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 93
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.017149,
+          19.698909
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CB-004",
+        "watershed_id": "watershed_003",
+        "name": "Continuous Contour Bund #004",
+        "type": "contour_bund",
+        "installation_date": "2024-09-20",
+        "status": "Completed",
+        "cost_inr": 167000,
+        "capacity_tcm": 0.0,
+        "latitude": 19.701707,
+        "longitude": 75.004902,
+        "village": "Lasanpur",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 27
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.004902,
+          19.701707
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-FP-005",
+        "watershed_id": "watershed_003",
+        "name": "Farm Pond (lined) #005",
+        "type": "farm_pond",
+        "installation_date": "2024-09-16",
+        "status": "Ongoing",
+        "cost_inr": 159000,
+        "capacity_tcm": 2.82,
+        "latitude": 19.695058,
+        "longitude": 75.015913,
+        "village": "Lasanpur",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 127
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.015913,
+          19.695058
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-GP-006",
+        "watershed_id": "watershed_003",
+        "name": "Gully Plug / Nala Bund #006",
+        "type": "gully_plug",
+        "installation_date": "2024-09-20",
+        "status": "Completed",
+        "cost_inr": 50000,
+        "capacity_tcm": 0.43,
+        "latitude": 19.690929,
+        "longitude": 75.009772,
+        "village": "Lasanpur",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 25
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.009772,
+          19.690929
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CD-001",
+        "watershed_id": "watershed_004",
+        "name": "Masonry Check Dam #001",
+        "type": "check_dam",
+        "installation_date": "2024-10-27",
+        "status": "Completed",
+        "cost_inr": 464000,
+        "capacity_tcm": 4.38,
+        "latitude": 22.967371,
+        "longitude": 75.787582,
+        "village": "Chandrawatiganj",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 81
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.787582,
+          22.967371
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PL-002",
+        "watershed_id": "watershed_004",
+        "name": "Horti-Afforestation #002",
+        "type": "plantation",
+        "installation_date": "2024-09-21",
+        "status": "Completed",
+        "cost_inr": 126000,
+        "capacity_tcm": 0.0,
+        "latitude": 22.958984,
+        "longitude": 75.77971,
+        "village": "Chandrawatiganj",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 55
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.77971,
+          22.958984
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PT-003",
+        "watershed_id": "watershed_004",
+        "name": "Percolation Tank #003",
+        "type": "percolation_tank",
+        "installation_date": "2025-01-11",
+        "status": "Completed",
+        "cost_inr": 953000,
+        "capacity_tcm": 10.21,
+        "latitude": 22.961448,
+        "longitude": 75.784511,
+        "village": "Chandrawatiganj",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 23
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.784511,
+          22.961448
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CB-004",
+        "watershed_id": "watershed_004",
+        "name": "Continuous Contour Bund #004",
+        "type": "contour_bund",
+        "installation_date": "2025-02-01",
+        "status": "Completed",
+        "cost_inr": 116000,
+        "capacity_tcm": 0.0,
+        "latitude": 22.9682,
+        "longitude": 75.784057,
+        "village": "Chandrawatiganj",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 120
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.784057,
+          22.9682
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-FP-005",
+        "watershed_id": "watershed_004",
+        "name": "Farm Pond (lined) #005",
+        "type": "farm_pond",
+        "installation_date": "2024-11-02",
+        "status": "Ongoing",
+        "cost_inr": 265000,
+        "capacity_tcm": 1.2,
+        "latitude": 22.958271,
+        "longitude": 75.780585,
+        "village": "Chandrawatiganj",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 87
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.780585,
+          22.958271
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-GP-006",
+        "watershed_id": "watershed_004",
+        "name": "Gully Plug / Nala Bund #006",
+        "type": "gully_plug",
+        "installation_date": "2025-04-15",
+        "status": "Completed",
+        "cost_inr": 76000,
+        "capacity_tcm": 0.88,
+        "latitude": 22.963999,
+        "longitude": 75.783198,
+        "village": "Chandrawatiganj",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 133
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.783198,
+          22.963999
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CD-001",
+        "watershed_id": "watershed_005",
+        "name": "Masonry Check Dam #001",
+        "type": "check_dam",
+        "installation_date": "2025-03-09",
+        "status": "Ongoing",
+        "cost_inr": 532000,
+        "capacity_tcm": 5.68,
+        "latitude": 27.020006,
+        "longitude": 75.98368,
+        "village": "Bhanpur Kalan",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 35
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.98368,
+          27.020006
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PL-002",
+        "watershed_id": "watershed_005",
+        "name": "Horti-Afforestation #002",
+        "type": "plantation",
+        "installation_date": "2024-07-26",
+        "status": "Ongoing",
+        "cost_inr": 237000,
+        "capacity_tcm": 0.0,
+        "latitude": 27.018079,
+        "longitude": 75.973298,
+        "village": "Bhanpur Kalan",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 49
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.973298,
+          27.018079
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-PT-003",
+        "watershed_id": "watershed_005",
+        "name": "Percolation Tank #003",
+        "type": "percolation_tank",
+        "installation_date": "2024-08-27",
+        "status": "Completed",
+        "cost_inr": 814000,
+        "capacity_tcm": 19.51,
+        "latitude": 27.020177,
+        "longitude": 75.984828,
+        "village": "Bhanpur Kalan",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 110
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.984828,
+          27.020177
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-CB-004",
+        "watershed_id": "watershed_005",
+        "name": "Continuous Contour Bund #004",
+        "type": "contour_bund",
+        "installation_date": "2024-10-03",
+        "status": "Ongoing",
+        "cost_inr": 184000,
+        "capacity_tcm": 0.0,
+        "latitude": 27.029021,
+        "longitude": 75.983021,
+        "village": "Bhanpur Kalan",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 129
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.983021,
+          27.029021
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-FP-005",
+        "watershed_id": "watershed_005",
+        "name": "Farm Pond (lined) #005",
+        "type": "farm_pond",
+        "installation_date": "2025-02-03",
+        "status": "Ongoing",
+        "cost_inr": 169000,
+        "capacity_tcm": 2.1,
+        "latitude": 27.017333,
+        "longitude": 75.990807,
+        "village": "Bhanpur Kalan",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 38
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.990807,
+          27.017333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
+        "id": "INT-GP-006",
+        "watershed_id": "watershed_005",
+        "name": "Gully Plug / Nala Bund #006",
+        "type": "gully_plug",
+        "installation_date": "2024-10-29",
+        "status": "Completed",
+        "cost_inr": 73000,
+        "capacity_tcm": 0.34,
+        "latitude": 27.015915,
+        "longitude": 75.992331,
+        "village": "Bhanpur Kalan",
+        "executing_agency": "Village Watershed Committee / GP",
+        "beneficiaries": 94
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          75.992331,
+          27.015915
+        ]
+      }
     }
   ]
 }

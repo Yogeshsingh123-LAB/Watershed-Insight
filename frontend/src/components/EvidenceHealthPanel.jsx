@@ -67,7 +67,11 @@ export default function EvidenceHealthPanel({ watershedId, interventions = [] })
               </div>
             </div>
             <div className="space-y-2 text-xs text-slate-600">
-              <p className="font-semibold text-slate-800">Officer Recommendation:</p>
+              <p className="font-semibold text-slate-800">Evidence Quality Index Note:</p>
+              <p className="bg-blue-50/70 border border-blue-200 p-2.5 rounded text-blue-900 text-xs font-sans">
+                ℹ️ Quantifies data quality and completeness across 6 observational criteria. Indicates evidence reliability, not a statistical probability interval.
+              </p>
+              <p className="font-semibold text-slate-800 mt-2">Officer Recommendation:</p>
               <p className="bg-slate-50 border border-slate-200 p-3 rounded text-slate-700 font-sans">{healthData.recommendation}</p>
             </div>
           </div>

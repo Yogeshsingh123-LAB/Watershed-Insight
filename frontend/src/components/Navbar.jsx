@@ -190,8 +190,13 @@ export default function Navbar({
               <div className="text-[13px] font-extrabold text-slate-900 tracking-tight leading-tight">
                 National Geospatial Watershed Monitoring &amp; Evidence Platform
               </div>
-              <div className="text-[12px] font-black text-emerald-700 tracking-wider font-mono uppercase">
-                DharaScan
+              <div className="flex items-center gap-2 mt-0.5">
+                <span className="text-[12px] font-black text-emerald-700 tracking-wider font-mono uppercase">
+                  DharaScan
+                </span>
+                <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded font-mono">
+                  SRISHTI/DRISHTI Mirror: SYNCED
+                </span>
               </div>
             </div>
           </div>
